@@ -60,7 +60,7 @@ export default function ConnexionPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="w-full max-w-md relative z-10"
+          className="w-full max-w-md relative z-10 text-center"
         >
           <h2 className="font-[family-name:var(--font-heading)] text-3xl font-bold text-on-surface mb-2">
             Bon retour parmi nous
@@ -78,9 +78,9 @@ export default function ConnexionPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <Input label="Email" type="email" placeholder="votre@email.com" icon="mail" required value={email} onChange={setEmail} />
+            <Input label="Email" type="email" placeholder="votre@email.com" required value={email} onChange={setEmail} />
             <div>
-              <Input label="Mot de passe" type="password" placeholder="••••••••" icon="lock" required value={password} onChange={setPassword} />
+              <Input label="Mot de passe" type="password" placeholder="Entrez votre mot de passe" required value={password} onChange={setPassword} />
               <Link href="/mot-de-passe-oublie" className="text-sm text-primary hover:text-primary-container transition-colors mt-2 inline-block font-medium">
                 Mot de passe oublié ?
               </Link>
