@@ -1,0 +1,9 @@
+node_modules/
+.next/
+.env.local
+.env
+*.log
+sql/
+.supabase/
+supabase/.temp/
+base_schema.sql
