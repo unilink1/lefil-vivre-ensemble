@@ -77,10 +77,28 @@ export default function ConnexionPage() {
             </motion.div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <Input label="Email" type="email" placeholder="votre@email.com" required value={email} onChange={setEmail} />
+          <form onSubmit={handleSubmit} className="space-y-5 text-left">
             <div>
-              <Input label="Mot de passe" type="password" placeholder="Entrez votre mot de passe" required value={password} onChange={setPassword} />
+              <label className="block text-xs font-medium text-on-surface-variant uppercase tracking-wider mb-1.5 text-center">Email</label>
+              <input
+                type="email"
+                placeholder="votre@email.com"
+                required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="w-full py-3.5 px-4 bg-surface-low rounded-xl text-[15px] text-on-surface placeholder:text-outline/60 outline-none focus:bg-white focus:shadow-md focus:ring-2 focus:ring-primary/20 transition-all text-center"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-on-surface-variant uppercase tracking-wider mb-1.5 text-center">Mot de passe</label>
+              <input
+                type="password"
+                placeholder="Entrez votre mot de passe"
+                required
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className="w-full py-3.5 px-4 bg-surface-low rounded-xl text-[15px] text-on-surface placeholder:text-outline/60 outline-none focus:bg-white focus:shadow-md focus:ring-2 focus:ring-primary/20 transition-all text-center"
+              />
               <Link href="/mot-de-passe-oublie" className="text-sm text-primary hover:text-primary-container transition-colors mt-2 inline-block font-medium">
                 Mot de passe oublié ?
               </Link>
