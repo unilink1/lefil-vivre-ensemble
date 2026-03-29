@@ -33,8 +33,9 @@ export default function ConnexionPage() {
       }
 
       router.push('/dashboard/profil')
-    } catch (err) {
-      setError('Erreur de connexion. Veuillez reessayer.')
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Erreur inconnue'
+      setError('Erreur de connexion : ' + msg)
       setLoading(false)
     }
   }
@@ -55,7 +56,7 @@ export default function ConnexionPage() {
         </p>
 
         {error && (
-          <div className="mb-6 p-4 bg-error/10 border border-error/20 rounded-xl text-sm text-error font-medium">
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 font-medium">
             {error}
           </div>
         )}
@@ -105,6 +106,11 @@ export default function ConnexionPage() {
           <Link href="/inscription" className="text-primary font-semibold hover:underline">
             Creer un compte
           </Link>
+        </p>
+
+        {/* Debug: affiche l'URL Supabase pour vérifier que l'env var est bien chargée */}
+        <p className="text-[10px] text-gray-300 mt-8">
+          {process.env.NEXT_PUBLIC_SUPABASE_URL ? '✓ Supabase connecte' : '✗ SUPABASE_URL manquante'}
         </p>
       </div>
     </div>
