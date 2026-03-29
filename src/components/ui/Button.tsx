@@ -1,5 +1,4 @@
 'use client'
-import { motion } from 'framer-motion'
 import { ReactNode } from 'react'
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline'
@@ -38,17 +37,15 @@ export default function Button({
   fullWidth, onClick, type = 'button', disabled, className = ''
 }: ButtonProps) {
   return (
-    <motion.button
+    <button
       type={type}
       onClick={onClick}
       disabled={disabled}
-      whileHover={{ scale: 1.02, y: -1 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
       className={`
         inline-flex items-center justify-center gap-2.5 font-semibold font-[family-name:var(--font-heading)]
         transition-all duration-300 cursor-pointer
-        disabled:opacity-50 disabled:cursor-not-allowed
+        hover:scale-[1.02] hover:-translate-y-px active:scale-[0.98]
+        disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:translate-y-0
         ${variants[variant]} ${sizes[size]}
         ${fullWidth ? 'w-full' : ''}
         ${className}
@@ -57,6 +54,6 @@ export default function Button({
       {icon && <span className="material-symbols-outlined text-[20px]">{icon}</span>}
       {children}
       {iconRight && <span className="material-symbols-outlined text-[20px]">{iconRight}</span>}
-    </motion.button>
+    </button>
   )
 }
