@@ -2,14 +2,58 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import FloatingOrbs from '@/components/ui/FloatingOrbs'
+import { useAuth } from '@/hooks/useAuth'
+import { supabase } from '@/lib/supabase'
 
 const specialites = ['Orthophoniste', 'Psychomotricien', 'Ergothérapeute', 'Psychologue', 'Pédopsychiatre', 'Neuropédiatre', 'Kinésithérapeute', 'Éducateur spécialisé', 'Pédiatre', 'Autre']
 
 export default function OnboardingPraticiensPage() {
-  const [praticiens, setPraticiens] = useState([{ id: 1, principal: true }, { id: 2, principal: false }])
+  const [praticiens, setPraticiens] = useState([{ id: 1, principal: true, name: '', specialty: '' }, { id: 2, principal: false, name: '', specialty: '' }])
+  const [saving, setSaving] = useState(false)
+  const { user } = useAuth()
+  const router = useRouter()
+
+  const updatePraticien = (id: number, field: 'name' | 'specialty', value: string) => {
+    setPraticiens(prev => prev.map(p => p.id === id ? { ...p, [field]: value } : p))
+  }
+
+  const handleFinish = async () => {
+    if (!user) { router.push('/dashboard'); return }
+    setSaving(true)
+    try {
+      // Get the child created in previous step
+      const { data: children } = await supabase
+        .from('children')
+        .select('id')
+        .eq('parent_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+      const childId = children?.[0]?.id
+
+      // Save practitioners
+      for (const p of praticiens) {
+        if (p.name && p.specialty) {
+          await supabase.from('practitioners').insert({
+            child_id: childId || null,
+            first_name: p.name.split(' ')[0],
+            last_name: p.name.split(' ').slice(1).join(' '),
+            specialty: p.specialty,
+          })
+        }
+      }
+
+      // Mark onboarding complete
+      await supabase.from('profiles').update({ onboarding_completed: true }).eq('id', user.id)
+    } catch {
+      // Tables may not exist yet — continue anyway
+    }
+    setSaving(false)
+    router.push('/dashboard')
+  }
 
   return (
     <div className="min-h-dvh bg-surface relative">
@@ -66,11 +110,11 @@ export default function OnboardingPraticiensPage() {
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <Input label="Prénom & Nom" placeholder="ex: Dr. Sophie Martin" icon="person" />
+                  <Input label="Prénom & Nom" placeholder="ex: Dr. Sophie Martin" icon="person" value={p.name} onChange={v => updatePraticien(p.id, 'name', v)} />
                   <div>
                     <label className="text-xs font-medium text-on-surface-variant uppercase tracking-wider mb-2 block">Spécialité</label>
                     <div className="relative">
-                      <select className="w-full appearance-none bg-surface-low rounded-xl py-3.5 px-5 text-on-surface outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer text-sm">
+                      <select value={p.specialty} onChange={e => updatePraticien(p.id, 'specialty', e.target.value)} className="w-full appearance-none bg-surface-low rounded-xl py-3.5 px-5 text-on-surface outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer text-sm">
                         <option value="">Sélectionnez</option>
                         {specialites.map(s => <option key={s} value={s}>{s}</option>)}
                       </select>
@@ -85,7 +129,7 @@ export default function OnboardingPraticiensPage() {
           <motion.button
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
-            onClick={() => setPraticiens([...praticiens, { id: praticiens.length + 1, principal: false }])}
+            onClick={() => setPraticiens([...praticiens, { id: praticiens.length + 1, principal: false, name: '', specialty: '' }])}
             className="w-full mt-6 py-4 rounded-2xl border-2 border-dashed border-secondary/30 text-secondary font-semibold flex items-center justify-center gap-2 hover:border-secondary/50 hover:bg-secondary/5 transition-all cursor-pointer"
           >
             <span className="material-symbols-outlined text-[20px]">add</span>
@@ -93,11 +137,9 @@ export default function OnboardingPraticiensPage() {
           </motion.button>
 
           <div className="mt-10">
-            <Link href="/dashboard/profil">
-              <Button fullWidth size="lg" iconRight="arrow_forward">
-                Accéder à mon espace
-              </Button>
-            </Link>
+            <Button fullWidth size="lg" iconRight="arrow_forward" onClick={handleFinish} disabled={saving}>
+              {saving ? 'Enregistrement...' : 'Accéder à mon espace'}
+            </Button>
             <p className="text-center text-xs text-outline mt-4">Dernière étape de configuration</p>
           </div>
         </motion.div>

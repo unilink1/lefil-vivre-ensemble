@@ -1,23 +1,16 @@
 'use client'
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import Logo from '@/components/ui/Logo'
-import { getSettings, saveSettings, type AdminSettings } from '@/lib/adminStore'
+import { useAdminSettings } from '@/hooks/useAdmin'
 
 export default function AdminParametresPage() {
-  const [settings, setSettings] = useState<AdminSettings>({
-    stripeEssentielLink: '',
-    stripeSereniteLink: '',
-    stripeAccompagnementLink: '',
-    gptAssistantLink: '',
-  })
+  const { settings, setSettings, save } = useAdminSettings()
   const [saved, setSaved] = useState(false)
 
-  useEffect(() => { setSettings(getSettings()) }, [])
-
   const handleSave = () => {
-    saveSettings(settings)
+    save(settings)
     setSaved(true)
     setTimeout(() => setSaved(false), 2500)
   }
@@ -31,14 +24,14 @@ export default function AdminParametresPage() {
             <span className="px-3 py-1 bg-error/10 text-error text-xs font-bold rounded-full uppercase tracking-wider">Admin</span>
           </div>
           <Link href="/admin" className="text-sm text-on-surface-variant hover:text-primary transition-colors">
-            ← Tableau de bord
+            &larr; Tableau de bord
           </Link>
         </div>
       </header>
 
       <main className="max-w-3xl mx-auto px-6 py-12">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="font-[family-name:var(--font-heading)] text-3xl font-extrabold mb-2">Paramètres</h1>
+          <h1 className="font-[family-name:var(--font-heading)] text-3xl font-extrabold mb-2">Parametres</h1>
           <p className="text-on-surface-variant mb-12">Configurez les liens de paiement et l&apos;assistant IA</p>
 
           {/* Stripe Links */}
@@ -49,13 +42,13 @@ export default function AdminParametresPage() {
               </div>
               <div>
                 <h2 className="font-[family-name:var(--font-heading)] font-bold text-lg">Liens d&apos;abonnement Stripe</h2>
-                <p className="text-sm text-on-surface-variant">Ces liens seront utilisés sur les boutons de la page tarifs et abonnement</p>
+                <p className="text-sm text-on-surface-variant">Ces liens seront utilises sur les boutons de la page tarifs et abonnement</p>
               </div>
             </div>
             <div className="space-y-5">
               {[
                 { label: 'Essentiel (77 CHF/mois)', key: 'stripeEssentielLink' as const, icon: '🌱' },
-                { label: 'Sérénité (99 CHF/mois)', key: 'stripeSereniteLink' as const, icon: '🌿' },
+                { label: 'Serenite (99 CHF/mois)', key: 'stripeSereniteLink' as const, icon: '🌿' },
                 { label: 'Accompagnement Plus (165 CHF/mois)', key: 'stripeAccompagnementLink' as const, icon: '🌳' },
               ].map(field => (
                 <div key={field.key}>
@@ -81,7 +74,7 @@ export default function AdminParametresPage() {
               </div>
               <div>
                 <h2 className="font-[family-name:var(--font-heading)] font-bold text-lg">Assistant IA (GPT)</h2>
-                <p className="text-sm text-on-surface-variant">Lien vers votre assistant GPT personnalisé</p>
+                <p className="text-sm text-on-surface-variant">Lien vers votre assistant GPT personnalise</p>
               </div>
             </div>
             <div>
@@ -92,7 +85,7 @@ export default function AdminParametresPage() {
                 placeholder="https://chatgpt.com/g/..."
                 className="w-full px-4 py-3 bg-surface border border-outline-variant/30 rounded-xl text-sm outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(74,144,217,0.1)] transition-all font-mono"
               />
-              <p className="text-xs text-outline mt-2">Ce lien sera utilisé sur le bouton &quot;Discuter avec l&apos;assistant&quot; de la landing page et du dashboard.</p>
+              <p className="text-xs text-outline mt-2">Ce lien sera utilise sur le bouton &quot;Discuter avec l&apos;assistant&quot; de la landing page et du dashboard.</p>
             </div>
           </div>
 
@@ -104,9 +97,9 @@ export default function AdminParametresPage() {
             className="w-full py-4 gradient-primary text-white rounded-xl font-semibold text-base shadow-[0_4px_20px_rgba(74,144,217,0.25)] cursor-pointer transition-all flex items-center justify-center gap-2"
           >
             {saved ? (
-              <><span className="material-symbols-outlined text-[20px]">check</span> Sauvegardé !</>
+              <><span className="material-symbols-outlined text-[20px]">check</span> Sauvegarde !</>
             ) : (
-              <><span className="material-symbols-outlined text-[20px]">save</span> Enregistrer les paramètres</>
+              <><span className="material-symbols-outlined text-[20px]">save</span> Enregistrer les parametres</>
             )}
           </motion.button>
         </motion.div>

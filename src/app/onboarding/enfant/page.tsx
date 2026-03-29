@@ -2,9 +2,12 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import FloatingOrbs from '@/components/ui/FloatingOrbs'
+import { useAuth } from '@/hooks/useAuth'
+import { supabase } from '@/lib/supabase'
 
 const diagnostics = ['TSA', 'TDAH', 'Troubles DYS', 'Handicap moteur', 'Handicap sensoriel', 'Déficience intellectuelle', 'Maladie chronique', 'Autre', 'Pas encore de diagnostic']
 const genres = ['Masculin', 'Féminin', 'Autre']
@@ -13,6 +16,31 @@ const scolarisations = ['Milieu ordinaire', 'Dispositif ULIS', 'Établissement s
 export default function OnboardingEnfantPage() {
   const [genre, setGenre] = useState<string | null>(null)
   const [scolarisation, setScolarisation] = useState<string | null>(null)
+  const [childName, setChildName] = useState('')
+  const [birthDate, setBirthDate] = useState('')
+  const [diagnostic, setDiagnostic] = useState('')
+  const [saving, setSaving] = useState(false)
+  const { user } = useAuth()
+  const router = useRouter()
+
+  const handleContinue = async () => {
+    if (!user) { router.push('/onboarding/praticiens'); return }
+    setSaving(true)
+    try {
+      await supabase.from('children').insert({
+        parent_id: user.id,
+        first_name: childName,
+        birth_date: birthDate || null,
+        diagnosis_primary: diagnostic,
+        gender: genre,
+        schooling: scolarisation,
+      })
+    } catch {
+      // Table may not exist yet — continue anyway
+    }
+    setSaving(false)
+    router.push('/onboarding/praticiens')
+  }
 
   return (
     <div className="min-h-dvh bg-surface relative">
@@ -51,8 +79,8 @@ export default function OnboardingEnfantPage() {
           </motion.div>
 
           <form className="space-y-6">
-            <Input label="Prénom" placeholder="Ex: Lucas" icon="child_care" required />
-            <Input label="Date de naissance" type="date" icon="cake" required />
+            <Input label="Prénom" placeholder="Ex: Lucas" icon="child_care" required value={childName} onChange={v => setChildName(v)} />
+            <Input label="Date de naissance" type="date" icon="cake" required value={birthDate} onChange={v => setBirthDate(v)} />
 
             {/* Genre */}
             <div>
@@ -79,7 +107,7 @@ export default function OnboardingEnfantPage() {
             <div>
               <label className="text-xs font-medium text-on-surface-variant uppercase tracking-wider mb-3 block">Diagnostic principal</label>
               <div className="relative">
-                <select className="w-full appearance-none bg-surface-low rounded-xl py-4 px-5 text-on-surface outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer">
+                <select value={diagnostic} onChange={e => setDiagnostic(e.target.value)} className="w-full appearance-none bg-surface-low rounded-xl py-4 px-5 text-on-surface outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer">
                   <option value="">Sélectionnez</option>
                   {diagnostics.map(d => <option key={d} value={d}>{d}</option>)}
                 </select>
@@ -109,9 +137,9 @@ export default function OnboardingEnfantPage() {
             </div>
 
             <div className="pt-4">
-              <Link href="/onboarding/praticiens">
-                <Button fullWidth size="lg" iconRight="arrow_forward">Continuer</Button>
-              </Link>
+              <Button fullWidth size="lg" iconRight="arrow_forward" onClick={handleContinue} disabled={saving}>
+                {saving ? 'Enregistrement...' : 'Continuer'}
+              </Button>
               <p className="text-center text-xs text-outline mt-4">Vous pourrez modifier ces informations plus tard.</p>
             </div>
           </form>

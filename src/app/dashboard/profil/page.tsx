@@ -79,7 +79,7 @@ export default function DashboardPage() {
   const isLoading = authLoading || childrenLoading
 
   // Derive display name
-  const displayName = profile?.first_name || 'Marie'
+  const displayName = profile?.full_name?.split(' ')[0] || 'Marie'
 
   // Derive child info
   const childName = firstChild ? `${firstChild.first_name} ${firstChild.last_name}` : 'Lucas Dupont'

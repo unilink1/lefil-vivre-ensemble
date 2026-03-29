@@ -9,35 +9,31 @@ import Button from '@/components/ui/Button'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
 
-function getInitials(firstName?: string, lastName?: string): string {
-  return `${(firstName || '')[0] || ''}${(lastName || '')[0] || ''}`.toUpperCase() || '??'
+function getInitialsFromName(fullName?: string | null): string {
+  if (!fullName) return '??'
+  const parts = fullName.trim().split(/\s+/)
+  return parts.map(p => p[0]).join('').toUpperCase().slice(0, 2) || '??'
 }
 
 export default function ParametresProfilPage() {
   const { user, profile, loading, refreshProfile } = useAuth()
 
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
+  const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [saving, setSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
 
-  // Populate form when profile loads
   useEffect(() => {
     if (profile) {
-      setFirstName(profile.first_name || '')
-      setLastName(profile.last_name || '')
+      setFullName(profile.full_name || '')
       setEmail(profile.email || '')
       setPhone(profile.phone || '')
     }
   }, [profile])
 
-  const initials = getInitials(
-    firstName || profile?.first_name,
-    lastName || profile?.last_name
-  )
+  const initials = getInitialsFromName(fullName || profile?.full_name)
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -50,8 +46,7 @@ export default function ParametresProfilPage() {
     const { error } = await supabase
       .from('profiles')
       .update({
-        first_name: firstName,
-        last_name: lastName,
+        full_name: fullName,
         phone: phone || null,
         updated_at: new Date().toISOString(),
       })
@@ -71,10 +66,7 @@ export default function ParametresProfilPage() {
     return (
       <DashboardLayout breadcrumb={[{ label: 'Parametres', href: '/dashboard/parametres' }, { label: 'Mon profil', href: '#' }]}>
         <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-on-surface-variant text-sm">Chargement...</p>
-          </div>
+          <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4" />
         </div>
       </DashboardLayout>
     )
@@ -86,7 +78,6 @@ export default function ParametresProfilPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="font-[family-name:var(--font-heading)] text-2xl font-bold mb-8">Mon profil</h1>
 
-          {/* Avatar */}
           <div className="text-center mb-10">
             <div className="w-24 h-24 mx-auto mb-3 gradient-primary rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-primary/15">
               {initials}
@@ -98,19 +89,13 @@ export default function ParametresProfilPage() {
 
           <Card padding="lg">
             <form className="space-y-5" onSubmit={handleSave}>
-              <div className="grid grid-cols-2 gap-4">
-                <Input
-                  label="Prenom"
-                  value={firstName}
-                  onChange={(v) => setFirstName(v)}
-                  icon="person"
-                />
-                <Input
-                  label="Nom"
-                  value={lastName}
-                  onChange={(v) => setLastName(v)}
-                />
-              </div>
+              <Input
+                label="Nom complet"
+                value={fullName}
+                onChange={(v) => setFullName(v)}
+                icon="person"
+                placeholder="Prenom et nom"
+              />
               <div className="relative">
                 <Input
                   label="Email"
