@@ -2,25 +2,35 @@
 import BottomNav from './BottomNav'
 import Logo from '@/components/ui/Logo'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { ReactNode } from 'react'
 import { useSelectedChild } from '@/hooks/useSelectedChild'
 import { useAuth } from '@/hooks/useAuth'
 
-function getInitials(firstName?: string, lastName?: string): string {
-  return `${(firstName || '')[0] || ''}${(lastName || '')[0] || ''}`.toUpperCase() || '?'
+const navItems = [
+  { icon: 'space_dashboard', label: 'Tableau de bord', href: '/dashboard/profil' },
+  { icon: 'child_care', label: 'Enfant', href: '/dashboard/enfant' },
+  { icon: 'calendar_month', label: 'Agenda', href: '/dashboard/agenda' },
+  { icon: 'forum', label: 'Echanges', href: '/dashboard/echanges' },
+  { icon: 'menu_book', label: 'Journal', href: '/dashboard/journal' },
+  { icon: 'settings', label: 'Parametres', href: '/dashboard/parametres' },
+]
+
+function getInitials(name?: string | null): string {
+  if (!name) return '?'
+  return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '?'
 }
 
-function ChildSelector() {
+function SidebarChildSelector() {
   const { children, selectedChild, selectChild } = useSelectedChild()
 
-  if (children.length <= 1) return null
-
   return (
-    <div className="flex items-center gap-2 px-4 sm:px-6 lg:px-8 py-2.5 border-b border-outline-variant/10 bg-surface/50">
-      <span className="text-xs text-on-surface-variant font-medium mr-1">Enfant :</span>
-      <div className="flex gap-2">
+    <div className="px-4 py-4 border-b border-gray-100">
+      <span className="text-[11px] uppercase tracking-wider text-gray-400 font-semibold mb-3 block">Enfants</span>
+      <div className="flex items-center gap-2 flex-wrap">
         {children.map(child => {
           const isSelected = selectedChild?.id === child.id
+          const initials = `${(child.first_name || '')[0] || ''}${(child.last_name || '')[0] || ''}`.toUpperCase() || '?'
           return (
             <button
               key={child.id}
@@ -32,11 +42,12 @@ function ChildSelector() {
                   : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:scale-105'
               }`}
             >
-              {getInitials(child.first_name, child.last_name)}
+              {initials}
             </button>
           )
         })}
-        <Link href="/dashboard/ajouter-enfant"
+        <Link
+          href="/dashboard/ajouter-enfant"
           className="w-10 h-10 rounded-full flex items-center justify-center border-2 border-dashed border-gray-300 text-gray-400 hover:border-[#4A90D9] hover:text-[#4A90D9] transition-all cursor-pointer"
           title="Ajouter un enfant"
         >
@@ -44,9 +55,107 @@ function ChildSelector() {
         </Link>
       </div>
       {selectedChild && (
-        <span className="text-sm font-semibold text-on-surface ml-2">{selectedChild.first_name}</span>
+        <p className="text-xs text-gray-500 mt-2">
+          Selectionne : <span className="font-semibold text-gray-700">{selectedChild.first_name}</span>
+        </p>
       )}
     </div>
+  )
+}
+
+function Sidebar() {
+  const pathname = usePathname()
+  const { profile, signOut } = useAuth()
+  const initials = getInitials(profile?.full_name)
+
+  return (
+    <aside className="hidden sm:flex flex-col w-64 shrink-0 h-dvh sticky top-0 bg-white border-r border-gray-200">
+      {/* Logo */}
+      <div className="px-5 py-5 border-b border-gray-100">
+        <Link href="/dashboard/profil">
+          <Logo size="md" />
+        </Link>
+      </div>
+
+      {/* Child selector */}
+      <SidebarChildSelector />
+
+      {/* Navigation */}
+      <nav className="flex-1 py-3 overflow-y-auto">
+        <ul className="space-y-0.5 px-2">
+          {navItems.map(item => {
+            const active = pathname?.startsWith(item.href)
+            return (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all relative ${
+                    active
+                      ? 'bg-[#4A90D9]/10 text-[#4A90D9]'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  }`}
+                >
+                  {active && (
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 bg-[#4A90D9] rounded-r-full" />
+                  )}
+                  <span
+                    className={`material-symbols-outlined text-[20px] ${active ? 'text-[#4A90D9]' : 'text-gray-400'}`}
+                    style={active ? { fontVariationSettings: "'FILL' 1" } : undefined}
+                  >
+                    {item.icon}
+                  </span>
+                  {item.label}
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
+      </nav>
+
+      {/* User profile at bottom */}
+      <div className="border-t border-gray-100 px-4 py-4">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#4A90D9] to-[#7EC8B0] flex items-center justify-center text-white text-xs font-bold shrink-0">
+            {initials}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-gray-800 truncate">
+              {profile?.full_name || 'Utilisateur'}
+            </p>
+            <p className="text-[11px] text-gray-400 truncate">
+              {profile?.email || ''}
+            </p>
+          </div>
+          <button
+            onClick={() => signOut()}
+            title="Se deconnecter"
+            className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[20px]">logout</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+  )
+}
+
+function MobileHeader() {
+  const { profile } = useAuth()
+  const initials = getInitials(profile?.full_name)
+
+  return (
+    <header className="sm:hidden sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-gray-200">
+      <div className="w-full px-4 h-14 flex items-center justify-between">
+        <Link href="/dashboard/profil">
+          <Logo size="sm" />
+        </Link>
+        <Link href="/dashboard/parametres/profil">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#4A90D9] to-[#7EC8B0] flex items-center justify-center text-white text-xs font-bold">
+            {initials}
+          </div>
+        </Link>
+      </div>
+    </header>
   )
 }
 
@@ -55,54 +164,41 @@ export default function DashboardLayout({ children, title, breadcrumb }: {
   title?: string
   breadcrumb?: { label: string; href: string }[]
 }) {
-  const { profile } = useAuth()
-  const initials = profile?.full_name
-    ? profile.full_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-    : '?'
-
   return (
-    <div className="min-h-dvh bg-surface pb-20 sm:pb-6">
-      {/* Top Bar */}
-      <header className="sticky top-0 z-40 glass border-b border-white/20">
-        <div className="w-full px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/dashboard/profil">
-              <Logo size="sm" />
-            </Link>
-            {breadcrumb && (
-              <div className="hidden sm:flex items-center gap-1.5 text-xs text-on-surface-variant">
-                {breadcrumb.map((b, i) => (
-                  <span key={i} className="flex items-center gap-1.5">
-                    <span className="text-outline-variant">/</span>
-                    <Link href={b.href} className="hover:text-primary transition-colors">{b.label}</Link>
-                  </span>
-                ))}
-              </div>
-            )}
+    <div className="min-h-dvh bg-surface flex">
+      {/* Desktop sidebar */}
+      <Sidebar />
+
+      {/* Main content area */}
+      <div className="flex-1 min-w-0 pb-20 sm:pb-0">
+        {/* Mobile header */}
+        <MobileHeader />
+
+        {/* Desktop breadcrumb */}
+        {breadcrumb && (
+          <div className="hidden sm:flex items-center gap-1.5 text-xs text-gray-400 px-6 lg:px-8 pt-5">
+            <Link href="/dashboard/profil" className="hover:text-[#4A90D9] transition-colors">Accueil</Link>
+            {breadcrumb.map((b, i) => (
+              <span key={i} className="flex items-center gap-1.5">
+                <span className="text-gray-300">/</span>
+                <Link href={b.href} className="hover:text-[#4A90D9] transition-colors">{b.label}</Link>
+              </span>
+            ))}
           </div>
-          <div className="flex items-center gap-2">
-            <button className="p-2 hover:bg-surface-low rounded-xl transition-colors relative">
-              <span className="material-symbols-outlined text-[22px] text-on-surface-variant">notifications</span>
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full" />
-            </button>
-            <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-white text-xs font-bold">
-              {initials}
-            </div>
+        )}
+
+        {title && (
+          <div className="w-full px-4 sm:px-6 lg:px-8 pt-6 pb-2">
+            <h1 className="font-[family-name:var(--font-heading)] text-2xl font-bold text-on-surface">{title}</h1>
           </div>
-        </div>
-        <ChildSelector />
-      </header>
+        )}
 
-      {title && (
-        <div className="w-full px-4 sm:px-6 lg:px-8 pt-6 pb-2">
-          <h1 className="font-[family-name:var(--font-heading)] text-2xl font-bold text-on-surface">{title}</h1>
-        </div>
-      )}
+        <main className="w-full px-4 sm:px-6 lg:px-8 py-4">
+          {children}
+        </main>
+      </div>
 
-      <main className="w-full px-4 sm:px-6 lg:px-8 py-4">
-        {children}
-      </main>
-
+      {/* Mobile bottom nav */}
       <BottomNav />
     </div>
   )
