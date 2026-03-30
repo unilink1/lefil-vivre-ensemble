@@ -164,42 +164,54 @@ export default function DashboardLayout({ children, title, breadcrumb }: {
   title?: string
   breadcrumb?: { label: string; href: string }[]
 }) {
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : ''
+  const isHome = pathname === '/dashboard/profil' || pathname === '/dashboard'
+
   return (
-    <div className="min-h-dvh bg-surface flex">
-      {/* Desktop sidebar */}
-      <Sidebar />
+    <>
+      <div className="min-h-dvh bg-surface flex">
+        {/* Desktop sidebar */}
+        <Sidebar />
 
-      {/* Main content area */}
-      <div className="flex-1 min-w-0 pb-20 sm:pb-0">
-        {/* Mobile header */}
-        <MobileHeader />
+        {/* Main content area */}
+        <div className="flex-1 min-w-0 pb-24 sm:pb-6">
+          {/* Mobile header */}
+          <MobileHeader />
 
-        {/* Desktop breadcrumb */}
-        {breadcrumb && (
-          <div className="hidden sm:flex items-center gap-1.5 text-xs text-gray-400 px-6 lg:px-8 pt-5">
-            <Link href="/dashboard/profil" className="hover:text-[#4A90D9] transition-colors">Accueil</Link>
-            {breadcrumb.map((b, i) => (
-              <span key={i} className="flex items-center gap-1.5">
-                <span className="text-gray-300">/</span>
-                <Link href={b.href} className="hover:text-[#4A90D9] transition-colors">{b.label}</Link>
-              </span>
-            ))}
+          {/* Breadcrumb + back button */}
+          <div className="w-full px-4 sm:px-6 lg:px-8 pt-4 sm:pt-5 flex items-center gap-3">
+            {!isHome && (
+              <Link href="/dashboard/profil" className="flex items-center gap-1 text-sm text-gray-400 hover:text-[#4A90D9] transition-colors shrink-0">
+                <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+                <span className="hidden sm:inline">Accueil</span>
+              </Link>
+            )}
+            {breadcrumb && (
+              <div className="hidden sm:flex items-center gap-1.5 text-xs text-gray-400">
+                {breadcrumb.map((b, i) => (
+                  <span key={i} className="flex items-center gap-1.5">
+                    <span className="text-gray-300">/</span>
+                    <Link href={b.href} className="hover:text-[#4A90D9] transition-colors">{b.label}</Link>
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
-        )}
 
-        {title && (
-          <div className="w-full px-4 sm:px-6 lg:px-8 pt-6 pb-2">
-            <h1 className="font-[family-name:var(--font-heading)] text-2xl font-bold text-on-surface">{title}</h1>
-          </div>
-        )}
+          {title && (
+            <div className="w-full px-4 sm:px-6 lg:px-8 pt-3 pb-2">
+              <h1 className="font-[family-name:var(--font-heading)] text-2xl font-bold text-on-surface">{title}</h1>
+            </div>
+          )}
 
-        <main className="w-full px-4 sm:px-6 lg:px-8 py-4">
-          {children}
-        </main>
+          <main className="w-full px-4 sm:px-6 lg:px-8 py-4">
+            {children}
+          </main>
+        </div>
       </div>
 
-      {/* Mobile bottom nav */}
+      {/* Mobile bottom nav - OUTSIDE the flex container */}
       <BottomNav />
-    </div>
+    </>
   )
 }
