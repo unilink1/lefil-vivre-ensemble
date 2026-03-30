@@ -27,7 +27,7 @@ export default function ConnexionPage() {
         setBusy(false)
       } else {
         setIsSuccess(true)
-        setMsg('Connexion reussie ! Redirection...')
+        setMsg('Connexion réussie ! Redirection...')
         window.location.href = '/dashboard/profil'
       }
     } catch (e: unknown) {
@@ -66,12 +66,12 @@ export default function ConnexionPage() {
             <span className="text-white/70">ensemble.</span>
           </h1>
           <p className="text-white/70 text-lg leading-relaxed mb-10">
-            Un espace apaise pour coordonner les soins et partager le quotidien en toute serenite.
+            Un espace apaisé pour coordonner les soins et partager le quotidien en toute sérénité.
           </p>
 
           {/* Feature pills */}
           <div className="flex flex-wrap gap-3">
-            {['Coordination', 'Partage', 'Serenite'].map((item) => (
+            {['Coordination', 'Partage', 'Sérénité'].map((item) => (
               <span
                 key={item}
                 className="px-4 py-2 rounded-full text-sm font-medium text-white/90"
@@ -106,7 +106,7 @@ export default function ConnexionPage() {
               Bon retour parmi nous
             </h2>
             <p className="text-gray-500 mb-8">
-              Connectez-vous pour acceder a votre espace de coordination.
+              Connectez-vous pour accéder à votre espace de coordination.
             </p>
 
             {/* Error message */}
@@ -151,7 +151,7 @@ export default function ConnexionPage() {
                     Mot de passe
                   </label>
                   <Link href="/mot-de-passe-oublie" className="text-sm font-medium hover:underline" style={{ color: '#4A90D9' }}>
-                    Mot de passe oublie ?
+                    Mot de passe oublié ?
                   </Link>
                 </div>
                 <input
@@ -198,7 +198,7 @@ export default function ConnexionPage() {
           <p className="text-center text-gray-500 mt-8 text-sm">
             Pas encore inscrit ?{' '}
             <Link href="/inscription" className="font-semibold hover:underline" style={{ color: '#4A90D9' }}>
-              Creer un compte
+              Créer un compte
             </Link>
           </p>
         </div>

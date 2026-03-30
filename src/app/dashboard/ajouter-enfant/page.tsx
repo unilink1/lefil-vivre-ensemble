@@ -4,7 +4,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
 
-const diagnostics = ['TSA', 'TDAH', 'Troubles DYS', 'Handicap moteur', 'Handicap sensoriel', 'Deficience intellectuelle', 'Maladie chronique', 'Autre', 'Pas encore de diagnostic']
+const diagnostics = ['TSA', 'TDAH', 'Troubles DYS', 'Handicap moteur', 'Handicap sensoriel', 'Déficience intellectuelle', 'Maladie chronique', 'Autre', 'Pas encore de diagnostic']
 
 export default function AjouterEnfantPage() {
   const [firstName, setFirstName] = useState('')
@@ -18,7 +18,7 @@ export default function AjouterEnfantPage() {
 
   const handleSubmit = async () => {
     if (!user || !firstName.trim()) {
-      setError('Le prenom est obligatoire.')
+      setError('Le prénom est obligatoire.')
       return
     }
 
@@ -57,7 +57,7 @@ export default function AjouterEnfantPage() {
             <span className="material-symbols-outlined text-[#4A90D9] text-[36px]">child_care</span>
           </div>
           <h1 className="font-[family-name:var(--font-heading)] text-2xl font-bold text-on-surface mb-2">Ajouter un enfant</h1>
-          <p className="text-on-surface-variant">Renseignez les informations de votre enfant. Vous pourrez completer son profil par la suite.</p>
+          <p className="text-on-surface-variant">Renseignez les informations de votre enfant. Vous pourrez compléter son profil par la suite.</p>
         </div>
 
         {error && (
@@ -70,14 +70,14 @@ export default function AjouterEnfantPage() {
         {success && (
           <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700 font-medium flex items-center gap-2">
             <span className="material-symbols-outlined text-[18px]">check_circle</span>
-            Enfant ajoute avec succes ! Redirection...
+            Enfant ajouté avec succès ! Redirection...
           </div>
         )}
 
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-7 space-y-6">
 
           <div>
-            <label className="text-sm font-semibold text-on-surface mb-2 block">Prenom *</label>
+            <label className="text-sm font-semibold text-on-surface mb-2 block">Prénom *</label>
             <input
               value={firstName}
               onChange={e => setFirstName(e.target.value)}
@@ -113,7 +113,7 @@ export default function AjouterEnfantPage() {
               onChange={e => setDiagnostic(e.target.value)}
               className="w-full py-3.5 px-4 bg-gray-50 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9] text-[15px] cursor-pointer"
             >
-              <option value="">Selectionnez...</option>
+              <option value="">Sélectionnez...</option>
               {diagnostics.map(d => <option key={d} value={d}>{d}</option>)}
             </select>
           </div>

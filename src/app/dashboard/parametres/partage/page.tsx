@@ -53,7 +53,7 @@ export default function PartageParametresPage() {
 
   if (isLoading) {
     return (
-      <DashboardLayout breadcrumb={[{ label: 'Parametres', href: '/dashboard/parametres' }, { label: 'Liens de partage', href: '#' }]}>
+      <DashboardLayout breadcrumb={[{ label: 'Paramètres', href: '/dashboard/parametres' }, { label: 'Liens de partage', href: '#' }]}>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto" />
         </div>
@@ -62,12 +62,12 @@ export default function PartageParametresPage() {
   }
 
   return (
-    <DashboardLayout breadcrumb={[{ label: 'Parametres', href: '/dashboard/parametres' }, { label: 'Liens de partage', href: '#' }]}>
+    <DashboardLayout breadcrumb={[{ label: 'Paramètres', href: '/dashboard/parametres' }, { label: 'Liens de partage', href: '#' }]}>
       <div className="max-w-lg mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="font-[family-name:var(--font-heading)] text-2xl font-bold mb-3">Liens de partage actifs</h1>
           <p className="text-on-surface-variant mb-8 leading-relaxed">
-            Les praticiens accedent aux informations de votre enfant via ces liens securises. Vous pouvez revoquer l&apos;acces a tout moment.
+            Les praticiens accèdent aux informations de votre enfant via ces liens sécurisés. Vous pouvez revoquer l&apos;acces a tout moment.
           </p>
 
           {linksLoading ? (
@@ -92,7 +92,7 @@ export default function PartageParametresPage() {
                             <h3 className="font-semibold text-on-surface mb-1">{name}</h3>
                             <Badge variant="secondary" size="sm">{specialty}</Badge>
                             <div className="flex items-center gap-4 mt-3 text-xs text-on-surface-variant">
-                              <span>Cree le {new Date(link.created_at).toLocaleDateString('fr-FR')}</span>
+                              <span>Créé le {new Date(link.created_at).toLocaleDateString('fr-FR')}</span>
                               <span>{link.access_count} acces</span>
                               {link.last_accessed_at && (
                                 <span>Dernier acces : {new Date(link.last_accessed_at).toLocaleDateString('fr-FR')}</span>
@@ -107,7 +107,7 @@ export default function PartageParametresPage() {
                                 <span className="material-symbols-outlined text-[14px]">
                                   {copiedId === link.id ? 'check' : 'content_copy'}
                                 </span>
-                                {copiedId === link.id ? 'Copie !' : 'Copier le lien'}
+                                {copiedId === link.id ? 'Copié !' : 'Copier le lien'}
                               </motion.button>
                             )}
                           </div>
@@ -132,7 +132,7 @@ export default function PartageParametresPage() {
                   <div className="text-center py-6">
                     <span className="material-symbols-outlined text-outline text-[40px] mb-2 block">link_off</span>
                     <p className="text-sm text-on-surface-variant">Aucun lien de partage actif.</p>
-                    <p className="text-xs text-outline mt-1">Creez un lien pour partager le suivi avec un praticien.</p>
+                    <p className="text-xs text-outline mt-1">Créez un lien pour partager le suivi avec un praticien.</p>
                   </div>
                 </Card>
               )}
@@ -159,7 +159,7 @@ export default function PartageParametresPage() {
                 onClick={handleCreateLink}
                 disabled={!selectedPractId || creating}
               >
-                {creating ? 'Creation...' : 'Creer un lien de partage'}
+                {creating ? 'Création...' : 'Créer un lien de partage'}
               </Button>
             </div>
           )}
@@ -175,10 +175,10 @@ export default function PartageParametresPage() {
             <div className="flex items-start gap-3">
               <span className="material-symbols-outlined text-secondary text-[24px] mt-0.5">shield</span>
               <div>
-                <h4 className="font-semibold text-on-surface mb-2">Securite & Confidentialite</h4>
+                <h4 className="font-semibold text-on-surface mb-2">Sécurité & Confidentialité</h4>
                 <p className="text-sm text-on-surface-variant leading-relaxed">
-                  Chaque lien est unique et crypte. Les professionnels de sante accedent via un acces temporaire et securise.
-                  Seules les informations de suivi que vous avez selectionnees pour ce praticien sont visibles.
+                  Chaque lien est unique et crypte. Les professionnels de santé accèdent via un accès temporaire et sécurisé.
+                  Seules les informations de suivi que vous avez sélectionnées pour ce praticien sont visibles.
                 </p>
               </div>
             </div>

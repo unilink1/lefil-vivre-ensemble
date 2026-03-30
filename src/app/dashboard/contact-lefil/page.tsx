@@ -5,12 +5,12 @@ import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
 
 const subjects = [
-  'Question generale',
-  'Probleme technique',
+  'Question générale',
+  'Problème technique',
   'Demande de coaching',
   'Aide dossier MDPH',
   'Coordination de soins',
-  'Suggestion / Amelioration',
+  'Suggestion / Amélioration',
   'Autre',
 ]
 
@@ -24,7 +24,7 @@ export default function ContactLeFilPage() {
 
   const handleSend = async () => {
     if (!message.trim() || !subject) {
-      setError('Veuillez selectionner un sujet et ecrire votre message.')
+      setError('Veuillez sélectionner un sujet et écrire votre message.')
       return
     }
 
@@ -40,7 +40,7 @@ export default function ContactLeFilPage() {
     })
 
     if (insertError) {
-      setError('Erreur lors de l\'envoi. Reessayez.')
+      setError('Erreur lors de l\'envoi. Réessayez.')
       setSending(false)
       return
     }
@@ -58,7 +58,7 @@ export default function ContactLeFilPage() {
             <span className="material-symbols-outlined text-[#4A90D9] text-[32px]">support_agent</span>
           </div>
           <h1 className="font-[family-name:var(--font-heading)] text-2xl font-bold mb-2">Contacter Le Fil</h1>
-          <p className="text-gray-500">Notre equipe vous repond sous 24h.</p>
+          <p className="text-gray-500">Notre équipe vous répond sous 24h.</p>
         </div>
 
         {sent ? (
@@ -66,8 +66,8 @@ export default function ContactLeFilPage() {
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#7EC8B0]/10 flex items-center justify-center">
               <span className="material-symbols-outlined text-[#7EC8B0] text-[32px]">check_circle</span>
             </div>
-            <h2 className="font-[family-name:var(--font-heading)] text-xl font-bold mb-2">Message envoye !</h2>
-            <p className="text-gray-500 mb-6">Nous avons bien recu votre message et reviendrons vers vous rapidement.</p>
+            <h2 className="font-[family-name:var(--font-heading)] text-xl font-bold mb-2">Message envoyé !</h2>
+            <p className="text-gray-500 mb-6">Nous avons bien reçu votre message et reviendrons vers vous rapidement.</p>
             <button
               onClick={() => { setSent(false); setMessage(''); setSubject('') }}
               className="px-6 py-2.5 bg-[#4A90D9] text-white font-medium cursor-pointer hover:bg-[#3a7bc8] transition-all"
@@ -95,7 +95,7 @@ export default function ContactLeFilPage() {
               <textarea
                 value={message}
                 onChange={e => setMessage(e.target.value)}
-                placeholder="Decrivez votre demande, nous sommes la pour vous aider..."
+                placeholder="Décrivez votre demande, nous sommes là pour vous aider..."
                 rows={6}
                 className="w-full py-3 px-4 bg-gray-50 border border-gray-200 text-[15px] outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9] resize-none transition-all"
               />
@@ -104,7 +104,7 @@ export default function ContactLeFilPage() {
             <div className="bg-[#4A90D9]/5 border border-[#4A90D9]/10 p-4 flex items-start gap-3">
               <span className="material-symbols-outlined text-[#4A90D9] text-[18px] mt-0.5">info</span>
               <p className="text-xs text-gray-500">
-                Votre email ({profile?.email}) sera utilise pour vous repondre. Vous pouvez aussi nous joindre a <strong>contact@lefil-vivre-ensemble.com</strong>
+                Votre email ({profile?.email}) sera utilisé pour vous répondre. Vous pouvez aussi nous joindre à <strong>contact@lefil-vivre-ensemble.com</strong>
               </p>
             </div>
 

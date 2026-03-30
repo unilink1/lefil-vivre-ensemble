@@ -12,12 +12,12 @@ import { supabase } from '@/lib/supabase'
 const specialites = [
   { label: 'Orthophoniste', value: 'orthophoniste' },
   { label: 'Psychomotricien', value: 'psychomotricien' },
-  { label: 'Ergotherapeute', value: 'ergotherapeute' },
+  { label: 'Ergothérapeute', value: 'ergotherapeute' },
   { label: 'Psychologue', value: 'psychologue' },
-  { label: 'Pedopsychiatre', value: 'pedopsychiatre' },
-  { label: 'Neuropediatre', value: 'neuropediatre' },
-  { label: 'Kinesitherapeute', value: 'kinesitherapeute' },
-  { label: 'Pediatre', value: 'pediatre' },
+  { label: 'Pédopsychiatre', value: 'pedopsychiatre' },
+  { label: 'Neuropédiatre', value: 'neuropediatre' },
+  { label: 'Kinésithérapeute', value: 'kinesitherapeute' },
+  { label: 'Pédiatre', value: 'pediatre' },
   { label: 'Neuropsychologue', value: 'neuropsychologue' },
   { label: 'Autre', value: 'autre' },
 ]

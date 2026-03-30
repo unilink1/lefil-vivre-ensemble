@@ -79,7 +79,7 @@ function PartageContent() {
         }
         setData(result as SharedData)
       } catch {
-        setError('Erreur lors du chargement des donnees.')
+        setError('Erreur lors du chargement des données.')
       }
       setLoading(false)
     }
@@ -265,7 +265,7 @@ function PartageContent() {
           <div className="flex items-center justify-between mb-5">
             <h2 className="font-[family-name:var(--font-heading)] text-xl font-bold flex items-center gap-2">
               <span className="material-symbols-outlined text-primary text-[24px]">clinical_notes</span>
-              Historique des seances
+              Historique des séances
             </h2>
             {canWrite && (
               <Button size="sm" icon={showForm ? 'close' : 'add'} onClick={() => setShowForm(!showForm)} variant={showForm ? 'ghost' : 'primary'}>
@@ -277,7 +277,7 @@ function PartageContent() {
           {submitSuccess && (
             <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4 p-4 bg-secondary-container/50 rounded-xl flex items-center gap-3">
               <span className="material-symbols-outlined text-secondary">check_circle</span>
-              <p className="text-sm text-secondary font-medium">Observation enregistree avec succes !</p>
+              <p className="text-sm text-secondary font-medium">Observation enregistrée avec succès !</p>
             </motion.div>
           )}
 
@@ -291,7 +291,7 @@ function PartageContent() {
                 <div className="space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                      <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 block">Date de la seance</label>
+                      <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 block">Date de la séance</label>
                       <input
                         type="date"
                         value={obsDate}
@@ -319,12 +319,12 @@ function PartageContent() {
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 block">Observations de la seance</label>
+                    <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2 block">Observations de la séance</label>
                     <textarea
                       value={obsContent}
                       onChange={e => setObsContent(e.target.value)}
                       className="w-full bg-surface-low rounded-xl p-4 text-sm outline-none resize-none h-28 focus:ring-2 focus:ring-primary/30 border border-outline-variant/20 transition-all"
-                      placeholder="Decrivez le deroulement de la seance, les progres observes, les points d'attention..."
+                      placeholder="Décrivez le déroulement de la séance, les progrès observés, les points d'attention..."
                     />
                   </div>
                   <div>
@@ -392,7 +392,7 @@ function PartageContent() {
             <Card padding="lg">
               <div className="text-center py-8">
                 <span className="material-symbols-outlined text-outline text-[40px] mb-2 block">clinical_notes</span>
-                <p className="text-sm text-on-surface-variant">Aucune note de seance pour le moment.</p>
+                <p className="text-sm text-on-surface-variant">Aucune note de séance pour le moment.</p>
               </div>
             </Card>
           )}
@@ -447,7 +447,7 @@ function PartageContent() {
               </div>
               <div className="text-left">
                 <p className="text-sm font-semibold text-on-surface">Hebergement certifie HDS</p>
-                <p className="text-xs text-on-surface-variant">Donnees de sante protegees — Conformite RGPD</p>
+                <p className="text-xs text-on-surface-variant">Données de santé protégées — Conformite RGPD</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-xs text-outline">

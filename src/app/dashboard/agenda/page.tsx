@@ -13,16 +13,16 @@ const jours = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
 const legend = [
   { color: 'bg-[#4A90D9]', label: 'Orthophoniste' },
   { color: 'bg-[#7EC8B0]', label: 'Psychomotricien' },
-  { color: 'bg-[#E8A87C]', label: 'Ergotherapeute' },
-  { color: 'bg-purple-500', label: 'Pedopsychiatre' },
-  { color: 'bg-orange-500', label: 'Neuropediatre' },
+  { color: 'bg-[#E8A87C]', label: 'Ergothérapeute' },
+  { color: 'bg-purple-500', label: 'Pédopsychiatre' },
+  { color: 'bg-orange-500', label: 'Neuropédiatre' },
 ]
 
 const statusLabels: Record<string, { label: string; variant: 'primary' | 'secondary' | 'gold' | 'error' }> = {
-  confirme: { label: 'Confirme', variant: 'secondary' },
+  confirme: { label: 'Confirmé', variant: 'secondary' },
   planifie: { label: 'A confirmer', variant: 'gold' },
   annule: { label: 'Annule', variant: 'error' },
-  termine: { label: 'Termine', variant: 'primary' },
+  termine: { label: 'Terminé', variant: 'primary' },
 }
 
 const borderColorMap: Record<string, string> = {

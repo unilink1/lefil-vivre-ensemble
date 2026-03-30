@@ -42,7 +42,7 @@ export default function InscriptionPage() {
       return
     }
     if (password.length < 8) {
-      setError('Le mot de passe doit contenir au moins 8 caracteres.')
+      setError('Le mot de passe doit contenir au moins 8 caractères.')
       return
     }
     if (!/[a-z]/.test(password)) {
@@ -62,7 +62,7 @@ export default function InscriptionPage() {
       return
     }
     if (!accepted) {
-      setError('Veuillez accepter les conditions generales.')
+      setError('Veuillez accepter les conditions générales.')
       return
     }
 
@@ -72,7 +72,7 @@ export default function InscriptionPage() {
 
     if (signUpError) {
       if (signUpError.includes('already registered')) {
-        setError('Un compte existe deja avec cet email.')
+        setError('Un compte existe déjà avec cet email.')
       } else {
         setError(signUpError)
       }
@@ -108,15 +108,15 @@ export default function InscriptionPage() {
 
           <h1 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-6">
             Rejoignez{' '}
-            <span className="text-white/70">la communaute.</span>
+            <span className="text-white/70">la communauté.</span>
           </h1>
           <p className="text-white/70 text-lg leading-relaxed mb-10">
-            Creez votre espace de coordination pour faciliter le suivi et le partage au quotidien.
+            Créez votre espace de coordination pour faciliter le suivi et le partage au quotidien.
           </p>
 
           {/* Feature pills */}
           <div className="flex flex-wrap gap-3">
-            {['Gratuit', 'Securise', 'Collaboratif'].map((item) => (
+            {['Gratuit', 'Sécurisé', 'Collaboratif'].map((item) => (
               <span
                 key={item}
                 className="px-4 py-2 rounded-full text-sm font-medium text-white/90"
@@ -148,7 +148,7 @@ export default function InscriptionPage() {
           {/* Card */}
           <div className="bg-white rounded-2xl shadow-[0_4px_40px_rgba(0,0,0,0.06)] p-8 sm:p-10">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-              Creer votre compte
+              Créer votre compte
             </h2>
             <p className="text-gray-500 mb-8">
               Commencez votre parcours de coordination en quelques instants.
@@ -168,7 +168,7 @@ export default function InscriptionPage() {
               {/* Name fields */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Prenom</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Prénom</label>
                   <input
                     type="text"
                     placeholder="Marie"
@@ -209,7 +209,7 @@ export default function InscriptionPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Mot de passe</label>
                 <input
                   type="password"
-                  placeholder="Min. 8 caracteres"
+                  placeholder="Min. 8 caractères"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
@@ -228,7 +228,7 @@ export default function InscriptionPage() {
                         {passwordStrength.label}
                       </span>
                     </div>
-                    <p className="text-[11px] text-gray-400 mt-1">Min. 8 caracteres, 1 majuscule, 1 minuscule, 1 chiffre</p>
+                    <p className="text-[11px] text-gray-400 mt-1">Min. 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre</p>
                   </div>
                 )}
               </div>
@@ -257,9 +257,9 @@ export default function InscriptionPage() {
                 />
                 <span className="text-sm text-gray-500 leading-relaxed">
                   J&apos;accepte les{' '}
-                  <Link href="#" className="font-medium hover:underline" style={{ color: '#4A90D9' }}>conditions generales</Link>
+                  <Link href="#" className="font-medium hover:underline" style={{ color: '#4A90D9' }}>conditions générales</Link>
                   {' '}et la{' '}
-                  <Link href="#" className="font-medium hover:underline" style={{ color: '#4A90D9' }}>politique de confidentialite</Link>
+                  <Link href="#" className="font-medium hover:underline" style={{ color: '#4A90D9' }}>politique de confidentialité</Link>
                 </span>
               </label>
 
@@ -279,11 +279,11 @@ export default function InscriptionPage() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
-                    Creation en cours...
+                    Création en cours...
                   </>
                 ) : (
                   <>
-                    Creer mon espace
+                    Créer mon espace
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
@@ -295,7 +295,7 @@ export default function InscriptionPage() {
 
           {/* Footer link */}
           <p className="text-center text-gray-500 mt-8 text-sm">
-            Deja inscrit ?{' '}
+            Déjà inscrit ?{' '}
             <Link href="/connexion" className="font-semibold hover:underline" style={{ color: '#4A90D9' }}>
               Se connecter
             </Link>

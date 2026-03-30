@@ -12,7 +12,7 @@ const settingsCards = [
       </svg>
     ),
     title: 'Mon profil',
-    description: 'Informations personnelles, photo et coordonnees',
+    description: 'Informations personnelles, photo et coordonnées',
     href: '/dashboard/parametres/profil',
     color: '#4A90D9',
   },
@@ -34,7 +34,7 @@ const settingsCards = [
       </svg>
     ),
     title: 'Liens de partage',
-    description: 'Gerer les acces praticiens et les invitations',
+    description: 'Gérer les accès praticiens et les invitations',
     href: '/dashboard/parametres/partage',
     color: '#E8A87C',
   },
@@ -48,7 +48,7 @@ const settingsCards = [
     description: 'Plan actuel, facturation et historique',
     href: '/dashboard/parametres/abonnement',
     color: '#4A90D9',
-    badge: 'Serenite',
+    badge: 'Sérénité',
   },
 ]
 
@@ -70,7 +70,7 @@ export default function ParametresPage() {
     <DashboardLayout>
       <div className="max-w-xl mx-auto py-2">
         {/* Header */}
-        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight mb-8">Parametres</h1>
+        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight mb-8">Paramètres</h1>
 
         {/* User card */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-center gap-4 mb-8">
@@ -126,7 +126,7 @@ export default function ParametresPage() {
                 <p className="text-[13px] text-gray-500 leading-relaxed">{card.description}</p>
               </div>
               <div className="flex items-center gap-1 text-gray-400 group-hover:text-[#4A90D9] transition-colors mt-auto">
-                <span className="text-xs font-medium">Acceder</span>
+                <span className="text-xs font-medium">Accéder</span>
                 <svg className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
@@ -143,7 +143,7 @@ export default function ParametresPage() {
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
-          Deconnexion
+          Déconnexion
         </button>
 
         {/* Footer */}

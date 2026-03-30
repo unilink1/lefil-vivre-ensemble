@@ -113,7 +113,7 @@ export default function EnfantPage() {
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center max-w-sm">
             <span className="material-symbols-outlined text-outline text-[56px] mb-4 block">child_care</span>
-            <h2 className="font-[family-name:var(--font-heading)] text-xl font-bold mb-2">Aucun enfant enregistre</h2>
+            <h2 className="font-[family-name:var(--font-heading)] text-xl font-bold mb-2">Aucun enfant enregistré</h2>
             <p className="text-on-surface-variant mb-6">Ajoutez le profil de votre enfant pour commencer le suivi.</p>
             <Link href="/dashboard/ajouter-enfant" className="inline-flex items-center gap-2 px-6 py-3 gradient-primary text-white rounded-xl font-semibold">
               <span className="material-symbols-outlined text-[20px]">add</span>
@@ -143,7 +143,7 @@ export default function EnfantPage() {
             </div>
             <div className="flex-1 text-center sm:text-left">
               <h1 className="font-[family-name:var(--font-heading)] text-3xl font-extrabold text-on-surface mb-2">{childName}</h1>
-              {childAge !== null && <p className="text-on-surface-variant text-lg mb-3">{childAge} ans{childBirthFormatted ? ` — Ne(e) le ${childBirthFormatted}` : ''}</p>}
+              {childAge !== null && <p className="text-on-surface-variant text-lg mb-3">{childAge} ans{childBirthFormatted ? ` — Né(e) le ${childBirthFormatted}` : ''}</p>}
               {childDiagnoses.length > 0 && (
                 <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
                   {childDiagnoses.map((d, i) => (
@@ -214,7 +214,7 @@ export default function EnfantPage() {
                 {editing === 'identity' && (
                   <>
                     <div>
-                      <label className="text-sm font-semibold text-on-surface mb-2 block">Prenom</label>
+                      <label className="text-sm font-semibold text-on-surface mb-2 block">Prénom</label>
                       <input value={editValues.first_name || ''} onChange={e => setEditValues({ ...editValues, first_name: e.target.value })}
                         className="w-full py-3 px-4 bg-gray-50 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
                     </div>
@@ -416,7 +416,7 @@ export default function EnfantPage() {
                       </div>
                       <Link href={`/dashboard/praticien?id=${p.id}`}
                         className="px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-on-surface-variant hover:bg-gray-50 transition-all cursor-pointer shrink-0">
-                        Voir les seances
+                        Voir les séances
                       </Link>
                     </div>
                   </ScrollReveal>
@@ -424,7 +424,7 @@ export default function EnfantPage() {
               ) : (
                 <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
                   <span className="material-symbols-outlined text-gray-300 text-[48px] mb-3 block">stethoscope</span>
-                  <p className="text-on-surface-variant">Aucun praticien enregistre</p>
+                  <p className="text-on-surface-variant">Aucun praticien enregistré</p>
                 </div>
               )}
 
@@ -443,7 +443,7 @@ export default function EnfantPage() {
                     onChange={e => setNewPractSpecialty(e.target.value)}
                     className="w-full py-3 px-4 bg-gray-50 border border-gray-200 text-[15px] outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9] cursor-pointer"
                   >
-                    <option value="">Specialite...</option>
+                    <option value="">Spécialité...</option>
                     {['orthophoniste','psychomotricien','ergotherapeute','psychologue','pedopsychiatre','neuropediatre','kinesitherapeute','pediatre','neuropsychologue','autre'].map(s => (
                       <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
                     ))}

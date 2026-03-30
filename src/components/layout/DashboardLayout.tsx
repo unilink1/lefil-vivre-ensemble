@@ -83,7 +83,7 @@ function SidebarChildSelector({ collapsed }: { collapsed?: boolean }) {
       </div>
       {!collapsed && selectedChild && (
         <p className="text-xs text-gray-500 mt-2">
-          Selectionne : <span className="font-semibold text-gray-700">{selectedChild.first_name}</span>
+          Sélectionné : <span className="font-semibold text-gray-700">{selectedChild.first_name}</span>
         </p>
       )}
     </div>
@@ -228,7 +228,7 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
               </div>
               <button
                 onClick={() => signOut()}
-                title="Se deconnecter"
+                title="Se déconnecter"
                 className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors duration-200 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[20px]">logout</span>

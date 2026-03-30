@@ -105,7 +105,7 @@ export default function AdminDashboardPage() {
                   <span className="material-symbols-outlined text-warning text-[24px] mt-0.5">priority_high</span>
                   <div>
                     <h4 className="font-semibold text-on-surface mb-1">{counts.impaye} client(s) en impaye</h4>
-                    <p className="text-sm text-on-surface-variant mb-3">Des paiements sont en retard. Verifiez les comptes et relancez si necessaire.</p>
+                    <p className="text-sm text-on-surface-variant mb-3">Des paiements sont en retard. Vérifiez les comptes et relancez si nécessaire.</p>
                     <Link href="/admin/clients?filter=impaye" className="text-sm text-primary font-semibold hover:underline">
                       Voir les impayes &rarr;
                     </Link>

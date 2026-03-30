@@ -133,7 +133,7 @@ export default function DashboardPage() {
       year: 'numeric',
     }),
     text:
-      s.observations || s.progress || s.objectives || 'Aucune note pour cette seance.',
+      s.observations || s.progress || s.objectives || 'Aucune note pour cette séance.',
   }))
 
   // Derive quick stats
@@ -167,7 +167,7 @@ export default function DashboardPage() {
     {
       icon: 'event_note',
       value: String(sessionsThisMonth.length),
-      label: 'Seances ce mois',
+      label: 'Séances ce mois',
       gradient: 'from-[#7EC8B0]/10 to-[#7EC8B0]/5',
       iconColor: 'text-[#7EC8B0]',
       valueColor: 'text-[#7EC8B0]',
@@ -377,7 +377,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h2 className="font-[family-name:var(--font-heading)] text-xl sm:text-2xl font-bold text-gray-900 mb-1">
-                    {childName || 'Aucun enfant enregistre'}
+                    {childName || 'Aucun enfant enregistré'}
                   </h2>
                   {childAge !== null && (
                     <p className="text-sm text-gray-400 font-medium mb-3">
@@ -536,7 +536,7 @@ export default function DashboardPage() {
                       clinical_notes
                     </span>
                   </span>
-                  Dernieres notes de seance
+                  Dernières notes de séance
                 </h2>
                 {dernieresNotes.length > 0 && (
                   <Link
@@ -588,7 +588,7 @@ export default function DashboardPage() {
                       </span>
                     </div>
                     <p className="text-sm text-gray-400 font-medium">
-                      Aucune note de seance
+                      Aucune note de séance
                     </p>
                   </div>
                 )}

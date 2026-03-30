@@ -61,7 +61,7 @@ export default function ParametresProfilPage() {
 
   if (loading) {
     return (
-      <DashboardLayout breadcrumb={[{ label: 'Parametres', href: '/dashboard/parametres' }, { label: 'Mon profil', href: '#' }]}>
+      <DashboardLayout breadcrumb={[{ label: 'Paramètres', href: '/dashboard/parametres' }, { label: 'Mon profil', href: '#' }]}>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="w-12 h-12 border-4 border-[#4A90D9]/30 border-t-[#4A90D9] rounded-full animate-spin" />
         </div>
@@ -70,7 +70,7 @@ export default function ParametresProfilPage() {
   }
 
   return (
-    <DashboardLayout breadcrumb={[{ label: 'Parametres', href: '/dashboard/parametres' }, { label: 'Mon profil', href: '#' }]}>
+    <DashboardLayout breadcrumb={[{ label: 'Paramètres', href: '/dashboard/parametres' }, { label: 'Mon profil', href: '#' }]}>
       <div className="max-w-lg mx-auto py-6">
         <h1 className="font-[family-name:var(--font-heading)] text-2xl font-bold mb-8">Mon profil</h1>
 
@@ -103,7 +103,7 @@ export default function ParametresProfilPage() {
               disabled
               className="w-full py-3 px-4 bg-gray-100 border border-gray-200 text-[15px] text-gray-500 cursor-not-allowed"
             />
-            <p className="text-xs text-gray-400 mt-1">L&apos;email ne peut pas etre modifie</p>
+            <p className="text-xs text-gray-400 mt-1">L&apos;email ne peut pas être modifié</p>
           </div>
 
           <div>
@@ -119,14 +119,14 @@ export default function ParametresProfilPage() {
           <div className="bg-[#4A90D9]/5 border border-[#4A90D9]/10 p-4 flex items-start gap-3">
             <span className="material-symbols-outlined text-[#4A90D9] text-[20px] mt-0.5">info</span>
             <p className="text-sm text-gray-600 leading-relaxed">
-              Vos informations sont collectees pour la gestion de votre espace et ne seront jamais partagees a des fins commerciales.
+              Vos informations sont collectées pour la gestion de votre espace et ne seront jamais partagées à des fins commerciales.
             </p>
           </div>
 
           {saveSuccess && (
             <div className="bg-green-50 border border-green-200 p-3 flex items-center gap-2">
               <span className="material-symbols-outlined text-green-600 text-[20px]">check_circle</span>
-              <p className="text-sm text-green-700 font-medium">Modifications enregistrees !</p>
+              <p className="text-sm text-green-700 font-medium">Modifications enregistrées !</p>
             </div>
           )}
 

@@ -120,9 +120,9 @@ function PraticienDetailContent() {
   }, [sessions])
 
   const stats = [
-    { icon: 'event_repeat', label: 'Seances totales', value: String(totalSessions), color: 'text-primary' },
-    { icon: 'timer', label: 'Frequence', value: frequency, color: 'text-secondary' },
-    { icon: 'history', label: 'Derniere seance', value: lastSessionDate, color: 'text-tertiary' },
+    { icon: 'event_repeat', label: 'Séances totales', value: String(totalSessions), color: 'text-primary' },
+    { icon: 'timer', label: 'Fréquence', value: frequency, color: 'text-secondary' },
+    { icon: 'history', label: 'Dernière séance', value: lastSessionDate, color: 'text-tertiary' },
     { icon: 'event_upcoming', label: 'Prochaine', value: nextApptDate, color: 'text-gold' },
   ]
 
@@ -226,7 +226,7 @@ function PraticienDetailContent() {
               <div className="flex gap-2 mt-3">
                 {!existingLink && !linkGenerated && (
                   <Button size="sm" icon="link" onClick={handleGenerateLink}>
-                    Generer un lien de partage
+                    Générer un lien de partage
                   </Button>
                 )}
                 <Button variant="outline" size="sm" icon="edit">Modifier</Button>
@@ -265,13 +265,13 @@ function PraticienDetailContent() {
                     className="px-4 py-2.5 bg-[#4A90D9] text-white rounded-lg font-medium text-sm cursor-pointer hover:bg-[#3a7bc8] transition-all flex items-center gap-2 shrink-0"
                   >
                     <span className="material-symbols-outlined text-[18px]">{copied ? 'check' : 'content_copy'}</span>
-                    {copied ? 'Copie !' : 'Copier'}
+                    {copied ? 'Copié !' : 'Copier'}
                   </button>
                 </div>
                 <div className="flex items-center gap-4 mt-3 text-xs text-gray-400">
                   <span className="flex items-center gap-1">
                     <span className="material-symbols-outlined text-[14px]">visibility</span>
-                    Le praticien verra : profil enfant, seances, documents
+                    Le praticien verra : profil enfant, séances, documents
                   </span>
                   <span className="flex items-center gap-1">
                     <span className="material-symbols-outlined text-[14px]">edit_note</span>
@@ -280,7 +280,7 @@ function PraticienDetailContent() {
                 </div>
                 {existingLink && (
                   <p className="text-xs text-gray-400 mt-2">
-                    {existingLink.access_count} acces — Cree le {new Date(existingLink.created_at).toLocaleDateString('fr-FR')}
+                    {existingLink.access_count} accès — Créé le {new Date(existingLink.created_at).toLocaleDateString('fr-FR')}
                   </p>
                 )}
               </div>
@@ -309,7 +309,7 @@ function PraticienDetailContent() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h3 className="font-[family-name:var(--font-heading)] font-bold text-lg">Evolution</h3>
-                <p className="text-sm text-on-surface-variant">Progression des seances sur {evolutionData.length} mois</p>
+                <p className="text-sm text-on-surface-variant">Progression des séances sur {evolutionData.length} mois</p>
               </div>
             </div>
             <div className="h-48 flex items-end gap-3 px-2">
@@ -341,7 +341,7 @@ function PraticienDetailContent() {
         <div className="flex items-center justify-between mb-5">
           <h3 className="font-[family-name:var(--font-heading)] font-bold text-lg flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-[22px]">clinical_notes</span>
-            Notes de seances
+            Notes de séances
           </h3>
           <select
             value={filter}
@@ -408,7 +408,7 @@ function PraticienDetailContent() {
             <Card padding="lg">
               <div className="text-center py-8">
                 <span className="material-symbols-outlined text-outline text-[40px] mb-2 block">clinical_notes</span>
-                <p className="text-sm text-on-surface-variant">Aucune note de seance pour cette periode.</p>
+                <p className="text-sm text-on-surface-variant">Aucune note de séance pour cette période.</p>
               </div>
             </Card>
           )}
