@@ -61,7 +61,5 @@ export const config = {
   matcher: [
     '/dashboard/:path*',
     '/onboarding/:path*',
-    '/connexion',
-    '/inscription',
   ],
 }
