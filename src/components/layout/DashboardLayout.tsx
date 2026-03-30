@@ -36,7 +36,7 @@ function ChildSelector() {
             </button>
           )
         })}
-        <Link href="/onboarding/enfant"
+        <Link href="/dashboard/ajouter-enfant"
           className="w-10 h-10 rounded-full flex items-center justify-center border-2 border-dashed border-gray-300 text-gray-400 hover:border-[#4A90D9] hover:text-[#4A90D9] transition-all cursor-pointer"
           title="Ajouter un enfant"
         >

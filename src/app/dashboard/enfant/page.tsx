@@ -111,7 +111,7 @@ export default function EnfantPage() {
             <span className="material-symbols-outlined text-outline text-[56px] mb-4 block">child_care</span>
             <h2 className="font-[family-name:var(--font-heading)] text-xl font-bold mb-2">Aucun enfant enregistre</h2>
             <p className="text-on-surface-variant mb-6">Ajoutez le profil de votre enfant pour commencer le suivi.</p>
-            <Link href="/onboarding/enfant" className="inline-flex items-center gap-2 px-6 py-3 gradient-primary text-white rounded-xl font-semibold">
+            <Link href="/dashboard/ajouter-enfant" className="inline-flex items-center gap-2 px-6 py-3 gradient-primary text-white rounded-xl font-semibold">
               <span className="material-symbols-outlined text-[20px]">add</span>
               Ajouter un enfant
             </Link>
