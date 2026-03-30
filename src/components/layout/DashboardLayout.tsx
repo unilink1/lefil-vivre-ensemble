@@ -165,6 +165,32 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
         </ul>
       </nav>
 
+      {/* Action buttons */}
+      <div className={`${collapsed ? 'px-2' : 'px-3'} pb-3 space-y-2`}>
+        {/* AI Assistant */}
+        <a
+          href="https://chatgpt.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          id="chatbot-link"
+          title={collapsed ? 'Assistant IA' : undefined}
+          className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} px-3 py-3 rounded-xl bg-gradient-to-r from-purple-500/8 to-[#4A90D9]/8 border border-purple-500/15 text-purple-600 font-medium text-sm transition-all duration-200 hover:from-purple-500/15 hover:to-[#4A90D9]/15 hover:shadow-sm cursor-pointer`}
+        >
+          <span className="material-symbols-outlined text-[20px]">smart_toy</span>
+          {!collapsed && 'Assistant IA'}
+        </a>
+
+        {/* Contact Le Fil */}
+        <Link
+          href="/dashboard/contact-lefil"
+          title={collapsed ? 'Contacter Le Fil' : undefined}
+          className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} px-3 py-3 rounded-xl bg-gradient-to-r from-[#4A90D9]/8 to-[#7EC8B0]/8 border border-[#4A90D9]/15 text-[#4A90D9] font-medium text-sm transition-all duration-200 hover:from-[#4A90D9]/15 hover:to-[#7EC8B0]/15 hover:shadow-sm cursor-pointer`}
+        >
+          <span className="material-symbols-outlined text-[20px]">mail</span>
+          {!collapsed && 'Contacter Le Fil'}
+        </Link>
+      </div>
+
       {/* User profile at bottom */}
       <div className="border-t border-gray-100/60 px-4 py-4 bg-gradient-to-r from-[#4A90D9]/[0.03] via-[#7EC8B0]/[0.04] to-transparent">
         <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'}`}>
