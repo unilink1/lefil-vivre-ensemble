@@ -15,6 +15,24 @@ export default function ConnexionPage() {
   const [msg, setMsg] = useState('')
   const [isSuccess, setIsSuccess] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [showInstallBanner, setShowInstallBanner] = useState(false)
+  const [deferredPrompt, setDeferredPrompt] = useState<Event | null>(null)
+
+  // Listen for PWA install prompt
+  if (typeof window !== 'undefined' && !deferredPrompt) {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault()
+      setDeferredPrompt(e)
+      setShowInstallBanner(true)
+    })
+  }
+
+  const handleInstall = async () => {
+    if (deferredPrompt && 'prompt' in deferredPrompt) {
+      (deferredPrompt as { prompt: () => void }).prompt()
+      setShowInstallBanner(false)
+    }
+  }
 
   const login = async () => {
     setBusy(true)
@@ -201,6 +219,45 @@ export default function ConnexionPage() {
               Créer un compte
             </Link>
           </p>
+
+          {/* Install app banner */}
+          {showInstallBanner && (
+            <div className="mt-6 bg-gradient-to-r from-[#3B82D9]/8 to-[#5CB89A]/8 border border-[#3B82D9]/15 p-4 flex items-center gap-3">
+              <div className="w-10 h-10 bg-[#3B82D9]/10 flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[#3B82D9] text-[22px]">install_mobile</span>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-gray-800">Installer Le Fil</p>
+                <p className="text-xs text-gray-500">Ajoutez l&apos;application sur votre écran d&apos;accueil pour un accès rapide.</p>
+              </div>
+              <button onClick={handleInstall} className="px-4 py-2 bg-[#3B82D9] text-white text-sm font-medium cursor-pointer hover:bg-[#2970c9] transition-all shrink-0">
+                Installer
+              </button>
+              <button onClick={() => setShowInstallBanner(false)} className="text-gray-400 cursor-pointer hover:text-gray-600">
+                <span className="material-symbols-outlined text-[18px]">close</span>
+              </button>
+            </div>
+          )}
+
+          {/* Manual install instructions (always visible, especially for iOS) */}
+          {!showInstallBanner && (
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => {
+                  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+                  if (isIOS) {
+                    alert("Pour installer Le Fil sur votre iPhone :\n\n1. Appuyez sur l'icône Partager (carré avec flèche)\n2. Faites défiler et appuyez sur « Sur l'écran d'accueil »\n3. Appuyez sur « Ajouter »")
+                  } else {
+                    alert("Pour installer Le Fil :\n\n• Sur Chrome : cliquez sur l'icône d'installation dans la barre d'adresse\n• Sur votre téléphone : Menu ⋮ → « Installer l'application » ou « Ajouter à l'écran d'accueil »")
+                  }
+                }}
+                className="text-xs text-gray-400 hover:text-[#3B82D9] cursor-pointer transition-colors flex items-center gap-1.5 mx-auto"
+              >
+                <span className="material-symbols-outlined text-[14px]">install_mobile</span>
+                Installer sur votre appareil
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
