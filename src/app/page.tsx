@@ -202,7 +202,7 @@ export default function LandingPage() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#3B82D9] to-[#5CB89A] flex items-center justify-center shadow-sm">
-              <span className="text-white font-[family-name:var(--font-heading)] font-extrabold text-sm leading-none">LF</span>
+              <svg width="24" height="24" viewBox="0 0 100 100" fill="none"><path d="M5 55 L25 55 L30 40 L38 70 L46 30 L54 65 L58 50 L65 55 L95 55" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/><circle cx="50" cy="22" r="7" fill="white"/><path d="M50 29 C50 29 42 32 42 42 L42 52 C42 52 44 54 50 54 C56 54 58 52 58 52 L58 42 C58 32 50 29 50 29Z" fill="white" opacity="0.85"/></svg>
             </div>
             <span className="font-[family-name:var(--font-heading)] font-bold text-on-surface text-lg">Le Fil</span>
           </Link>
@@ -724,7 +724,7 @@ export default function LandingPage() {
             <div className="lg:col-span-1">
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#3B82D9] to-[#5CB89A] flex items-center justify-center">
-                  <span className="text-white font-[family-name:var(--font-heading)] font-extrabold text-sm leading-none">LF</span>
+                  <svg width="24" height="24" viewBox="0 0 100 100" fill="none"><path d="M5 55 L25 55 L30 40 L38 70 L46 30 L54 65 L58 50 L65 55 L95 55" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/><circle cx="50" cy="22" r="7" fill="white"/><path d="M50 29 C50 29 42 32 42 42 L42 52 C42 52 44 54 50 54 C56 54 58 52 58 52 L58 42 C58 32 50 29 50 29Z" fill="white" opacity="0.85"/></svg>
                 </div>
                 <span className="font-[family-name:var(--font-heading)] font-bold text-white text-lg">Le Fil</span>
               </div>

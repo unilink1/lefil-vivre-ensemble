@@ -280,7 +280,9 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
       <div className={`${collapsed ? 'px-3' : 'px-5'} py-5 border-b border-gray-100/60 flex items-center justify-center`}>
         <Link href="/dashboard/profil">
           {collapsed ? (
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4A90D9] to-[#7EC8B0] flex items-center justify-center text-white font-bold text-sm">LF</div>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4A90D9] to-[#7EC8B0] flex items-center justify-center">
+              <svg width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M5 55 L25 55 L30 40 L38 70 L46 30 L54 65 L58 50 L65 55 L95 55" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/><circle cx="50" cy="22" r="7" fill="white"/><path d="M50 29 C50 29 42 32 42 42 L42 52 C42 52 44 54 50 54 C56 54 58 52 58 52 L58 42 C58 32 50 29 50 29Z" fill="white" opacity="0.85"/></svg>
+            </div>
           ) : (
             <Logo size="md" />
           )}

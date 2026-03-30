@@ -53,8 +53,10 @@ export default function ConnexionPage() {
         <div className="absolute bottom-[-120px] right-[-60px] w-[400px] h-[400px] rounded-full opacity-10 bg-white" />
         <div className="relative z-10 px-12 xl:px-20 max-w-lg">
           <Link href="/" className="inline-flex items-center gap-3 mb-12">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-xl"
-              style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)' }}>LF</div>
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
+              style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)' }}>
+              <svg width="32" height="32" viewBox="0 0 100 100" fill="none"><path d="M5 55 L25 55 L30 40 L38 70 L46 30 L54 65 L58 50 L65 55 L95 55" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/><circle cx="50" cy="22" r="7" fill="white"/><path d="M50 29 C50 29 42 32 42 42 L42 52 C42 52 44 54 50 54 C56 54 58 52 58 52 L58 42 C58 32 50 29 50 29Z" fill="white" opacity="0.85"/></svg>
+            </div>
             <span className="text-white/90 font-semibold text-lg">Le Fil</span>
           </Link>
           <h1 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-6">
@@ -76,8 +78,10 @@ export default function ConnexionPage() {
       <div className="flex-1 flex items-center justify-center p-6 sm:p-8 lg:p-16 bg-[#f8fafb] relative">
         <div className="absolute top-6 left-6 lg:hidden">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm"
-              style={{ background: 'linear-gradient(135deg, #3B82D9, #5CB89A)' }}>LF</div>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, #3B82D9, #5CB89A)' }}>
+              <svg width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M5 55 L25 55 L30 40 L38 70 L46 30 L54 65 L58 50 L65 55 L95 55" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/><circle cx="50" cy="22" r="7" fill="white"/><path d="M50 29 C50 29 42 32 42 42 L42 52 C42 52 44 54 50 54 C56 54 58 52 58 52 L58 42 C58 32 50 29 50 29Z" fill="white" opacity="0.85"/></svg>
+            </div>
             <span className="text-gray-700 font-semibold">Le Fil</span>
           </Link>
         </div>
