@@ -14,6 +14,7 @@ const navItems = [
   { icon: 'calendar_month', label: 'Agenda', href: '/dashboard/agenda' },
   { icon: 'forum', label: 'Echanges', href: '/dashboard/echanges' },
   { icon: 'menu_book', label: 'Journal', href: '/dashboard/journal' },
+  { icon: 'school', label: 'École', href: '/dashboard/ecole' },
   { icon: 'settings', label: 'Paramètres', href: '/dashboard/parametres' },
 ]
 
