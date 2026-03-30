@@ -165,6 +165,15 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
         </ul>
       </nav>
 
+      {/* Notice */}
+      {!collapsed && (
+        <div className="px-4 pb-3">
+          <p className="text-[10px] text-gray-400 leading-relaxed italic">
+            Cette application est en evolution chaque jour afin de vous proposer une experience d&apos;utilisation la plus complete, nous sollicitons votre indulgence.
+          </p>
+        </div>
+      )}
+
       {/* Action buttons */}
       <div className={`${collapsed ? 'px-2' : 'px-3'} pb-3 space-y-2`}>
         {/* AI Assistant */}
