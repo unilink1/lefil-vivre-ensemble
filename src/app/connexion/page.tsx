@@ -15,11 +15,15 @@ export default function ConnexionPage() {
   const [msg, setMsg] = useState('')
   const [isSuccess, setIsSuccess] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [redirecting, setRedirecting] = useState(false)
 
-  // If already logged in, redirect
+  // Check if already logged in
   useEffect(() => {
     sb.auth.getSession().then(({ data }) => {
-      if (data.session) window.location.href = '/dashboard/profil'
+      if (data.session) {
+        setRedirecting(true)
+        window.location.replace('/dashboard/profil')
+      }
     })
   }, [])
 
@@ -28,20 +32,47 @@ export default function ConnexionPage() {
     setMsg('')
     setIsSuccess(false)
     try {
-      const { error } = await sb.auth.signInWithPassword({ email, password })
+      const { data, error } = await sb.auth.signInWithPassword({ email, password })
       if (error) {
         setMsg(error.message === 'Invalid login credentials' ? 'Email ou mot de passe incorrect.' : error.message)
         setBusy(false)
-      } else {
-        setIsSuccess(true)
-        setMsg('Connexion réussie ! Redirection...')
-        // Wait for session cookies to propagate before redirect
-        setTimeout(() => { window.location.href = '/dashboard/profil' }, 1500)
+        return
       }
+
+      setIsSuccess(true)
+      setMsg('Connexion réussie !')
+
+      // Verify session is truly set before redirecting
+      const checkSession = async (attempts: number) => {
+        const { data: sessionData } = await sb.auth.getSession()
+        if (sessionData.session) {
+          window.location.replace('/dashboard/profil')
+        } else if (attempts > 0) {
+          setTimeout(() => checkSession(attempts - 1), 500)
+        } else {
+          // Last resort: force redirect anyway
+          window.location.replace('/dashboard/profil')
+        }
+      }
+
+      // Wait a bit then check
+      setTimeout(() => checkSession(5), 500)
+
     } catch (e: unknown) {
       setMsg('Erreur : ' + (e instanceof Error ? e.message : String(e)))
       setBusy(false)
     }
+  }
+
+  if (redirecting) {
+    return (
+      <div className="min-h-dvh flex items-center justify-center bg-[#f8fafb]">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#3B82D9]/30 border-t-[#3B82D9] rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-500 text-sm">Redirection vers votre espace...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -118,7 +149,9 @@ export default function ConnexionPage() {
               <button onClick={login} disabled={busy || !email || !password}
                 className="w-full h-12 text-white font-semibold text-[15px] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
                 style={{ background: busy ? '#999' : '#3B82D9' }}>
-                {busy ? 'Connexion...' : 'Se connecter →'}
+                {busy ? (
+                  <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Connexion...</>
+                ) : 'Se connecter →'}
               </button>
             </div>
 
@@ -127,7 +160,6 @@ export default function ConnexionPage() {
               <Link href="/inscription" className="font-semibold hover:underline" style={{ color: '#3B82D9' }}>Créer un compte</Link>
             </p>
 
-            {/* Install app hint */}
             <div className="mt-6 text-center">
               <button onClick={() => {
                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
