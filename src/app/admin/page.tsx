@@ -14,7 +14,8 @@ const statCards = [
 const navItems = [
   { icon: 'group', label: 'Gestion clients', href: '/admin/clients', desc: 'Voir, bannir, suspendre, relancer' },
   { icon: 'credit_card', label: 'Abonnements', href: '/admin/abonnements', desc: 'Suivi des forfaits et paiements' },
-  { icon: 'settings', label: 'Parametres', href: '/admin/parametres', desc: 'Liens Stripe, lien GPT, config' },
+  { icon: 'database', label: 'CRM', href: '/admin/crm', desc: 'Historique complet, recherche, export CSV' },
+  { icon: 'settings', label: 'Paramètres', href: '/admin/parametres', desc: 'Liens Stripe, lien GPT, config' },
 ]
 
 export default function AdminDashboardPage() {
