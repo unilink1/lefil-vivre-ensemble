@@ -22,6 +22,10 @@ export default function ParametresProfilPage() {
   const [saveSuccess, setSaveSuccess] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
 
+  // Notification toggles
+  const [soundNotif, setSoundNotif] = useState(true)
+  const [visualNotif, setVisualNotif] = useState(true)
+
   useEffect(() => {
     if (profile) {
       setFullName(profile.full_name || '')
@@ -29,6 +33,28 @@ export default function ParametresProfilPage() {
       setPhone(profile.phone || '')
     }
   }, [profile])
+
+  // Load notification preferences from localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedSound = localStorage.getItem('lefil-sound-notifications')
+      const storedVisual = localStorage.getItem('lefil-visual-notifications')
+      setSoundNotif(storedSound !== null ? storedSound === 'true' : true)
+      setVisualNotif(storedVisual !== null ? storedVisual === 'true' : true)
+    }
+  }, [])
+
+  const handleToggleSound = () => {
+    const next = !soundNotif
+    setSoundNotif(next)
+    localStorage.setItem('lefil-sound-notifications', String(next))
+  }
+
+  const handleToggleVisual = () => {
+    const next = !visualNotif
+    setVisualNotif(next)
+    localStorage.setItem('lefil-visual-notifications', String(next))
+  }
 
   const initials = getInitialsFromName(fullName || profile?.full_name)
 
@@ -114,6 +140,68 @@ export default function ParametresProfilPage() {
               placeholder="06 00 00 00 00"
               className="w-full py-3 px-4 bg-gray-50 border border-gray-200 text-[15px] outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9] transition-all"
             />
+          </div>
+
+          {/* Notifications Section */}
+          <div className="pt-2">
+            <div className="flex items-center gap-2 mb-5">
+              <span className="material-symbols-outlined text-[#E8A87C] text-[22px]">notifications</span>
+              <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Notifications</h2>
+            </div>
+
+            <div className="space-y-4">
+              {/* Sound toggle */}
+              <div className="flex items-center justify-between py-3 px-4 bg-gray-50 border border-gray-200">
+                <div className="flex items-center gap-3">
+                  <span className="material-symbols-outlined text-[#4A90D9] text-[20px]">volume_up</span>
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">Alertes sonores</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Jouer un son lors des nouvelles notifications</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={soundNotif}
+                  onClick={handleToggleSound}
+                  className={`relative w-12 h-7 rounded-full cursor-pointer transition-colors duration-200 ${
+                    soundNotif ? 'bg-[#7EC8B0]' : 'bg-gray-300'
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform duration-200 ${
+                      soundNotif ? 'translate-x-5' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Visual toggle */}
+              <div className="flex items-center justify-between py-3 px-4 bg-gray-50 border border-gray-200">
+                <div className="flex items-center gap-3">
+                  <span className="material-symbols-outlined text-[#E8A87C] text-[20px]">visibility</span>
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">Alertes visuelles</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Afficher les badges et bannieres de notification</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={visualNotif}
+                  onClick={handleToggleVisual}
+                  className={`relative w-12 h-7 rounded-full cursor-pointer transition-colors duration-200 ${
+                    visualNotif ? 'bg-[#7EC8B0]' : 'bg-gray-300'
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform duration-200 ${
+                      visualNotif ? 'translate-x-5' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
           </div>
 
           <div className="bg-[#4A90D9]/5 border border-[#4A90D9]/10 p-4 flex items-start gap-3">

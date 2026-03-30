@@ -1,6 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, useRef, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
@@ -9,7 +9,8 @@ import ScrollReveal from '@/components/ui/ScrollReveal'
 import FloatingOrbs from '@/components/ui/FloatingOrbs'
 import Logo from '@/components/ui/Logo'
 import { getSharedData } from '@/hooks/useData'
-import type { Child, Practitioner, Session, Document } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
+import type { Child, Practitioner, Session, Document, Message } from '@/lib/supabase'
 
 type SharedData = {
   child: Child | null
@@ -63,6 +64,13 @@ function PartageContent() {
   const [submitting, setSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
 
+  // Chat state
+  const [chatOpen, setChatOpen] = useState(false)
+  const [messages, setMessages] = useState<Message[]>([])
+  const [chatInput, setChatInput] = useState('')
+  const [sendingMsg, setSendingMsg] = useState(false)
+  const chatEndRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     async function load() {
       if (!token) {
@@ -86,11 +94,51 @@ function PartageContent() {
     load()
   }, [token])
 
+  // Fetch messages
+  const fetchMessages = useCallback(async () => {
+    if (!data?.child?.id || !data?.practitioner?.id) return
+    const { data: msgs } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('child_id', data.child.id)
+      .eq('practitioner_id', data.practitioner.id)
+      .order('created_at', { ascending: true })
+    if (msgs) setMessages(msgs)
+  }, [data?.child?.id, data?.practitioner?.id])
+
+  // Initial fetch + polling every 5s
+  useEffect(() => {
+    if (!data?.child?.id || !data?.practitioner?.id) return
+    fetchMessages()
+    const interval = setInterval(fetchMessages, 5000)
+    return () => clearInterval(interval)
+  }, [data?.child?.id, data?.practitioner?.id, fetchMessages])
+
+  // Scroll to bottom when new messages arrive or chat opens
+  useEffect(() => {
+    if (chatOpen && chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [messages, chatOpen])
+
+  const handleSendMessage = async () => {
+    if (!chatInput.trim() || !data?.child?.id || !data?.practitioner?.id) return
+    setSendingMsg(true)
+    await supabase.from('messages').insert({
+      child_id: data.child.id,
+      practitioner_id: data.practitioner.id,
+      sender_is_parent: false,
+      content: chatInput.trim(),
+    })
+    setChatInput('')
+    await fetchMessages()
+    setSendingMsg(false)
+  }
+
   const handleSubmitObservation = async () => {
     if (!data?.child || !data?.practitioner || !token) return
     setSubmitting(true)
     try {
-      const { supabase } = await import('@/lib/supabase')
       await supabase.from('sessions').insert({
         child_id: data.child.id,
         practitioner_id: data.practitioner.id,
@@ -436,6 +484,96 @@ function PartageContent() {
               )}
             </div>
           </Card>
+        </ScrollReveal>
+
+        {/* Chat Section */}
+        <ScrollReveal>
+          <div className="mb-8">
+            <button
+              onClick={() => setChatOpen(!chatOpen)}
+              className="w-full flex items-center justify-between p-5 bg-[#4A90D9]/5 border border-[#4A90D9]/15 rounded-2xl cursor-pointer hover:bg-[#4A90D9]/10 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-[#4A90D9]/15 rounded-xl flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[#4A90D9] text-[22px]">chat</span>
+                </div>
+                <div className="text-left">
+                  <h3 className="font-[family-name:var(--font-heading)] font-bold text-on-surface">Discussion avec la famille</h3>
+                  <p className="text-xs text-on-surface-variant mt-0.5">
+                    {messages.length > 0
+                      ? `${messages.length} message${messages.length > 1 ? 's' : ''}`
+                      : 'Aucun message pour le moment'}
+                  </p>
+                </div>
+              </div>
+              <span className={`material-symbols-outlined text-[#4A90D9] text-[24px] transition-transform ${chatOpen ? 'rotate-180' : ''}`}>
+                expand_more
+              </span>
+            </button>
+
+            {chatOpen && (
+              <div className="mt-2 border border-[#4A90D9]/15 rounded-2xl overflow-hidden bg-white/50 backdrop-blur-sm">
+                {/* Messages area */}
+                <div className="max-h-80 overflow-y-auto p-5 space-y-3">
+                  {messages.length === 0 && (
+                    <div className="text-center py-8">
+                      <span className="material-symbols-outlined text-outline text-[32px] mb-2 block">forum</span>
+                      <p className="text-sm text-on-surface-variant">Aucun message. Commencez la discussion.</p>
+                    </div>
+                  )}
+                  {messages.map((msg) => (
+                    <div
+                      key={msg.id}
+                      className={`flex ${msg.sender_is_parent ? 'justify-start' : 'justify-end'}`}
+                    >
+                      <div
+                        className={`max-w-[75%] px-4 py-2.5 rounded-2xl ${
+                          msg.sender_is_parent
+                            ? 'bg-gray-100 text-gray-800 rounded-bl-sm'
+                            : 'bg-[#4A90D9] text-white rounded-br-sm'
+                        }`}
+                      >
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                        <p className={`text-[10px] mt-1 ${msg.sender_is_parent ? 'text-gray-400' : 'text-white/60'}`}>
+                          {new Date(msg.created_at).toLocaleString('fr-FR', {
+                            day: 'numeric',
+                            month: 'short',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={chatEndRef} />
+                </div>
+
+                {/* Input area */}
+                <div className="border-t border-[#4A90D9]/10 p-4 flex items-center gap-3">
+                  <input
+                    type="text"
+                    value={chatInput}
+                    onChange={e => setChatInput(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault()
+                        handleSendMessage()
+                      }
+                    }}
+                    placeholder="Votre message..."
+                    className="flex-1 py-3 px-4 bg-gray-50 border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9] transition-all"
+                  />
+                  <button
+                    onClick={handleSendMessage}
+                    disabled={sendingMsg || !chatInput.trim()}
+                    className="w-11 h-11 bg-[#4A90D9] text-white rounded-xl flex items-center justify-center cursor-pointer hover:bg-[#3a7bc8] disabled:opacity-40 disabled:cursor-not-allowed transition-all shrink-0"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">send</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </ScrollReveal>
 
         {/* HDS Certification Footer */}

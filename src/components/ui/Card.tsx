@@ -20,7 +20,7 @@ export default function Card({ children, className = '', hover = true, onClick, 
     <div
       onClick={onClick}
       className={`
-        bg-white rounded-2xl border border-gray-100 shadow-sm
+        bg-white border border-gray-100 shadow-sm
         transition-all duration-200 ${paddings[padding]}
         ${hover ? 'hover:shadow-md hover:-translate-y-0.5' : ''}
         ${onClick ? 'cursor-pointer' : ''}
