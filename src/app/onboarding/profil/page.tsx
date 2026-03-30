@@ -2,9 +2,12 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import Button from '@/components/ui/Button'
 import FloatingOrbs from '@/components/ui/FloatingOrbs'
 import Logo from '@/components/ui/Logo'
+import { useAuth } from '@/hooks/useAuth'
+import { supabase } from '@/lib/supabase'
 
 const roles = [
   { id: 'parent', icon: 'family_restroom', label: 'Parent', color: 'primary' },
@@ -17,6 +20,25 @@ const situations = ['Famille monoparentale', 'Couple', 'Famille recomposée', 'A
 
 export default function OnboardingProfilPage() {
   const [selectedRole, setSelectedRole] = useState<string | null>(null)
+  const [selectedSituation, setSelectedSituation] = useState('')
+  const [saving, setSaving] = useState(false)
+  const { user } = useAuth()
+  const router = useRouter()
+
+  const handleContinue = async () => {
+    if (!user) { router.push('/onboarding/enfant'); return }
+    setSaving(true)
+    try {
+      await supabase.from('profiles').update({
+        role: selectedRole,
+        situation: selectedSituation,
+      }).eq('id', user.id)
+    } catch {
+      // Columns may not exist yet — continue anyway
+    }
+    setSaving(false)
+    router.push('/onboarding/enfant')
+  }
 
   return (
     <div className="min-h-dvh bg-surface relative">
@@ -93,7 +115,7 @@ export default function OnboardingProfilPage() {
               Situation familiale
             </label>
             <div className="relative">
-              <select className="w-full appearance-none bg-surface-low rounded-xl py-4 px-5 text-on-surface outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer">
+              <select value={selectedSituation} onChange={e => setSelectedSituation(e.target.value)} className="w-full appearance-none bg-surface-low rounded-xl py-4 px-5 text-on-surface outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer">
                 <option value="">Sélectionnez une option</option>
                 {situations.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
@@ -101,11 +123,9 @@ export default function OnboardingProfilPage() {
             </div>
           </div>
 
-          <Link href="/onboarding/enfant">
-            <Button fullWidth size="lg" iconRight="arrow_forward">
-              Continuer
-            </Button>
-          </Link>
+          <Button fullWidth size="lg" iconRight="arrow_forward" onClick={handleContinue} disabled={saving}>
+            {saving ? 'Enregistrement...' : 'Continuer'}
+          </Button>
         </motion.div>
       </div>
     </div>

@@ -4,10 +4,12 @@ import DashboardLayout from '@/components/layout/DashboardLayout'
 import Card from '@/components/ui/Card'
 import ScrollReveal from '@/components/ui/ScrollReveal'
 import Link from 'next/link'
+import { useAuth } from '@/hooks/useAuth'
+import { useRouter } from 'next/navigation'
 
 const menuItems = [
   { icon: 'account_circle', label: 'Mon profil', href: '/dashboard/parametres/profil', desc: 'Informations personnelles' },
-  { icon: 'child_care', label: 'Mon enfant', href: '/dashboard/profil', desc: 'Gérer le profil de Lucas' },
+  { icon: 'child_care', label: 'Mon enfant', href: '/dashboard/enfant', desc: 'Gérer le profil de Lucas' },
   { icon: 'link', label: 'Liens de partage', href: '/dashboard/parametres/partage', desc: 'Accès praticiens' },
   { icon: 'credit_card', label: 'Abonnement', href: '/dashboard/parametres/abonnement', desc: 'Plan Famille Actif', badge: 'Sérénité' },
   { icon: 'security', label: 'Sécurité', href: '#', desc: 'Mot de passe, 2FA' },
@@ -15,6 +17,14 @@ const menuItems = [
 ]
 
 export default function ParametresPage() {
+  const { signOut } = useAuth()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    await signOut()
+    router.push('/')
+  }
+
   return (
     <DashboardLayout>
       <div className="max-w-lg mx-auto">
@@ -63,6 +73,7 @@ export default function ParametresPage() {
         <motion.button
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.99 }}
+          onClick={handleLogout}
           className="w-full mt-8 p-4 rounded-2xl bg-error/5 text-error font-semibold flex items-center justify-center gap-2 hover:bg-error/10 transition-all cursor-pointer"
         >
           <span className="material-symbols-outlined text-[20px]">logout</span>

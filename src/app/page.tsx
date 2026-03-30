@@ -1,12 +1,13 @@
 'use client'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import Navbar from '@/components/layout/Navbar'
 import ScrollReveal from '@/components/ui/ScrollReveal'
 import FloatingOrbs from '@/components/ui/FloatingOrbs'
 import Logo from '@/components/ui/Logo'
 import Link from 'next/link'
 import InstallPrompt from '@/components/ui/InstallPrompt'
+import { getSettings } from '@/lib/adminStore'
 
 const steps = [
   { num: '1', color: 'bg-primary', title: 'Premier contact', desc: 'Un échange gratuit de 30 minutes pour comprendre votre situation et vos besoins.' },
@@ -46,6 +47,50 @@ export default function LandingPage() {
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 120])
   const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
   const [formSubject, setFormSubject] = useState('')
+  const [formPrenom, setFormPrenom] = useState('')
+  const [formNom, setFormNom] = useState('')
+  const [formEmail, setFormEmail] = useState('')
+  const [formTelephone, setFormTelephone] = useState('')
+  const [formMessage, setFormMessage] = useState('')
+  const [contactLoading, setContactLoading] = useState(false)
+  const [contactSuccess, setContactSuccess] = useState(false)
+  const [contactError, setContactError] = useState('')
+  const [gptLink, setGptLink] = useState('https://chatgpt.com')
+
+  useEffect(() => { setGptLink(getSettings().gptAssistantLink) }, [])
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setContactLoading(true)
+    setContactSuccess(false)
+    setContactError('')
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prenom: formPrenom,
+          nom: formNom,
+          email: formEmail,
+          telephone: formTelephone,
+          sujet: formSubject,
+          message: formMessage,
+        }),
+      })
+      if (!res.ok) throw new Error('Erreur lors de l\'envoi')
+      setContactSuccess(true)
+      setFormPrenom('')
+      setFormNom('')
+      setFormEmail('')
+      setFormTelephone('')
+      setFormSubject('')
+      setFormMessage('')
+    } catch {
+      setContactError('Une erreur est survenue. Veuillez réessayer.')
+    } finally {
+      setContactLoading(false)
+    }
+  }
 
   return (
     <div className="min-h-dvh bg-surface overflow-hidden">
@@ -355,7 +400,7 @@ export default function LandingPage() {
                   Besoin d&apos;un conseil rapide sur les démarches MDPH, le choix d&apos;un praticien ou la gestion du quotidien ? Notre assistant bienveillant est disponible 24h/24 pour vous guider.
                 </p>
 
-                <Link href="https://chatgpt.com" target="_blank" rel="noopener noreferrer">
+                <Link href={gptLink} target="_blank" rel="noopener noreferrer">
                   <motion.span
                     whileHover={{ y: -3, boxShadow: '0 8px 30px rgba(74,144,217,0.3)' }}
                     whileTap={{ scale: 0.97 }}
@@ -526,25 +571,37 @@ export default function LandingPage() {
             </ScrollReveal>
 
             <ScrollReveal delay={0.2}>
-              <form className="bg-surface-card rounded-xl p-6 sm:p-12 shadow-md border border-outline-variant/20">
+              <form onSubmit={handleContactSubmit} className="bg-surface-card rounded-xl p-6 sm:p-12 shadow-md border border-outline-variant/20">
+                {contactSuccess && (
+                  <div className="mb-6 p-4 bg-success/10 border border-success/20 rounded-xl text-sm text-success font-medium flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[20px]">check_circle</span>
+                    Message envoyé avec succès ! Nous vous répondrons sous 24h.
+                  </div>
+                )}
+                {contactError && (
+                  <div className="mb-6 p-4 bg-error/10 border border-error/20 rounded-xl text-sm text-error font-medium flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[20px]">error</span>
+                    {contactError}
+                  </div>
+                )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-semibold mb-1.5">Prénom *</label>
-                    <input type="text" placeholder="Votre prénom" className="w-full px-3.5 py-2.5 bg-surface border-[1.5px] border-outline-variant rounded-[10px] text-sm outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(74,144,217,0.1)] transition-all" />
+                    <input type="text" placeholder="Votre prénom" value={formPrenom} onChange={e => setFormPrenom(e.target.value)} required className="w-full px-3.5 py-2.5 bg-surface border-[1.5px] border-outline-variant rounded-[10px] text-sm outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(74,144,217,0.1)] transition-all" />
                   </div>
                   <div>
                     <label className="block text-sm font-semibold mb-1.5">Nom</label>
-                    <input type="text" placeholder="Votre nom" className="w-full px-3.5 py-2.5 bg-surface border-[1.5px] border-outline-variant rounded-[10px] text-sm outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(74,144,217,0.1)] transition-all" />
+                    <input type="text" placeholder="Votre nom" value={formNom} onChange={e => setFormNom(e.target.value)} className="w-full px-3.5 py-2.5 bg-surface border-[1.5px] border-outline-variant rounded-[10px] text-sm outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(74,144,217,0.1)] transition-all" />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-semibold mb-1.5">Email *</label>
-                    <input type="email" placeholder="votre@email.com" className="w-full px-3.5 py-2.5 bg-surface border-[1.5px] border-outline-variant rounded-[10px] text-sm outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(74,144,217,0.1)] transition-all" />
+                    <input type="email" placeholder="votre@email.com" value={formEmail} onChange={e => setFormEmail(e.target.value)} required className="w-full px-3.5 py-2.5 bg-surface border-[1.5px] border-outline-variant rounded-[10px] text-sm outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(74,144,217,0.1)] transition-all" />
                   </div>
                   <div>
                     <label className="block text-sm font-semibold mb-1.5">Téléphone</label>
-                    <input type="tel" placeholder="06 00 00 00 00" className="w-full px-3.5 py-2.5 bg-surface border-[1.5px] border-outline-variant rounded-[10px] text-sm outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(74,144,217,0.1)] transition-all" />
+                    <input type="tel" placeholder="06 00 00 00 00" value={formTelephone} onChange={e => setFormTelephone(e.target.value)} className="w-full px-3.5 py-2.5 bg-surface border-[1.5px] border-outline-variant rounded-[10px] text-sm outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(74,144,217,0.1)] transition-all" />
                   </div>
                 </div>
                 <div className="mb-4">
@@ -562,11 +619,11 @@ export default function LandingPage() {
                 </div>
                 <div className="mb-6">
                   <label className="block text-sm font-semibold mb-1.5">Votre message</label>
-                  <textarea placeholder="Parlez-nous de votre situation, nous sommes là pour vous écouter..." className="w-full px-3.5 py-2.5 bg-surface border-[1.5px] border-outline-variant rounded-[10px] text-sm outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(74,144,217,0.1)] transition-all resize-y min-h-[100px]" />
+                  <textarea placeholder="Parlez-nous de votre situation, nous sommes là pour vous écouter..." value={formMessage} onChange={e => setFormMessage(e.target.value)} className="w-full px-3.5 py-2.5 bg-surface border-[1.5px] border-outline-variant rounded-[10px] text-sm outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(74,144,217,0.1)] transition-all resize-y min-h-[100px]" />
                 </div>
-                <motion.button whileHover={{ y: -1 }} whileTap={{ scale: 0.98 }} type="submit"
-                  className="w-full py-3.5 bg-primary text-white rounded-lg font-semibold shadow-[0_2px_12px_rgba(74,144,217,0.25)] cursor-pointer transition-all hover:bg-primary-dark">
-                  Envoyer mon message
+                <motion.button whileHover={{ y: -1 }} whileTap={{ scale: 0.98 }} type="submit" disabled={contactLoading}
+                  className="w-full py-3.5 bg-primary text-white rounded-lg font-semibold shadow-[0_2px_12px_rgba(74,144,217,0.25)] cursor-pointer transition-all hover:bg-primary-dark disabled:opacity-60 disabled:cursor-not-allowed">
+                  {contactLoading ? 'Envoi en cours...' : 'Envoyer mon message'}
                 </motion.button>
               </form>
             </ScrollReveal>
