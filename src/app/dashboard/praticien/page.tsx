@@ -45,6 +45,8 @@ function PraticienDetailContent() {
 
   const [filter, setFilter] = useState('6')
   const [linkGenerated, setLinkGenerated] = useState(false)
+  const [generatedUrl, setGeneratedUrl] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
 
   // Find the selected practitioner
   const practitioner = useMemo(() => {
@@ -126,10 +128,24 @@ function PraticienDetailContent() {
 
   const handleGenerateLink = async () => {
     if (!practitioner || !createShareLink) return
-    await createShareLink(practitioner.id)
+    const result = await createShareLink(practitioner.id)
+    if (result?.data?.token) {
+      const url = `${typeof window !== 'undefined' ? window.location.origin : ''}/partage?token=${result.data.token}`
+      setGeneratedUrl(url)
+    }
     setLinkGenerated(true)
-    setTimeout(() => setLinkGenerated(false), 3000)
   }
+
+  const handleCopyLink = () => {
+    if (!generatedUrl) return
+    navigator.clipboard.writeText(generatedUrl)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  // Check if there's already an active link for this practitioner
+  const existingLink = shareLinks.find(l => l.practitioner_id === practitioner?.id && !l.is_revoked)
+  const existingUrl = existingLink ? `${typeof window !== 'undefined' ? window.location.origin : ''}/partage?token=${existingLink.token}` : null
 
   const isLoading = authLoading || childrenLoading || practLoading
 
@@ -208,15 +224,70 @@ function PraticienDetailContent() {
                 <Badge variant="primary" icon="event_repeat">Suivi {practitioner.follow_up_frequency}</Badge>
               )}
               <div className="flex gap-2 mt-3">
-                <Button size="sm" icon="link" onClick={handleGenerateLink}>
-                  {linkGenerated ? 'Lien cree !' : 'Generer un lien'}
-                </Button>
+                {!existingLink && !linkGenerated && (
+                  <Button size="sm" icon="link" onClick={handleGenerateLink}>
+                    Generer un lien de partage
+                  </Button>
+                )}
                 <Button variant="outline" size="sm" icon="edit">Modifier</Button>
               </div>
             </div>
           </div>
         </Card>
       </ScrollReveal>
+
+      {/* Share Link Section */}
+      {(existingUrl || generatedUrl) && (
+        <ScrollReveal>
+          <div className="mb-8 bg-gradient-to-r from-[#4A90D9]/5 via-[#7EC8B0]/5 to-transparent rounded-2xl border border-[#4A90D9]/10 p-6">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-[#4A90D9]/10 flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[#4A90D9] text-[24px]">share</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-gray-800 mb-1">Lien de partage actif</h3>
+                <p className="text-sm text-gray-500 mb-3">
+                  Envoyez ce lien a {practName} pour qu&apos;il/elle puisse consulter le dossier de votre enfant et ajouter ses observations.
+                </p>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-600 font-mono truncate">
+                    {generatedUrl || existingUrl}
+                  </div>
+                  <button
+                    onClick={() => {
+                      const url = generatedUrl || existingUrl
+                      if (url) {
+                        navigator.clipboard.writeText(url)
+                        setCopied(true)
+                        setTimeout(() => setCopied(false), 2000)
+                      }
+                    }}
+                    className="px-4 py-2.5 bg-[#4A90D9] text-white rounded-lg font-medium text-sm cursor-pointer hover:bg-[#3a7bc8] transition-all flex items-center gap-2 shrink-0"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">{copied ? 'check' : 'content_copy'}</span>
+                    {copied ? 'Copie !' : 'Copier'}
+                  </button>
+                </div>
+                <div className="flex items-center gap-4 mt-3 text-xs text-gray-400">
+                  <span className="flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[14px]">visibility</span>
+                    Le praticien verra : profil enfant, seances, documents
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[14px]">edit_note</span>
+                    Il pourra ajouter des observations
+                  </span>
+                </div>
+                {existingLink && (
+                  <p className="text-xs text-gray-400 mt-2">
+                    {existingLink.access_count} acces — Cree le {new Date(existingLink.created_at).toLocaleDateString('fr-FR')}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </ScrollReveal>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
