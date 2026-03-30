@@ -13,6 +13,7 @@ export default function EcolePage() {
   const [ecole, setEcole] = useState('')
   const [classe, setClasse] = useState('')
   const [enseignant, setEnseignant] = useState('')
+  const [telEcole, setTelEcole] = useState('')
   const [aesh, setAesh] = useState('')
   const [aeshHeures, setAeshHeures] = useState('')
   const [pap, setPap] = useState('')
@@ -30,7 +31,7 @@ export default function EcolePage() {
     if (!selectedChild || !user) return
     setSaving(true)
     // Store school info in child's emergency_notes as JSON appendix (pragmatic approach)
-    const schoolData = JSON.stringify({ ecole, classe, enseignant, aesh, aeshHeures, pap, reunions, notes })
+    const schoolData = JSON.stringify({ ecole, classe, telEcole, enseignant, aesh, aeshHeures, pap, reunions, notes })
     await supabase.from('children').update({
       emergency_notes: schoolData,
     }).eq('id', selectedChild.id)
@@ -109,6 +110,11 @@ export default function EcolePage() {
             <div>
               <label className="text-sm font-semibold text-gray-700 mb-2 block">Classe</label>
               <input value={classe} onChange={e => setClasse(e.target.value)} placeholder="ex: CE1, CM2..."
+                className="w-full py-3 px-4 bg-gray-50 border border-gray-200 text-[15px] outline-none focus:ring-2 focus:ring-[#3B82D9]/20 focus:border-[#3B82D9]" />
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-gray-700 mb-2 block">Téléphone école / secrétariat</label>
+              <input type="tel" value={telEcole} onChange={e => setTelEcole(e.target.value)} placeholder="01 23 45 67 89"
                 className="w-full py-3 px-4 bg-gray-50 border border-gray-200 text-[15px] outline-none focus:ring-2 focus:ring-[#3B82D9]/20 focus:border-[#3B82D9]" />
             </div>
             <div>
