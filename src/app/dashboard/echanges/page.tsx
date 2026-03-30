@@ -187,7 +187,7 @@ export default function EchangesPage() {
               <div>
                 <p className="font-semibold text-on-surface text-sm">{activeContact?.name}</p>
                 <p className="text-xs text-on-surface-variant flex items-center gap-1.5">
-                  <Badge variant="primary" size="sm">{firstChild?.first_name || 'Lucas'}</Badge>
+                  <Badge variant="primary" size="sm">{firstChild?.first_name || 'votre enfant'}</Badge>
                   {activeContact?.specialty} — {activeContact?.online ? <span className="text-secondary">En ligne</span> : 'Hors ligne'}
                 </p>
               </div>

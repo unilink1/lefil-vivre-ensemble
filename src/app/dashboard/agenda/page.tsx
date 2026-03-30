@@ -127,7 +127,7 @@ export default function AgendaPage() {
   }
 
   return (
-    <DashboardLayout title={`Agenda de ${firstChild?.first_name || 'Lucas'}`} breadcrumb={[{ label: 'Suivi de parcours', href: '/dashboard/profil' }]}>
+    <DashboardLayout title={`Agenda de ${firstChild?.first_name || 'votre enfant'}`} breadcrumb={[{ label: 'Suivi de parcours', href: '/dashboard/profil' }]}>
       {/* View Toggles */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div className="flex gap-1 bg-surface-low rounded-xl p-1">
@@ -306,7 +306,7 @@ export default function AgendaPage() {
               <div className="flex items-start gap-3">
                 <span className="material-symbols-outlined text-tertiary text-[20px] mt-0.5">lightbulb</span>
                 <p className="text-sm text-on-surface-variant">
-                  Pensez a prendre le carnet de suivi de {firstChild?.first_name || 'Lucas'}.
+                  Pensez a prendre le carnet de suivi de {firstChild?.first_name || 'votre enfant'}.
                 </p>
               </div>
             </Card>

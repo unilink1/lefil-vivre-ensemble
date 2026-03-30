@@ -104,7 +104,7 @@ export default function JournalPage() {
   }
 
   return (
-    <DashboardLayout title={`Journal de ${firstChild?.first_name || 'Lucas'}`} breadcrumb={[{ label: 'Suivi quotidien', href: '#' }]}>
+    <DashboardLayout title={`Journal de ${firstChild?.first_name || 'votre enfant'}`} breadcrumb={[{ label: 'Suivi quotidien', href: '#' }]}>
       {/* Date Selector */}
       <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
         {days.map((d) => (

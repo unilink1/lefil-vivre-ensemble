@@ -9,7 +9,18 @@ import FloatingOrbs from '@/components/ui/FloatingOrbs'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
 
-const specialites = ['Orthophoniste', 'Psychomotricien', 'Ergothérapeute', 'Psychologue', 'Pédopsychiatre', 'Neuropédiatre', 'Kinésithérapeute', 'Éducateur spécialisé', 'Pédiatre', 'Autre']
+const specialites = [
+  { label: 'Orthophoniste', value: 'orthophoniste' },
+  { label: 'Psychomotricien', value: 'psychomotricien' },
+  { label: 'Ergotherapeute', value: 'ergotherapeute' },
+  { label: 'Psychologue', value: 'psychologue' },
+  { label: 'Pedopsychiatre', value: 'pedopsychiatre' },
+  { label: 'Neuropediatre', value: 'neuropediatre' },
+  { label: 'Kinesitherapeute', value: 'kinesitherapeute' },
+  { label: 'Pediatre', value: 'pediatre' },
+  { label: 'Neuropsychologue', value: 'neuropsychologue' },
+  { label: 'Autre', value: 'autre' },
+]
 
 export default function OnboardingPraticiensPage() {
   const [praticiens, setPraticiens] = useState([{ id: 1, principal: true, name: '', specialty: '' }, { id: 2, principal: false, name: '', specialty: '' }])
@@ -116,7 +127,7 @@ export default function OnboardingPraticiensPage() {
                     <div className="relative">
                       <select value={p.specialty} onChange={e => updatePraticien(p.id, 'specialty', e.target.value)} className="w-full appearance-none bg-surface-low rounded-xl py-3.5 px-5 text-on-surface outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer text-sm">
                         <option value="">Sélectionnez</option>
-                        {specialites.map(s => <option key={s} value={s}>{s}</option>)}
+                        {specialites.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                       </select>
                       <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[20px]">expand_more</span>
                     </div>

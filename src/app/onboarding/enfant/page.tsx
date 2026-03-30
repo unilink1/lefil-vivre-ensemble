@@ -27,16 +27,16 @@ export default function OnboardingEnfantPage() {
     if (!user) { router.push('/onboarding/praticiens'); return }
     setSaving(true)
     try {
-      await supabase.from('children').insert({
+      const { error } = await supabase.from('children').insert({
         parent_id: user.id,
-        first_name: childName,
-        birth_date: birthDate || null,
-        diagnosis_primary: diagnostic,
-        gender: genre,
-        schooling: scolarisation,
+        first_name: childName || 'Enfant',
+        last_name: '',
+        birth_date: birthDate || new Date().toISOString().split('T')[0],
+        diagnosis_primary: diagnostic || null,
       })
-    } catch {
-      // Table may not exist yet — continue anyway
+      if (error) console.error('Child insert error:', error.message)
+    } catch (e) {
+      console.error('Child insert exception:', e)
     }
     setSaving(false)
     router.push('/onboarding/praticiens')

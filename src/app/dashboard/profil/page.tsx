@@ -79,47 +79,42 @@ export default function DashboardPage() {
   const isLoading = authLoading || childrenLoading
 
   // Derive display name
-  const displayName = profile?.full_name?.split(' ')[0] || 'Marie'
+  const displayName = profile?.full_name?.split(' ')[0] || 'vous'
 
   // Derive child info
-  const childName = firstChild ? `${firstChild.first_name} ${firstChild.last_name}` : 'Lucas Dupont'
-  const childInitials = firstChild ? getInitials(firstChild.first_name, firstChild.last_name) : 'LD'
-  const childAge = firstChild?.birth_date ? calculateAge(firstChild.birth_date) : 7
+  const childName = firstChild ? `${firstChild.first_name}${firstChild.last_name ? ' ' + firstChild.last_name : ''}`.trim() : null
+  const childInitials = firstChild ? getInitials(firstChild.first_name, firstChild.last_name) : '?'
+  const childAge = firstChild?.birth_date ? calculateAge(firstChild.birth_date) : null
   const childDiagnoses = firstChild?.diagnosis_primary
     ? [firstChild.diagnosis_primary, ...(firstChild.diagnosis_secondary || [])]
-    : ['TDAH', 'Dyslexie']
+    : []
 
   // Derive upcoming appointments
   const now = new Date().toISOString()
   const upcomingAppointments = appointments.filter(a => a.datetime_start >= now && a.status !== 'annule')
   const hasRealAppointments = upcomingAppointments.length > 0
 
-  const prochainRDV = hasRealAppointments
-    ? upcomingAppointments.slice(0, 3).map((a, i) => {
-        const d = new Date(a.datetime_start)
-        const dateFormatted = d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })
-        const timeFormatted = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-        const pract = (a as Record<string, unknown>).practitioners as { first_name?: string; last_name?: string; specialty?: string } | undefined
-        return {
-          praticien: pract ? `${pract.first_name || ''} ${pract.last_name || ''}`.trim() : a.title,
-          specialty: pract?.specialty || '',
-          date: `${dateFormatted} — ${timeFormatted}`,
-          color: borderColors[i % borderColors.length],
-        }
-      })
-    : demoProchainRDV
+  const prochainRDV = upcomingAppointments.slice(0, 3).map((a, i) => {
+    const d = new Date(a.datetime_start)
+    const dateFormatted = d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })
+    const timeFormatted = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+    const pract = (a as Record<string, unknown>).practitioners as { first_name?: string; last_name?: string; specialty?: string } | undefined
+    return {
+      praticien: pract ? `${pract.first_name || ''} ${pract.last_name || ''}`.trim() : a.title,
+      specialty: pract?.specialty || '',
+      date: `${dateFormatted} — ${timeFormatted}`,
+      color: borderColors[i % borderColors.length],
+    }
+  })
 
   // Derive latest session notes
-  const hasRealSessions = sessions.length > 0
-  const dernieresNotes = hasRealSessions
-    ? sessions.slice(0, 2).map(s => ({
-        emoji: moodEmojis[s.child_mood || 3] || '😐',
-        praticien: '',
-        specialty: '',
-        date: new Date(s.session_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }),
-        text: s.observations || s.progress || s.objectives || 'Aucune note pour cette seance.',
-      }))
-    : demoDernieresNotes
+  const dernieresNotes = sessions.slice(0, 2).map(s => ({
+    emoji: moodEmojis[s.child_mood || 3] || '😐',
+    praticien: '',
+    specialty: '',
+    date: new Date(s.session_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }),
+    text: s.observations || s.progress || s.objectives || 'Aucune note pour cette seance.',
+  }))
 
   // Derive quick stats
   const nextAppointment = upcomingAppointments[0]
@@ -134,14 +129,12 @@ export default function DashboardPage() {
     return d.getMonth() === thisMonth && d.getFullYear() === thisYear
   })
 
-  const quickStats = (firstChild && (practitioners.length > 0 || sessions.length > 0 || documents.length > 0))
-    ? [
-        { icon: 'stethoscope', value: String(practitioners.length), label: 'Praticiens', color: 'text-primary' },
-        { icon: 'event_note', value: String(sessionsThisMonth.length), label: 'Seances ce mois', color: 'text-secondary' },
-        { icon: 'description', value: String(documents.length), label: 'Documents recents', color: 'text-tertiary' },
-        { icon: 'schedule', value: daysUntilNext !== null ? `${daysUntilNext}j` : '--', label: 'Prochain RDV', color: 'text-gold' },
-      ]
-    : demoQuickStats
+  const quickStats = [
+    { icon: 'stethoscope', value: String(practitioners.length), label: 'Praticiens', color: 'text-primary' },
+    { icon: 'event_note', value: String(sessionsThisMonth.length), label: 'Seances ce mois', color: 'text-secondary' },
+    { icon: 'description', value: String(documents.length), label: 'Documents', color: 'text-tertiary' },
+    { icon: 'schedule', value: daysUntilNext !== null ? `${daysUntilNext}j` : '--', label: 'Prochain RDV', color: 'text-gold' },
+  ]
 
   if (isLoading) {
     return (
@@ -172,7 +165,9 @@ export default function DashboardPage() {
               <h1 className="font-[family-name:var(--font-heading)] text-3xl sm:text-4xl font-extrabold text-on-surface">
                 Bonjour {displayName} <span className="inline-block animate-[float_3s_ease-in-out_infinite]">&#x1F44B;</span>
               </h1>
-              <p className="text-on-surface-variant mt-2 text-base">Voici le recapitulatif du parcours de {firstChild?.first_name || 'Lucas'}.</p>
+              <p className="text-on-surface-variant mt-2 text-base">
+                {firstChild ? `Voici le recapitulatif du parcours de ${firstChild.first_name}.` : 'Bienvenue dans votre espace de coordination.'}
+              </p>
             </motion.div>
           </div>
         </div>
@@ -187,13 +182,15 @@ export default function DashboardPage() {
                 {childInitials}
               </div>
               <div className="flex-1 min-w-0">
-                <h2 className="font-[family-name:var(--font-heading)] text-lg sm:text-xl font-bold text-on-surface">{childName}</h2>
-                <p className="text-sm text-on-surface-variant mb-2">{childAge} ans</p>
-                <div className="flex flex-wrap gap-2">
-                  {childDiagnoses.map((d, i) => (
-                    <Badge key={i} variant={i === 0 ? 'primary' : 'secondary'}>{d}</Badge>
-                  ))}
-                </div>
+                <h2 className="font-[family-name:var(--font-heading)] text-lg sm:text-xl font-bold text-on-surface">{childName || 'Aucun enfant enregistre'}</h2>
+                {childAge !== null && <p className="text-sm text-on-surface-variant mb-2">{childAge} ans</p>}
+                {childDiagnoses.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {childDiagnoses.map((d, i) => (
+                      <Badge key={i} variant={i === 0 ? 'primary' : 'secondary'}>{d}</Badge>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             <Link href="/dashboard/enfant" className="shrink-0 block sm:inline-block">
@@ -226,7 +223,7 @@ export default function DashboardPage() {
               Prochains rendez-vous
             </h2>
             <div className="space-y-3">
-              {prochainRDV.map((rdv, i) => (
+              {prochainRDV.length > 0 ? prochainRDV.map((rdv, i) => (
                 <Card key={i} padding="sm" className={`border-l-4 ${rdv.color}`}>
                   <div className="flex items-center justify-between">
                     <div>
@@ -236,7 +233,15 @@ export default function DashboardPage() {
                     <Badge variant="outline" size="sm">{rdv.date}</Badge>
                   </div>
                 </Card>
-              ))}
+              )) : (
+                <Card padding="md">
+                  <div className="text-center py-4">
+                    <span className="material-symbols-outlined text-outline text-[32px] mb-2 block">event_busy</span>
+                    <p className="text-sm text-on-surface-variant">Aucun rendez-vous a venir</p>
+                    <Link href="/dashboard/agenda" className="text-xs text-primary font-medium mt-1 inline-block">Planifier un rendez-vous</Link>
+                  </div>
+                </Card>
+              )}
             </div>
           </div>
         </ScrollReveal>
@@ -249,7 +254,7 @@ export default function DashboardPage() {
               Dernieres notes de seance
             </h2>
             <div className="space-y-3">
-              {dernieresNotes.map((note, i) => (
+              {dernieresNotes.length > 0 ? dernieresNotes.map((note, i) => (
                 <Card key={i} padding="md">
                   <div className="flex items-start gap-3">
                     <span className="text-2xl shrink-0">{note.emoji}</span>
@@ -263,7 +268,14 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 </Card>
-              ))}
+              )) : (
+                <Card padding="md">
+                  <div className="text-center py-4">
+                    <span className="material-symbols-outlined text-outline text-[32px] mb-2 block">clinical_notes</span>
+                    <p className="text-sm text-on-surface-variant">Aucune note de seance</p>
+                  </div>
+                </Card>
+              )}
             </div>
           </div>
         </ScrollReveal>
@@ -276,7 +288,7 @@ export default function DashboardPage() {
             <span className="material-symbols-outlined text-tertiary text-[22px]">self_improvement</span>
             Journal du jour
           </h2>
-          <p className="text-sm text-on-surface-variant mb-5">Comment se sent {firstChild?.first_name || 'Lucas'} aujourd&apos;hui ?</p>
+          <p className="text-sm text-on-surface-variant mb-5">Comment se sent {firstChild?.first_name || 'votre enfant'} aujourd&apos;hui ?</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
             {/* Humeur */}
             <div>
