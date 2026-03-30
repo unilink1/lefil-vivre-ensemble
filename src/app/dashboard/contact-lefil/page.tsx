@@ -104,7 +104,7 @@ export default function ContactLeFilPage() {
             <div className="bg-[#4A90D9]/5 border border-[#4A90D9]/10 p-4 flex items-start gap-3">
               <span className="material-symbols-outlined text-[#4A90D9] text-[18px] mt-0.5">info</span>
               <p className="text-xs text-gray-500">
-                Votre email ({profile?.email}) sera utilise pour vous repondre. Vous pouvez aussi nous joindre a <strong>contact@lefil-vivreensemble.ch</strong>
+                Votre email ({profile?.email}) sera utilise pour vous repondre. Vous pouvez aussi nous joindre a <strong>contact@lefil-vivre-ensemble.com</strong>
               </p>
             </div>
 
