@@ -198,6 +198,16 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
           <span className="material-symbols-outlined text-[20px]">mail</span>
           {!collapsed && 'Contacter Le Fil'}
         </Link>
+
+        {/* Demande d'integration */}
+        <a
+          href="mailto:contact@lefil-vivre-ensemble.com?subject=Souhait%20d%27integration%20a%20votre%20application"
+          title={collapsed ? 'Demande d\'integration' : undefined}
+          className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} px-3 py-3 rounded-xl bg-gradient-to-r from-[#E8A87C]/8 to-[#7EC8B0]/8 border border-[#E8A87C]/15 text-[#E8A87C] font-medium text-sm transition-all duration-200 hover:from-[#E8A87C]/15 hover:to-[#7EC8B0]/15 hover:shadow-sm cursor-pointer`}
+        >
+          <span className="material-symbols-outlined text-[20px]">handshake</span>
+          {!collapsed && 'Demande d\'integration'}
+        </a>
       </div>
 
       {/* User profile at bottom */}
