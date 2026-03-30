@@ -156,3 +156,293 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--color-primary-fixed);
   color: var(--color-primary);
 }
+
+/* ==========================================================================
+   Modern CSS Effects — Utilities & Animations
+   ========================================================================== */
+
+/* 1. Smooth page transitions (View Transition API fallback) */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes page-exit {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-8px); }
+}
+
+::view-transition-old(root) {
+  animation: page-exit 0.25s ease-out both;
+}
+
+::view-transition-new(root) {
+  animation: page-enter 0.3s ease-out both;
+}
+
+/* 2. Glassmorphism utility classes */
+.glass-card {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 24px rgba(45, 55, 72, 0.06);
+}
+
+.glass-nav {
+  background: rgba(250, 250, 248, 0.72);
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 1px 12px rgba(45, 55, 72, 0.05);
+}
+
+/* 3. Gradient text utility */
+.gradient-text {
+  background: linear-gradient(135deg, #4A90D9 0%, #7EC8B0 50%, #E8A87C 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* 4. Subtle hover lift effect */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 36px rgba(45, 55, 72, 0.1);
+}
+
+/* 5. Card shine effect on hover */
+.card-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.5) 45%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0.5) 55%,
+    transparent 60%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.card-shine:hover::after {
+  transform: translateX(100%);
+}
+
+/* 6. Smooth skeleton loading animation */
+@keyframes skeleton-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-low) 25%,
+    var(--color-surface-high) 37%,
+    var(--color-surface-low) 63%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+  color: transparent !important;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 7. Pulse glow effect for active elements */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 144, 217, 0.45); }
+  50%      { box-shadow: 0 0 0 10px rgba(74, 144, 217, 0); }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* 8. Better global focus-visible states */
+:focus-visible {
+  outline: 2px solid #4A90D9;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Remove the default outline for non-keyboard users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* 9. Smooth scroll snap for horizontal carousels */
+.snap-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  gap: 1rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.snap-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.snap-carousel > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* 10. Button press effect */
+.btn-press {
+  transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.15s ease;
+  will-change: transform;
+}
+
+.btn-press:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(45, 55, 72, 0.12);
+}
+
+.btn-press:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow: 0 1px 4px rgba(45, 55, 72, 0.1);
+  transition-duration: 0.08s;
+}
+
+/* 11. Animated gradient border */
+@keyframes gradient-border-spin {
+  0%   { --gradient-angle: 0deg; }
+  100% { --gradient-angle: 360deg; }
+}
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.gradient-border {
+  position: relative;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-card);
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: calc(var(--radius-md) + 2px);
+  background: conic-gradient(
+    from var(--gradient-angle),
+    #4A90D9,
+    #7EC8B0,
+    #E8A87C,
+    #F5C842,
+    #4A90D9
+  );
+  z-index: -1;
+  animation: gradient-border-spin 4s linear infinite;
+}
+
+/* 12. Fade-in animation for page content */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.5s ease-out both;
+}
+
+/* 13. Stagger children animation */
+.stagger-children > * {
+  opacity: 0;
+  animation: fade-in 0.45s ease-out both;
+}
+
+.stagger-children > *:nth-child(1)  { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2)  { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3)  { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4)  { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5)  { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6)  { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(7)  { animation-delay: 0.35s; }
+.stagger-children > *:nth-child(8)  { animation-delay: 0.4s; }
+.stagger-children > *:nth-child(9)  { animation-delay: 0.45s; }
+.stagger-children > *:nth-child(10) { animation-delay: 0.5s; }
+.stagger-children > *:nth-child(11) { animation-delay: 0.55s; }
+.stagger-children > *:nth-child(12) { animation-delay: 0.6s; }
+
+/* 14. Dashboard layout effects */
+@keyframes ring-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 144, 217, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(74, 144, 217, 0); }
+}
+
+@keyframes icon-bounce {
+  0%, 100% { transform: scale(1); }
+  30% { transform: scale(0.85); }
+  60% { transform: scale(1.1); }
+  80% { transform: scale(0.97); }
+}
+
+@keyframes indicator-slide {
+  from { height: 0; opacity: 0; }
+  to { height: 1.5rem; opacity: 1; }
+}
+
+@keyframes dot-pop {
+  0% { transform: translateX(-50%) scale(0); opacity: 0; }
+  60% { transform: translateX(-50%) scale(1.4); }
+  100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+@keyframes fade-in-page {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-ring-breathe {
+  animation: ring-breathe 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-icon-bounce {
+  animation: icon-bounce 0.45s ease;
+}
+
+.animate-indicator-slide {
+  animation: indicator-slide 0.3s ease-out both;
+}
+
+.animate-dot-pop {
+  animation: dot-pop 0.3s ease-out both;
+}
+
+.animate-fade-in-page {
+  animation: fade-in-page 0.4s ease-out both;
+}

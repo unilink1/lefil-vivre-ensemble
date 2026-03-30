@@ -242,10 +242,105 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-6xl mx-auto">
+      {/* Keyframe animations injected via style tag */}
+      <style jsx global>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(16px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes staggerFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(12px) scale(0.97);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        @keyframes meshMove1 {
+          0%, 100% { transform: translate(0%, 0%) scale(1); }
+          33% { transform: translate(5%, -8%) scale(1.1); }
+          66% { transform: translate(-3%, 5%) scale(0.95); }
+        }
+        @keyframes meshMove2 {
+          0%, 100% { transform: translate(0%, 0%) scale(1); }
+          33% { transform: translate(-6%, 6%) scale(1.05); }
+          66% { transform: translate(4%, -4%) scale(1.1); }
+        }
+        @keyframes meshMove3 {
+          0%, 100% { transform: translate(0%, 0%) scale(1); }
+          50% { transform: translate(3%, 4%) scale(1.08); }
+        }
+        @keyframes subtleBounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-3px); }
+        }
+        @keyframes glowPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(74, 144, 217, 0); }
+          50% { box-shadow: 0 0 20px 2px rgba(74, 144, 217, 0.08); }
+        }
+        .animate-fadeInUp {
+          animation: fadeInUp 0.6s ease-out both;
+        }
+        .animate-stagger-1 { animation: staggerFadeIn 0.5s ease-out 0.1s both; }
+        .animate-stagger-2 { animation: staggerFadeIn 0.5s ease-out 0.2s both; }
+        .animate-stagger-3 { animation: staggerFadeIn 0.5s ease-out 0.3s both; }
+        .animate-stagger-4 { animation: staggerFadeIn 0.5s ease-out 0.4s both; }
+        .animate-subtleBounce {
+          animation: subtleBounce 2s ease-in-out infinite;
+        }
+        .mesh-blob-1 {
+          animation: meshMove1 8s ease-in-out infinite;
+        }
+        .mesh-blob-2 {
+          animation: meshMove2 10s ease-in-out infinite;
+        }
+        .mesh-blob-3 {
+          animation: meshMove3 12s ease-in-out infinite;
+        }
+        .appointment-glow-blue:hover {
+          box-shadow: -4px 0 16px -4px rgba(74, 144, 217, 0.25), 0 4px 12px -2px rgba(0,0,0,0.04);
+        }
+        .appointment-glow-green:hover {
+          box-shadow: -4px 0 16px -4px rgba(126, 200, 176, 0.25), 0 4px 12px -2px rgba(0,0,0,0.04);
+        }
+        .appointment-glow-orange:hover {
+          box-shadow: -4px 0 16px -4px rgba(232, 168, 124, 0.25), 0 4px 12px -2px rgba(0,0,0,0.04);
+        }
+      `}</style>
+
+      <div className="max-w-6xl mx-auto animate-fadeInUp">
         {/* ── Welcome Hero ── */}
         <ScrollReveal>
           <div className="relative overflow-hidden rounded-3xl mb-8 bg-white border border-gray-100 shadow-sm">
+            {/* Animated gradient mesh background */}
+            <div className="absolute inset-0 overflow-hidden">
+              <div
+                className="mesh-blob-1 absolute -top-1/4 -left-1/4 w-[60%] h-[60%] rounded-full opacity-60"
+                style={{
+                  background: 'radial-gradient(circle, rgba(74, 144, 217, 0.12) 0%, transparent 70%)',
+                }}
+              />
+              <div
+                className="mesh-blob-2 absolute -bottom-1/4 -right-1/4 w-[55%] h-[55%] rounded-full opacity-60"
+                style={{
+                  background: 'radial-gradient(circle, rgba(126, 200, 176, 0.1) 0%, transparent 70%)',
+                }}
+              />
+              <div
+                className="mesh-blob-3 absolute top-1/3 left-1/3 w-[40%] h-[40%] rounded-full opacity-50"
+                style={{
+                  background: 'radial-gradient(circle, rgba(232, 168, 124, 0.08) 0%, transparent 70%)',
+                }}
+              />
+            </div>
             <div className="absolute inset-0 bg-gradient-to-br from-[#4A90D9]/6 via-[#7EC8B0]/4 to-[#E8A87C]/3" />
             <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl from-[#4A90D9]/8 to-transparent rounded-full -translate-y-1/2 translate-x-1/3" />
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-[#7EC8B0]/6 to-transparent rounded-full translate-y-1/3 -translate-x-1/4" />
@@ -270,10 +365,14 @@ export default function DashboardPage() {
 
         {/* ── Selected Child Card ── */}
         <ScrollReveal delay={0.05}>
-          <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 sm:p-8 mb-8">
+          <div className="bg-white/80 backdrop-blur-sm border border-white/60 shadow-sm rounded-2xl p-6 sm:p-8 mb-8 transition-all duration-300 hover:shadow-lg hover:shadow-[#4A90D9]/5 hover:border-[#4A90D9]/15"
+            style={{
+              boxShadow: '0 1px 3px rgba(0,0,0,0.04), inset 0 0 0 1px rgba(255,255,255,0.6)',
+            }}
+          >
             <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-6">
               <div className="flex items-center gap-5 flex-1 min-w-0">
-                <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-2xl bg-gradient-to-br from-[#4A90D9] to-[#7EC8B0] flex items-center justify-center text-white text-xl sm:text-2xl font-bold shadow-lg shadow-[#4A90D9]/20 shrink-0">
+                <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-2xl bg-gradient-to-br from-[#4A90D9] to-[#7EC8B0] flex items-center justify-center text-white text-xl sm:text-2xl font-bold shadow-lg shadow-[#4A90D9]/20 shrink-0 transition-all duration-300 hover:shadow-xl hover:shadow-[#4A90D9]/30 hover:scale-105">
                   {childInitials}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -290,7 +389,7 @@ export default function DashboardPage() {
                       {childDiagnoses.map((d, i) => (
                         <span
                           key={i}
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold transition-all duration-300 hover:scale-105 ${
                             i === 0
                               ? 'bg-[#4A90D9]/10 text-[#4A90D9]'
                               : 'bg-[#7EC8B0]/10 text-[#5BA893]'
@@ -321,9 +420,13 @@ export default function DashboardPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
           {quickStats.map((stat, i) => (
             <ScrollReveal key={i} delay={0.06 + i * 0.05}>
-              <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5 sm:p-6 text-center group hover:shadow-md transition-shadow duration-300">
+              <div className={`bg-gradient-to-br ${stat.gradient} border border-gray-100/80 rounded-2xl p-5 sm:p-6 text-center group hover:shadow-lg hover:-translate-y-1 transition-all duration-300 animate-stagger-${i + 1}`}
+                style={{
+                  background: `linear-gradient(135deg, white 0%, white 60%, var(--tw-gradient-stops))`,
+                }}
+              >
                 <div
-                  className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}
+                  className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}
                 >
                   <span
                     className={`material-symbols-outlined ${stat.iconColor} text-[22px]`}
@@ -332,7 +435,7 @@ export default function DashboardPage() {
                   </span>
                 </div>
                 <p
-                  className={`font-[family-name:var(--font-heading)] font-extrabold text-3xl ${stat.valueColor} mb-1`}
+                  className={`font-[family-name:var(--font-heading)] font-extrabold text-3xl ${stat.valueColor} mb-1 transition-all duration-300 group-hover:scale-105`}
                 >
                   {stat.value}
                 </p>
@@ -348,7 +451,7 @@ export default function DashboardPage() {
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 mb-8">
           {/* Upcoming Appointments */}
           <ScrollReveal delay={0.1}>
-            <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 sm:p-8 h-full">
+            <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 sm:p-8 h-full transition-all duration-300 hover:shadow-md">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="font-[family-name:var(--font-heading)] font-bold text-lg flex items-center gap-3">
                   <span className="w-9 h-9 rounded-xl bg-[#4A90D9]/10 flex items-center justify-center">
@@ -361,7 +464,7 @@ export default function DashboardPage() {
                 {prochainRDV.length > 0 && (
                   <Link
                     href="/dashboard/agenda"
-                    className="text-xs text-[#4A90D9] font-semibold hover:underline"
+                    className="text-xs text-[#4A90D9] font-semibold hover:underline transition-all duration-300"
                   >
                     Tout voir
                   </Link>
@@ -373,7 +476,13 @@ export default function DashboardPage() {
                   prochainRDV.map((rdv, i) => (
                     <div
                       key={i}
-                      className={`border border-gray-100 rounded-xl p-4 border-l-[3px] ${rdv.borderColor} hover:bg-gray-50/50 transition-colors duration-200`}
+                      className={`border border-gray-100 rounded-xl p-4 border-l-[3px] ${rdv.borderColor} hover:bg-gray-50/50 transition-all duration-300 hover:-translate-x-0.5 ${
+                        i === 0
+                          ? 'appointment-glow-blue'
+                          : i === 1
+                          ? 'appointment-glow-green'
+                          : 'appointment-glow-orange'
+                      }`}
                     >
                       <div className="flex items-center justify-between gap-3">
                         <div className="min-w-0">
@@ -386,7 +495,7 @@ export default function DashboardPage() {
                             </p>
                           )}
                         </div>
-                        <span className="shrink-0 text-xs font-medium text-gray-500 bg-gray-50 px-3 py-1.5 rounded-lg">
+                        <span className="shrink-0 text-xs font-medium text-gray-500 bg-gray-50 px-3 py-1.5 rounded-lg transition-all duration-300">
                           {rdv.date}
                         </span>
                       </div>
@@ -404,7 +513,7 @@ export default function DashboardPage() {
                     </p>
                     <Link
                       href="/dashboard/agenda"
-                      className="inline-flex items-center gap-1.5 text-xs text-[#4A90D9] font-semibold hover:underline"
+                      className="inline-flex items-center gap-1.5 text-xs text-[#4A90D9] font-semibold hover:underline transition-all duration-300"
                     >
                       Planifier un rendez-vous
                       <span className="material-symbols-outlined text-[14px]">
@@ -419,7 +528,7 @@ export default function DashboardPage() {
 
           {/* Latest Session Notes */}
           <ScrollReveal delay={0.15}>
-            <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 sm:p-8 h-full">
+            <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 sm:p-8 h-full transition-all duration-300 hover:shadow-md">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="font-[family-name:var(--font-heading)] font-bold text-lg flex items-center gap-3">
                   <span className="w-9 h-9 rounded-xl bg-[#7EC8B0]/10 flex items-center justify-center">
@@ -432,7 +541,7 @@ export default function DashboardPage() {
                 {dernieresNotes.length > 0 && (
                   <Link
                     href="/dashboard/seances"
-                    className="text-xs text-[#7EC8B0] font-semibold hover:underline"
+                    className="text-xs text-[#7EC8B0] font-semibold hover:underline transition-all duration-300"
                   >
                     Tout voir
                   </Link>
@@ -444,10 +553,10 @@ export default function DashboardPage() {
                   dernieresNotes.map((note, i) => (
                     <div
                       key={i}
-                      className="border border-gray-100 rounded-xl p-4 hover:bg-gray-50/50 transition-colors duration-200"
+                      className="border border-gray-100 rounded-xl p-4 hover:bg-gray-50/50 transition-all duration-300 hover:shadow-sm"
                     >
                       <div className="flex items-start gap-3">
-                        <span className="text-2xl shrink-0 mt-0.5">{note.emoji}</span>
+                        <span className="text-2xl shrink-0 mt-0.5 animate-subtleBounce" style={{ animationDelay: `${i * 0.3}s` }}>{note.emoji}</span>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 mb-1 flex-wrap">
                             {note.praticien && (
@@ -490,7 +599,7 @@ export default function DashboardPage() {
 
         {/* ── Daily Journal / Mood Selector ── */}
         <ScrollReveal delay={0.2}>
-          <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 sm:p-8 mb-8">
+          <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 sm:p-8 mb-8 transition-all duration-300">
             <div className="flex items-center gap-3 mb-2">
               <span className="w-9 h-9 rounded-xl bg-[#E8A87C]/10 flex items-center justify-center">
                 <span className="material-symbols-outlined text-[#E8A87C] text-[20px]">
@@ -517,9 +626,9 @@ export default function DashboardPage() {
                     <button
                       key={item.value}
                       onClick={() => setSelectedMood(item.value)}
-                      className={`text-2xl cursor-pointer rounded-xl p-2 transition-all duration-200 ${
+                      className={`text-2xl cursor-pointer rounded-xl p-2 transition-all duration-300 ${
                         selectedMood === item.value
-                          ? 'bg-[#4A90D9]/10 scale-110 ring-2 ring-[#4A90D9]/30'
+                          ? 'bg-[#4A90D9]/10 scale-125 ring-2 ring-[#4A90D9]/40 shadow-lg shadow-[#4A90D9]/15'
                           : 'hover:bg-gray-50 hover:scale-110'
                       }`}
                       title={item.label}
@@ -540,9 +649,9 @@ export default function DashboardPage() {
                     <button
                       key={item.value}
                       onClick={() => setSelectedSleep(item.value)}
-                      className={`text-2xl cursor-pointer rounded-xl p-2 transition-all duration-200 ${
+                      className={`text-2xl cursor-pointer rounded-xl p-2 transition-all duration-300 ${
                         selectedSleep === item.value
-                          ? 'bg-[#7EC8B0]/10 scale-110 ring-2 ring-[#7EC8B0]/30'
+                          ? 'bg-[#7EC8B0]/10 scale-125 ring-2 ring-[#7EC8B0]/40 shadow-lg shadow-[#7EC8B0]/15'
                           : 'hover:bg-gray-50 hover:scale-110'
                       }`}
                       title={item.label}
@@ -563,9 +672,9 @@ export default function DashboardPage() {
                     <button
                       key={item.value}
                       onClick={() => setSelectedEnergy(item.value)}
-                      className={`text-2xl cursor-pointer rounded-xl p-2 transition-all duration-200 ${
+                      className={`text-2xl cursor-pointer rounded-xl p-2 transition-all duration-300 ${
                         selectedEnergy === item.value
-                          ? 'bg-[#E8A87C]/10 scale-110 ring-2 ring-[#E8A87C]/30'
+                          ? 'bg-[#E8A87C]/10 scale-125 ring-2 ring-[#E8A87C]/40 shadow-lg shadow-[#E8A87C]/15'
                           : 'hover:bg-gray-50 hover:scale-110'
                       }`}
                       title={item.label}
@@ -595,17 +704,17 @@ export default function DashboardPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mb-8">
             {quickActions.map((action, i) => (
               <Link key={i} href={action.href}>
-                <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5 sm:p-6 text-center group hover:shadow-md hover:-translate-y-1 transition-all duration-300 h-full">
+                <div className={`bg-white border border-gray-100 shadow-sm rounded-2xl p-5 sm:p-6 text-center group hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 h-full animate-stagger-${i + 1}`}>
                   <div
-                    className={`w-14 h-14 ${action.bg} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}
+                    className={`w-14 h-14 ${action.bg} rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all duration-300`}
                   >
                     <span
-                      className={`material-symbols-outlined ${action.iconColor} text-[26px]`}
+                      className={`material-symbols-outlined ${action.iconColor} text-[26px] transition-all duration-300 group-hover:scale-125`}
                     >
                       {action.icon}
                     </span>
                   </div>
-                  <p className="text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">
+                  <p className="text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors duration-300">
                     {action.label}
                   </p>
                 </div>

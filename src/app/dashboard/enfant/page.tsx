@@ -41,6 +41,9 @@ export default function EnfantPage() {
   const [editing, setEditing] = useState<string | null>(null)
   const [editValues, setEditValues] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
+  const [showAddPractitioner, setShowAddPractitioner] = useState(false)
+  const [newPractName, setNewPractName] = useState('')
+  const [newPractSpecialty, setNewPractSpecialty] = useState('')
 
   const { loading: authLoading } = useAuth()
   const { selectedChild: firstChild, loading: childrenLoading } = useSelectedChild()
@@ -127,7 +130,7 @@ export default function EnfantPage() {
 
       {/* ============ HERO PROFILE ============ */}
       <ScrollReveal>
-        <div className="relative overflow-hidden rounded-3xl mb-10 bg-gradient-to-br from-[#4A90D9]/5 via-[#7EC8B0]/5 to-[#E8A87C]/5">
+        <div className="relative overflow-hidden rounded-3xl mb-10 bg-gradient-to-br from-[#4A90D9]/5 via-[#7EC8B0]/5 to-[#E8A87C]/5 backdrop-blur-sm border border-white/40 shadow-[0_8px_32px_rgba(74,144,217,0.06)]">
           <div className="px-8 py-10 flex flex-col sm:flex-row items-center gap-8">
             <div className="shrink-0">
               <AvatarUpload
@@ -291,7 +294,7 @@ export default function EnfantPage() {
 
               {/* Informations medicales */}
               <ScrollReveal>
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-7">
+                <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-gray-100/80 shadow-sm hover:shadow-md transition-all duration-300 p-7">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="font-[family-name:var(--font-heading)] font-bold text-lg flex items-center gap-2.5">
                       <span className="w-10 h-10 rounded-xl bg-[#4A90D9]/10 flex items-center justify-center">
@@ -346,7 +349,7 @@ export default function EnfantPage() {
 
               {/* Contacts d'urgence */}
               <ScrollReveal delay={0.1}>
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-7">
+                <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-gray-100/80 shadow-sm hover:shadow-md transition-all duration-300 p-7">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="font-[family-name:var(--font-heading)] font-bold text-lg flex items-center gap-2.5">
                       <span className="w-10 h-10 rounded-xl bg-[#E8A87C]/10 flex items-center justify-center">
@@ -399,7 +402,7 @@ export default function EnfantPage() {
               ) : practitioners.length > 0 ? (
                 practitioners.map((p, i) => (
                   <ScrollReveal key={p.id} delay={i * 0.08}>
-                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-center gap-5">
+                    <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-gray-100/80 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex items-center gap-5">
                       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg shrink-0 ${practColors[i % practColors.length]}`}>
                         {getInitials(p.first_name, p.last_name)}
                       </div>
@@ -424,6 +427,60 @@ export default function EnfantPage() {
                   <p className="text-on-surface-variant">Aucun praticien enregistre</p>
                 </div>
               )}
+
+              {/* Add practitioner form */}
+              {showAddPractitioner ? (
+                <div className="bg-white border border-gray-200 shadow-sm p-6 space-y-4 mt-4">
+                  <h4 className="font-semibold text-gray-800">Ajouter un praticien</h4>
+                  <input
+                    value={newPractName}
+                    onChange={e => setNewPractName(e.target.value)}
+                    placeholder="Nom du praticien (ex: Dr. Sophie Martin)"
+                    className="w-full py-3 px-4 bg-gray-50 border border-gray-200 text-[15px] outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]"
+                  />
+                  <select
+                    value={newPractSpecialty}
+                    onChange={e => setNewPractSpecialty(e.target.value)}
+                    className="w-full py-3 px-4 bg-gray-50 border border-gray-200 text-[15px] outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9] cursor-pointer"
+                  >
+                    <option value="">Specialite...</option>
+                    {['orthophoniste','psychomotricien','ergotherapeute','psychologue','pedopsychiatre','neuropediatre','kinesitherapeute','pediatre','neuropsychologue','autre'].map(s => (
+                      <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                    ))}
+                  </select>
+                  <div className="flex gap-3">
+                    <button onClick={() => setShowAddPractitioner(false)} className="flex-1 py-2.5 border border-gray-200 text-gray-500 font-medium cursor-pointer hover:bg-gray-50">Annuler</button>
+                    <button
+                      onClick={async () => {
+                        if (!firstChild || !newPractName || !newPractSpecialty) return
+                        const names = newPractName.trim().split(' ')
+                        await supabase.from('practitioners').insert({
+                          child_id: firstChild.id,
+                          first_name: names[0] || '',
+                          last_name: names.slice(1).join(' ') || '',
+                          specialty: newPractSpecialty,
+                        })
+                        setNewPractName('')
+                        setNewPractSpecialty('')
+                        setShowAddPractitioner(false)
+                        window.location.reload()
+                      }}
+                      disabled={!newPractName || !newPractSpecialty}
+                      className="flex-1 py-2.5 bg-[#4A90D9] text-white font-medium cursor-pointer hover:bg-[#3a7bc8] disabled:opacity-50"
+                    >
+                      Ajouter
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowAddPractitioner(true)}
+                  className="w-full mt-4 py-3.5 border-2 border-dashed border-[#4A90D9]/30 text-[#4A90D9] font-semibold flex items-center justify-center gap-2 hover:border-[#4A90D9]/50 hover:bg-[#4A90D9]/5 transition-all cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[20px]">add</span>
+                  Ajouter un praticien
+                </button>
+              )}
             </div>
           )}
 
@@ -438,7 +495,7 @@ export default function EnfantPage() {
                 <div className="grid sm:grid-cols-2 gap-5">
                   {realDocuments.map((doc, i) => (
                     <ScrollReveal key={doc.id} delay={i * 0.06}>
-                      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-start gap-4">
+                      <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-gray-100/80 shadow-sm hover:shadow-md transition-all duration-300 p-5 flex items-start gap-4">
                         <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center shrink-0">
                           <span className="material-symbols-outlined text-red-400 text-[24px]">picture_as_pdf</span>
                         </div>
@@ -476,7 +533,7 @@ export default function EnfantPage() {
               ) : sessions.length > 0 ? (
                 sessions.slice(0, 10).map((s, i) => (
                   <ScrollReveal key={s.id} delay={i * 0.06}>
-                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                    <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-gray-100/80 shadow-sm hover:shadow-md transition-all duration-300 p-6">
                       <div className="flex items-start gap-4">
                         <span className="text-3xl shrink-0">{moodEmojis[s.child_mood || 3] || '😐'}</span>
                         <div className="flex-1">
@@ -541,7 +598,7 @@ export default function EnfantPage() {
                         <div className={`w-12 h-12 ${item.color} rounded-xl flex items-center justify-center shrink-0 z-10`}>
                           <span className="material-symbols-outlined text-white text-[22px]">{item.icon}</span>
                         </div>
-                        <div className="flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                        <div className="flex-1 bg-white/90 backdrop-blur-sm rounded-2xl border border-gray-100/80 shadow-sm hover:shadow-md transition-all duration-300 p-5">
                           <p className="text-xs text-gray-400 mb-1">{new Date(item.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                           <p className="font-semibold text-on-surface mb-1">{item.title}</p>
                           {item.desc && <p className="text-sm text-on-surface-variant">{item.desc}</p>}
