@@ -77,7 +77,8 @@ export default function InscriptionPage() {
         setError(signUpError)
       }
     } else {
-      router.push('/onboarding/profil')
+      // Use window.location to ensure cookies are set before middleware check
+      window.location.href = '/onboarding/profil'
     }
   }
 
