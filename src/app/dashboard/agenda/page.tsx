@@ -1,26 +1,19 @@
 'use client'
-import { motion } from 'framer-motion'
 import { useState, useMemo } from 'react'
 import DashboardLayout from '@/components/layout/DashboardLayout'
-import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import ScrollReveal from '@/components/ui/ScrollReveal'
 import { useAuth } from '@/hooks/useAuth'
-import { useChildren, useAppointments } from '@/hooks/useData'
+import { useAppointments } from '@/hooks/useData'
+import { useSelectedChild } from '@/hooks/useSelectedChild'
 
 const jours = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
 
-const demoRdvDots: Record<number, string[]> = {
-  3: ['bg-primary'], 7: ['bg-primary', 'bg-purple-500'], 10: ['bg-secondary'],
-  14: ['bg-primary'], 17: ['bg-tertiary'], 21: ['bg-primary', 'bg-secondary'],
-  24: ['bg-purple-500'], 28: ['bg-primary'],
-}
-
 const legend = [
-  { color: 'bg-primary', label: 'Orthophoniste' },
-  { color: 'bg-secondary', label: 'Psychomotricien' },
-  { color: 'bg-tertiary', label: 'Ergotherapeute' },
+  { color: 'bg-[#4A90D9]', label: 'Orthophoniste' },
+  { color: 'bg-[#7EC8B0]', label: 'Psychomotricien' },
+  { color: 'bg-[#E8A87C]', label: 'Ergotherapeute' },
   { color: 'bg-purple-500', label: 'Pedopsychiatre' },
   { color: 'bg-orange-500', label: 'Neuropediatre' },
 ]
@@ -33,24 +26,40 @@ const statusLabels: Record<string, { label: string; variant: 'primary' | 'second
 }
 
 const borderColorMap: Record<string, string> = {
-  'Orthophoniste': 'border-primary',
-  'Psychomotricien': 'border-secondary',
-  'Ergotherapeute': 'border-tertiary',
+  'Orthophoniste': 'border-[#4A90D9]',
+  'Psychomotricien': 'border-[#7EC8B0]',
+  'Ergotherapeute': 'border-[#E8A87C]',
   'Pedopsychiatre': 'border-purple-500',
 }
 
 const bgColorMap: Record<string, string> = {
-  'Orthophoniste': 'bg-primary-fixed/15',
-  'Psychomotricien': 'bg-secondary-container/15',
-  'Ergotherapeute': 'bg-tertiary-fixed/15',
+  'Orthophoniste': 'bg-[#4A90D9]/10',
+  'Psychomotricien': 'bg-[#7EC8B0]/10',
+  'Ergotherapeute': 'bg-[#E8A87C]/10',
   'Pedopsychiatre': 'bg-purple-50',
+}
+
+const dotColorMap: Record<string, string> = {
+  ortho: 'bg-[#4A90D9]',
+  psycho: 'bg-[#7EC8B0]',
+  ergo: 'bg-[#E8A87C]',
+  pedo: 'bg-purple-500',
+  neuro: 'bg-orange-500',
+}
+
+function getSpecialtyColor(specialty: string): string {
+  const s = specialty.toLowerCase()
+  if (s.includes('psycho')) return dotColorMap.psycho
+  if (s.includes('ergo')) return dotColorMap.ergo
+  if (s.includes('pedo') || s.includes('psychiatr')) return dotColorMap.pedo
+  if (s.includes('neuro')) return dotColorMap.neuro
+  return dotColorMap.ortho
 }
 
 export default function AgendaPage() {
   const { loading: authLoading } = useAuth()
-  const { children, loading: childrenLoading } = useChildren()
-  const firstChild = children[0]
-  const { appointments, loading: apptLoading } = useAppointments(firstChild?.id)
+  const { selectedChild, loading: childrenLoading } = useSelectedChild()
+  const { appointments, loading: apptLoading } = useAppointments(selectedChild?.id)
 
   const [selectedDay, setSelectedDay] = useState(new Date().getDate())
   const [view, setView] = useState<'Mois' | 'Semaine' | 'Liste'>('Mois')
@@ -71,9 +80,12 @@ export default function AgendaPage() {
   for (let i = 1; i <= daysInMonth; i++) cells.push(i)
   while (cells.length % 7 !== 0) cells.push(null)
 
+  const today = new Date()
+  const isCurrentMonth = today.getMonth() === currentMonth && today.getFullYear() === currentYear
+  const todayDate = today.getDate()
+
   // Map appointments to calendar dots by day
   const rdvDots = useMemo(() => {
-    if (!hasAppointments) return demoRdvDots
     const dots: Record<number, string[]> = {}
     appointments.forEach(a => {
       const d = new Date(a.datetime_start)
@@ -81,26 +93,21 @@ export default function AgendaPage() {
         const day = d.getDate()
         const pract = (a as Record<string, unknown>).practitioners as { specialty?: string } | undefined
         const specialty = pract?.specialty || ''
-        let color = 'bg-primary'
-        if (specialty.toLowerCase().includes('psycho')) color = 'bg-secondary'
-        else if (specialty.toLowerCase().includes('ergo')) color = 'bg-tertiary'
-        else if (specialty.toLowerCase().includes('pedo') || specialty.toLowerCase().includes('psychiatr')) color = 'bg-purple-500'
-        else if (specialty.toLowerCase().includes('neuro')) color = 'bg-orange-500'
+        const color = getSpecialtyColor(specialty)
         if (!dots[day]) dots[day] = []
         if (!dots[day].includes(color)) dots[day].push(color)
       }
     })
-    return Object.keys(dots).length > 0 ? dots : demoRdvDots
-  }, [appointments, hasAppointments, currentMonth, currentYear])
+    return dots
+  }, [appointments, currentMonth, currentYear])
 
   // Appointments for the selected day
   const selectedDayAppointments = useMemo(() => {
-    if (!hasAppointments) return null
     return appointments.filter(a => {
       const d = new Date(a.datetime_start)
       return d.getDate() === selectedDay && d.getMonth() === currentMonth && d.getFullYear() === currentYear
     })
-  }, [appointments, hasAppointments, selectedDay, currentMonth, currentYear])
+  }, [appointments, selectedDay, currentMonth, currentYear])
 
   const prevMonth = () => {
     if (currentMonth === 0) { setCurrentMonth(11); setCurrentYear(y => y - 1) }
@@ -118,138 +125,218 @@ export default function AgendaPage() {
       <DashboardLayout title="Agenda" breadcrumb={[{ label: 'Suivi de parcours', href: '/dashboard/profil' }]}>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-on-surface-variant text-sm">Chargement...</p>
+            <div className="w-12 h-12 border-4 border-[#4A90D9]/30 border-t-[#4A90D9] rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-gray-400 text-sm">Chargement de l&apos;agenda...</p>
           </div>
         </div>
       </DashboardLayout>
     )
   }
 
+  const childName = selectedChild?.first_name
+
+  const selectedDateLabel = new Date(currentYear, currentMonth, selectedDay).toLocaleDateString('fr-FR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  })
+  const selectedDateCapitalized = selectedDateLabel.charAt(0).toUpperCase() + selectedDateLabel.slice(1)
+
   return (
-    <DashboardLayout title={`Agenda de ${firstChild?.first_name || 'votre enfant'}`} breadcrumb={[{ label: 'Suivi de parcours', href: '/dashboard/profil' }]}>
-      {/* View Toggles */}
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <div className="flex gap-1 bg-surface-low rounded-xl p-1">
+    <DashboardLayout
+      title={childName ? `Agenda de ${childName}` : 'Agenda'}
+      breadcrumb={[{ label: 'Suivi de parcours', href: '/dashboard/profil' }]}
+    >
+      {/* Header bar: view toggles + action */}
+      <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+        <div className="flex gap-1 bg-gray-50 rounded-2xl p-1.5">
           {(['Mois', 'Semaine', 'Liste'] as const).map(v => (
             <button
               key={v}
               onClick={() => setView(v)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
-                view === v ? 'gradient-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-high'
+              className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                view === v
+                  ? 'bg-[#4A90D9] text-white shadow-md shadow-[#4A90D9]/20'
+                  : 'text-gray-500 hover:text-gray-900 hover:bg-white'
               }`}
-            >{v}</button>
+            >
+              {v}
+            </button>
           ))}
         </div>
         <Button size="sm" icon="add">Nouveau rendez-vous</Button>
       </div>
 
-      <div className="grid lg:grid-cols-[1fr_350px] gap-6">
-        {/* Calendar */}
+      <div className="grid lg:grid-cols-[1fr_380px] gap-6">
+        {/* ===================== CALENDAR CARD ===================== */}
         <ScrollReveal>
-          <Card padding="lg">
-            <div className="flex items-center justify-between mb-6">
-              <motion.button whileHover={{ scale: 1.1 }} onClick={prevMonth} className="p-2 hover:bg-surface-low rounded-xl cursor-pointer">
-                <span className="material-symbols-outlined text-on-surface-variant">chevron_left</span>
-              </motion.button>
-              <h3 className="font-[family-name:var(--font-heading)] text-xl font-bold">{moisCapitalized}</h3>
-              <motion.button whileHover={{ scale: 1.1 }} onClick={nextMonth} className="p-2 hover:bg-surface-low rounded-xl cursor-pointer">
-                <span className="material-symbols-outlined text-on-surface-variant">chevron_right</span>
-              </motion.button>
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            {/* Month navigation */}
+            <div className="flex items-center justify-between mb-8">
+              <button
+                onClick={prevMonth}
+                className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-50 transition-all duration-200 hover:scale-[1.05] cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-gray-400">chevron_left</span>
+              </button>
+              <h3 className="font-[family-name:var(--font-heading)] text-xl font-bold text-gray-900 tracking-tight">
+                {moisCapitalized}
+              </h3>
+              <button
+                onClick={nextMonth}
+                className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-50 transition-all duration-200 hover:scale-[1.05] cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-gray-400">chevron_right</span>
+              </button>
             </div>
 
             {/* Day headers */}
-            <div className="grid grid-cols-7 gap-1 mb-2">
+            <div className="grid grid-cols-7 gap-1 mb-3">
               {jours.map(j => (
-                <div key={j} className="text-center text-xs font-medium text-outline uppercase tracking-wider py-2">{j}</div>
+                <div key={j} className="text-center text-xs font-semibold text-gray-400 uppercase tracking-widest py-2">
+                  {j}
+                </div>
               ))}
             </div>
 
             {/* Calendar Grid */}
-            <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
-              {cells.map((day, i) => (
-                <motion.button
-                  key={i}
-                  whileHover={day ? { scale: 1.08 } : undefined}
-                  whileTap={day ? { scale: 0.95 } : undefined}
-                  onClick={() => day && setSelectedDay(day)}
-                  disabled={!day}
-                  className={`aspect-square min-h-[40px] sm:min-h-0 rounded-lg sm:rounded-xl flex flex-col items-center justify-center relative transition-all cursor-pointer ${
-                    !day ? '' :
-                    selectedDay === day
-                      ? 'bg-primary-fixed ring-2 ring-primary shadow-md'
-                      : 'hover:bg-surface-low'
-                  }`}
-                >
-                  {day && (
-                    <>
-                      <span className={`text-sm font-medium ${selectedDay === day ? 'text-primary font-bold' : 'text-on-surface'}`}>{day}</span>
-                      {rdvDots[day] && (
-                        <div className="flex gap-0.5 mt-0.5">
-                          {rdvDots[day].map((color, j) => (
-                            <div key={j} className={`w-1.5 h-1.5 rounded-full ${color}`} />
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  )}
-                </motion.button>
-              ))}
+            <div className="grid grid-cols-7 gap-1">
+              {cells.map((day, i) => {
+                const isSelected = day !== null && selectedDay === day
+                const isToday = day !== null && isCurrentMonth && todayDate === day
+                const hasDots = day !== null && rdvDots[day]
+
+                return (
+                  <button
+                    key={i}
+                    onClick={() => day && setSelectedDay(day)}
+                    disabled={!day}
+                    className={`
+                      aspect-square min-h-[44px] sm:min-h-0 rounded-xl flex flex-col items-center justify-center relative
+                      transition-all duration-200 cursor-pointer
+                      ${!day ? 'cursor-default' : ''}
+                      ${isSelected
+                        ? 'bg-[#4A90D9] shadow-lg shadow-[#4A90D9]/25 scale-[1.02]'
+                        : isToday
+                          ? 'bg-[#4A90D9]/8 ring-1 ring-[#4A90D9]/30'
+                          : 'hover:bg-gray-50 hover:scale-[1.04]'
+                      }
+                    `}
+                  >
+                    {day && (
+                      <>
+                        <span
+                          className={`text-sm font-medium leading-none ${
+                            isSelected
+                              ? 'text-white font-bold'
+                              : isToday
+                                ? 'text-[#4A90D9] font-bold'
+                                : 'text-gray-900'
+                          }`}
+                        >
+                          {day}
+                        </span>
+                        {hasDots && (
+                          <div className="flex gap-0.5 mt-1">
+                            {rdvDots[day].map((color, j) => (
+                              <div
+                                key={j}
+                                className={`w-1.5 h-1.5 rounded-full ${color} ${isSelected ? 'opacity-80' : ''}`}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </button>
+                )
+              })}
             </div>
 
             {/* Legend */}
-            <div className="flex flex-wrap gap-3 mt-6 pt-4 border-t border-outline-variant/10">
+            <div className="flex flex-wrap gap-4 mt-8 pt-6 border-t border-gray-100">
               {legend.map(l => (
-                <div key={l.label} className="flex items-center gap-1.5">
+                <div key={l.label} className="flex items-center gap-2">
                   <div className={`w-2.5 h-2.5 rounded-full ${l.color}`} />
-                  <span className="text-xs text-on-surface-variant">{l.label}</span>
+                  <span className="text-xs text-gray-500 font-medium">{l.label}</span>
                 </div>
               ))}
             </div>
-          </Card>
+          </div>
         </ScrollReveal>
 
-        {/* Day Detail */}
+        {/* ===================== DAY DETAIL PANEL ===================== */}
         <ScrollReveal delay={0.15}>
-          <div className="space-y-4">
-            <Card padding="lg">
-              <h3 className="font-[family-name:var(--font-heading)] font-bold text-lg mb-1">
-                {new Date(currentYear, currentMonth, selectedDay).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
+          <div className="space-y-6">
+            {/* Selected day card */}
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+              <h3 className="font-[family-name:var(--font-heading)] font-bold text-lg text-gray-900 mb-1">
+                {selectedDateCapitalized}
               </h3>
 
               {apptLoading ? (
-                <div className="text-center py-8">
-                  <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-2" />
-                  <p className="text-sm text-on-surface-variant">Chargement...</p>
+                <div className="text-center py-12">
+                  <div className="w-8 h-8 border-3 border-[#4A90D9]/30 border-t-[#4A90D9] rounded-full animate-spin mx-auto mb-3" />
+                  <p className="text-sm text-gray-400">Chargement...</p>
                 </div>
-              ) : selectedDayAppointments && selectedDayAppointments.length > 0 ? (
+              ) : selectedDayAppointments.length > 0 ? (
                 <>
-                  <p className="text-sm text-on-surface-variant mb-6">{selectedDayAppointments.length} rendez-vous</p>
+                  <p className="text-sm text-gray-500 mb-6">
+                    {selectedDayAppointments.length} rendez-vous
+                  </p>
                   <div className="space-y-4">
                     {selectedDayAppointments.map((appt) => {
-                      const pract = (appt as Record<string, unknown>).practitioners as { first_name?: string; last_name?: string; specialty?: string } | undefined
+                      const pract = (appt as Record<string, unknown>).practitioners as {
+                        first_name?: string
+                        last_name?: string
+                        specialty?: string
+                      } | undefined
                       const specialty = pract?.specialty || ''
-                      const borderColor = borderColorMap[specialty] || 'border-primary'
-                      const bgColor = bgColorMap[specialty] || 'bg-primary-fixed/15'
-                      const startTime = new Date(appt.datetime_start).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-                      const endTime = appt.datetime_end ? new Date(appt.datetime_end).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : null
+                      const borderColor = borderColorMap[specialty] || 'border-[#4A90D9]'
+                      const bgColor = bgColorMap[specialty] || 'bg-[#4A90D9]/8'
+                      const startTime = new Date(appt.datetime_start).toLocaleTimeString('fr-FR', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })
+                      const endTime = appt.datetime_end
+                        ? new Date(appt.datetime_end).toLocaleTimeString('fr-FR', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })
+                        : null
                       const status = statusLabels[appt.status] || statusLabels['planifie']
 
                       return (
-                        <div key={appt.id} className={`border-l-4 ${borderColor} rounded-r-xl ${bgColor} p-4`}>
-                          <p className="text-xs text-outline mb-1">{startTime}{endTime ? ` — ${endTime}` : ''}</p>
-                          <p className="font-semibold text-on-surface">
-                            {pract ? `${pract.first_name || ''} ${pract.last_name || ''}`.trim() : appt.title}
+                        <div
+                          key={appt.id}
+                          className={`border-l-4 ${borderColor} rounded-r-2xl ${bgColor} p-5 transition-all duration-200 hover:scale-[1.01] hover:shadow-sm`}
+                        >
+                          <p className="text-xs text-gray-400 font-medium mb-1.5 tracking-wide">
+                            {startTime}
+                            {endTime ? ` — ${endTime}` : ''}
                           </p>
-                          {specialty && <Badge variant="primary" size="sm">{specialty}</Badge>}
-                          <div className="flex items-center gap-1 mt-2">
-                            <Badge variant={status.variant} size="sm" icon={appt.status === 'confirme' ? 'check_circle' : 'schedule'}>
+                          <p className="font-semibold text-gray-900 text-[15px]">
+                            {pract
+                              ? `${pract.first_name || ''} ${pract.last_name || ''}`.trim()
+                              : appt.title}
+                          </p>
+                          {specialty && (
+                            <div className="mt-2">
+                              <Badge variant="primary" size="sm">{specialty}</Badge>
+                            </div>
+                          )}
+                          <div className="flex items-center gap-1.5 mt-3">
+                            <Badge
+                              variant={status.variant}
+                              size="sm"
+                              icon={appt.status === 'confirme' ? 'check_circle' : 'schedule'}
+                            >
                               {status.label}
                             </Badge>
                           </div>
                           {appt.location && (
-                            <p className="text-xs text-on-surface-variant mt-2 flex items-center gap-1">
-                              <span className="material-symbols-outlined text-[14px]">location_on</span>
+                            <p className="text-xs text-gray-500 mt-3 flex items-center gap-1.5">
+                              <span className="material-symbols-outlined text-[14px] text-gray-400">location_on</span>
                               {appt.location}
                             </p>
                           )}
@@ -259,70 +346,48 @@ export default function AgendaPage() {
                   </div>
                 </>
               ) : (
-                <>
-                  {/* Demo / empty state fallback */}
-                  {!hasAppointments ? (
-                    <>
-                      <p className="text-sm text-on-surface-variant mb-6">2 rendez-vous aujourd&apos;hui</p>
-                      <div className="space-y-4">
-                        <div className="border-l-4 border-primary rounded-r-xl bg-primary-fixed/15 p-4">
-                          <p className="text-xs text-outline mb-1">14h00 — 14h45</p>
-                          <p className="font-semibold text-on-surface">Mme Valerie Dupont</p>
-                          <Badge variant="primary" size="sm">Orthophoniste</Badge>
-                          <div className="flex items-center gap-1 mt-2">
-                            <Badge variant="secondary" size="sm" icon="check_circle">Confirme</Badge>
-                          </div>
-                          <p className="text-xs text-on-surface-variant mt-2 flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[14px]">location_on</span>
-                            12 Rue de la Paix
-                          </p>
-                        </div>
-
-                        <div className="border-l-4 border-purple-500 rounded-r-xl bg-purple-50 p-4">
-                          <p className="text-xs text-outline mb-1">16h30 — 17h30</p>
-                          <p className="font-semibold text-on-surface">Dr. Alain Martin</p>
-                          <Badge variant="primary" size="sm">Pedopsychiatre</Badge>
-                          <div className="flex items-center gap-1 mt-2">
-                            <Badge variant="gold" size="sm" icon="schedule">A confirmer</Badge>
-                          </div>
-                          <p className="text-xs text-on-surface-variant mt-2 flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[14px]">location_on</span>
-                            Centre Hospitalier, Batiment B
-                          </p>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="text-center py-8">
-                      <span className="material-symbols-outlined text-outline text-[40px] mb-2 block">event_busy</span>
-                      <p className="text-sm text-on-surface-variant">Aucun rendez-vous ce jour</p>
-                    </div>
-                  )}
-                </>
+                /* Empty state - no appointments this day */
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <span className="material-symbols-outlined text-gray-300 text-[32px]">event_busy</span>
+                  </div>
+                  <p className="text-sm text-gray-500 font-medium">Aucun rendez-vous ce jour</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Selectionnez un autre jour ou ajoutez un rendez-vous
+                  </p>
+                </div>
               )}
-            </Card>
+            </div>
 
-            <Card padding="sm" className="bg-tertiary-fixed/20 border-none">
-              <div className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-tertiary text-[20px] mt-0.5">lightbulb</span>
-                <p className="text-sm text-on-surface-variant">
-                  Pensez a prendre le carnet de suivi de {firstChild?.first_name || 'votre enfant'}.
-                </p>
-              </div>
-            </Card>
-
-            <Card padding="sm">
-              <p className="text-xs text-outline uppercase tracking-wider mb-2">A venir demain</p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-tertiary-fixed rounded-xl flex items-center justify-center">
-                  <span className="material-symbols-outlined text-tertiary text-[20px]">healing</span>
-                </div>
-                <div>
-                  <p className="font-medium text-on-surface text-sm">Seance d&apos;Ergotherapie</p>
-                  <p className="text-xs text-on-surface-variant">8 Avril — 10h00-11h00</p>
+            {/* Tip card */}
+            {childName && (
+              <div className="bg-[#E8A87C]/10 rounded-2xl border border-[#E8A87C]/20 p-5">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-[#E8A87C]/20 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="material-symbols-outlined text-[#E8A87C] text-[18px]">lightbulb</span>
+                  </div>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Pensez a prendre le carnet de suivi de {childName}.
+                  </p>
                 </div>
               </div>
-            </Card>
+            )}
+
+            {/* Upcoming - show only if there are appointments */}
+            {hasAppointments && (
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                <p className="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-4">A venir</p>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-[#7EC8B0]/15 rounded-2xl flex items-center justify-center flex-shrink-0">
+                    <span className="material-symbols-outlined text-[#7EC8B0] text-[22px]">healing</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900 text-sm">Prochain rendez-vous</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Consultez votre agenda pour les details</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </ScrollReveal>
       </div>

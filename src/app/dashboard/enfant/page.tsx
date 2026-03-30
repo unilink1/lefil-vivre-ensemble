@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 import { useChildren, usePractitioners, useDocuments, useSessions } from '@/hooks/useData'
 import { useSelectedChild } from '@/hooks/useSelectedChild'
+import AvatarUpload from '@/components/ui/AvatarUpload'
 import { supabase } from '@/lib/supabase'
 
 const tabs = [
@@ -128,10 +129,14 @@ export default function EnfantPage() {
       <ScrollReveal>
         <div className="relative overflow-hidden rounded-3xl mb-10 bg-gradient-to-br from-[#4A90D9]/5 via-[#7EC8B0]/5 to-[#E8A87C]/5">
           <div className="px-8 py-10 flex flex-col sm:flex-row items-center gap-8">
-            <div className="relative shrink-0">
-              <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-[#4A90D9] to-[#7EC8B0] flex items-center justify-center text-white text-3xl font-bold shadow-xl">
-                {childInitials}
-              </div>
+            <div className="shrink-0">
+              <AvatarUpload
+                currentUrl={firstChild.photo_url}
+                initials={childInitials}
+                onUpload={async (dataUrl) => {
+                  await updateChild(firstChild.id, { photo_url: dataUrl })
+                }}
+              />
             </div>
             <div className="flex-1 text-center sm:text-left">
               <h1 className="font-[family-name:var(--font-heading)] text-3xl font-extrabold text-on-surface mb-2">{childName}</h1>
@@ -189,7 +194,7 @@ export default function EnfantPage() {
               onClick={() => setEditing(null)} className="fixed inset-0 bg-black/30 z-50" />
             <motion.div
               initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }}
-              className="fixed inset-x-4 top-[10%] sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:w-full sm:max-w-lg bg-white rounded-3xl shadow-2xl z-50 p-8 max-h-[80vh] overflow-y-auto"
+              className="fixed inset-x-4 top-[10%] sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:w-full sm:max-w-lg bg-white shadow-2xl z-50 p-8 max-h-[80vh] overflow-y-auto"
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="font-[family-name:var(--font-heading)] text-xl font-bold">
@@ -208,17 +213,17 @@ export default function EnfantPage() {
                     <div>
                       <label className="text-sm font-semibold text-on-surface mb-2 block">Prenom</label>
                       <input value={editValues.first_name || ''} onChange={e => setEditValues({ ...editValues, first_name: e.target.value })}
-                        className="w-full py-3 px-4 bg-gray-50 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
+                        className="w-full py-3 px-4 bg-gray-50 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
                     </div>
                     <div>
                       <label className="text-sm font-semibold text-on-surface mb-2 block">Nom</label>
                       <input value={editValues.last_name || ''} onChange={e => setEditValues({ ...editValues, last_name: e.target.value })}
-                        className="w-full py-3 px-4 bg-gray-50 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
+                        className="w-full py-3 px-4 bg-gray-50 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
                     </div>
                     <div>
                       <label className="text-sm font-semibold text-on-surface mb-2 block">Date de naissance</label>
                       <input type="date" value={editValues.birth_date || ''} onChange={e => setEditValues({ ...editValues, birth_date: e.target.value })}
-                        className="w-full py-3 px-4 bg-gray-50 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
+                        className="w-full py-3 px-4 bg-gray-50 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
                     </div>
                   </>
                 )}
@@ -227,17 +232,17 @@ export default function EnfantPage() {
                     <div>
                       <label className="text-sm font-semibold text-on-surface mb-2 block">Diagnostic principal</label>
                       <input value={editValues.diagnosis_primary || ''} onChange={e => setEditValues({ ...editValues, diagnosis_primary: e.target.value })}
-                        placeholder="ex: TDAH, TSA, Dyslexie..." className="w-full py-3 px-4 bg-gray-50 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
+                        placeholder="ex: TDAH, TSA, Dyslexie..." className="w-full py-3 px-4 bg-gray-50 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
                     </div>
                     <div>
                       <label className="text-sm font-semibold text-on-surface mb-2 block">Allergies (separees par des virgules)</label>
                       <input value={editValues.allergies || ''} onChange={e => setEditValues({ ...editValues, allergies: e.target.value })}
-                        placeholder="ex: Arachides, Penicilline" className="w-full py-3 px-4 bg-gray-50 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
+                        placeholder="ex: Arachides, Penicilline" className="w-full py-3 px-4 bg-gray-50 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
                     </div>
                     <div>
                       <label className="text-sm font-semibold text-on-surface mb-2 block">Traitements (separes par des virgules)</label>
                       <input value={editValues.treatments || ''} onChange={e => setEditValues({ ...editValues, treatments: e.target.value })}
-                        placeholder="ex: Methylphenidate 10mg, Omega-3" className="w-full py-3 px-4 bg-gray-50 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
+                        placeholder="ex: Methylphenidate 10mg, Omega-3" className="w-full py-3 px-4 bg-gray-50 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
                     </div>
                   </>
                 )}
@@ -246,28 +251,28 @@ export default function EnfantPage() {
                     <div>
                       <label className="text-sm font-semibold text-on-surface mb-2 block">Medecin traitant</label>
                       <input value={editValues.doctor_name || ''} onChange={e => setEditValues({ ...editValues, doctor_name: e.target.value })}
-                        className="w-full py-3 px-4 bg-gray-50 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
+                        className="w-full py-3 px-4 bg-gray-50 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
                     </div>
                     <div>
                       <label className="text-sm font-semibold text-on-surface mb-2 block">Telephone medecin</label>
                       <input value={editValues.doctor_phone || ''} onChange={e => setEditValues({ ...editValues, doctor_phone: e.target.value })}
-                        className="w-full py-3 px-4 bg-gray-50 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
+                        className="w-full py-3 px-4 bg-gray-50 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9]" />
                     </div>
                     <div>
                       <label className="text-sm font-semibold text-on-surface mb-2 block">Notes d&apos;urgence</label>
                       <textarea value={editValues.emergency_notes || ''} onChange={e => setEditValues({ ...editValues, emergency_notes: e.target.value })}
-                        rows={3} className="w-full py-3 px-4 bg-gray-50 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9] resize-none" />
+                        rows={3} className="w-full py-3 px-4 bg-gray-50 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9] resize-none" />
                     </div>
                   </>
                 )}
               </div>
 
               <div className="flex gap-3 mt-8">
-                <button onClick={() => setEditing(null)} className="flex-1 py-3 rounded-xl border border-gray-200 text-on-surface-variant font-semibold cursor-pointer hover:bg-gray-50">
+                <button onClick={() => setEditing(null)} className="flex-1 py-3 border border-gray-200 text-on-surface-variant font-semibold cursor-pointer hover:bg-gray-50">
                   Annuler
                 </button>
                 <button onClick={saveEdit} disabled={saving}
-                  className="flex-1 py-3 rounded-xl bg-[#4A90D9] text-white font-semibold cursor-pointer hover:bg-[#3a7bc8] disabled:opacity-50 flex items-center justify-center gap-2">
+                  className="flex-1 py-3 bg-[#4A90D9] text-white font-semibold cursor-pointer hover:bg-[#3a7bc8] disabled:opacity-50 flex items-center justify-center gap-2">
                   {saving ? 'Enregistrement...' : 'Enregistrer'}
                 </button>
               </div>
