@@ -317,6 +317,32 @@ export default function DashboardPage() {
       `}</style>
 
       <div className="max-w-6xl mx-auto animate-fadeInUp">
+
+        {/* Upcoming appointment alert (within 24h) */}
+        {(() => {
+          const next24h = upcomingAppointments.find(a => {
+            const diff = new Date(a.datetime_start).getTime() - Date.now()
+            return diff > 0 && diff < 24 * 60 * 60 * 1000
+          })
+          if (!next24h) return null
+          const d = new Date(next24h.datetime_start)
+          const pract = (next24h as Record<string, unknown>).practitioners as { first_name?: string; last_name?: string } | undefined
+          return (
+            <div className="mb-6 bg-[#E09060]/8 border border-[#E09060]/20 p-4 flex items-center gap-4">
+              <div className="w-10 h-10 bg-[#E09060]/15 flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[#E09060] text-[22px]">notifications_active</span>
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-gray-800 text-sm">Rendez-vous dans moins de 24h</p>
+                <p className="text-gray-600 text-sm">
+                  {next24h.title}{pract ? ` — ${pract.first_name} ${pract.last_name || ''}` : ''} · {d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })} à {d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                </p>
+              </div>
+            </div>
+          )
+        })()}
+      </div>
+      <div className="max-w-6xl mx-auto">
         {/* ── Welcome Hero ── */}
         <ScrollReveal>
           <div className="relative overflow-hidden rounded-3xl mb-8 bg-white border border-gray-100 shadow-sm">

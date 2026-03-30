@@ -1,13 +1,14 @@
 {
   "name": "Le Fil — Vivre Ensemble",
   "short_name": "Le Fil",
-  "description": "Accompagnement familles d'enfants atypiques",
-  "start_url": "/",
+  "description": "Coordination de soins pour familles d'enfants atypiques",
+  "start_url": "/dashboard/profil",
   "display": "standalone",
   "background_color": "#FAFAF8",
-  "theme_color": "#4A90D9",
+  "theme_color": "#3B82D9",
+  "orientation": "portrait-primary",
+  "categories": ["health", "medical"],
   "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
 }

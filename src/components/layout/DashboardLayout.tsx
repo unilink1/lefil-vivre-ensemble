@@ -2,10 +2,11 @@
 import BottomNav from './BottomNav'
 import Logo from '@/components/ui/Logo'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { ReactNode, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { ReactNode, useState, useEffect, useRef, useCallback } from 'react'
 import { useSelectedChild } from '@/hooks/useSelectedChild'
 import { useAuth } from '@/hooks/useAuth'
+import { supabase } from '@/lib/supabase'
 
 const navItems = [
   { icon: 'space_dashboard', label: 'Tableau de bord', href: '/dashboard/profil' },
@@ -90,6 +91,166 @@ function SidebarChildSelector({ collapsed }: { collapsed?: boolean }) {
   )
 }
 
+type SearchResult = {
+  type: 'child' | 'practitioner' | 'session'
+  label: string
+  sublabel?: string
+  href: string
+}
+
+function SidebarSearch({ collapsed }: { collapsed?: boolean }) {
+  const [query, setQuery] = useState('')
+  const [results, setResults] = useState<SearchResult[]>([])
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const router = useRouter()
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
+  const doSearch = useCallback(async (q: string) => {
+    if (q.length < 2) {
+      setResults([])
+      setOpen(false)
+      return
+    }
+    setLoading(true)
+    const pattern = `%${q}%`
+    const found: SearchResult[] = []
+
+    try {
+      // Search children
+      const { data: children } = await supabase
+        .from('children')
+        .select('id, first_name, last_name')
+        .or(`first_name.ilike.${pattern},last_name.ilike.${pattern}`)
+        .eq('is_archived', false)
+        .limit(5)
+      if (children) {
+        children.forEach(c => found.push({
+          type: 'child',
+          label: `${c.first_name} ${c.last_name || ''}`.trim(),
+          sublabel: 'Enfant',
+          href: '/dashboard/enfant',
+        }))
+      }
+
+      // Search practitioners
+      const { data: practitioners } = await supabase
+        .from('practitioners')
+        .select('id, first_name, last_name, specialty')
+        .or(`first_name.ilike.${pattern},last_name.ilike.${pattern},specialty.ilike.${pattern}`)
+        .limit(5)
+      if (practitioners) {
+        practitioners.forEach(p => found.push({
+          type: 'practitioner',
+          label: `${p.first_name} ${p.last_name || ''}`.trim(),
+          sublabel: p.specialty,
+          href: `/dashboard/praticien?id=${p.id}`,
+        }))
+      }
+
+      // Search sessions (observations / objectives)
+      const { data: sessions } = await supabase
+        .from('sessions')
+        .select('id, session_date, observations, objectives, practitioner_id')
+        .or(`observations.ilike.${pattern},objectives.ilike.${pattern}`)
+        .order('session_date', { ascending: false })
+        .limit(5)
+      if (sessions) {
+        sessions.forEach(s => found.push({
+          type: 'session',
+          label: s.objectives || s.observations?.slice(0, 60) || 'Seance',
+          sublabel: new Date(s.session_date).toLocaleDateString('fr-FR'),
+          href: `/dashboard/praticien?id=${s.practitioner_id}`,
+        }))
+      }
+    } catch {
+      // silently ignore search errors
+    }
+
+    setResults(found)
+    setOpen(found.length > 0)
+    setLoading(false)
+  }, [])
+
+  const handleChange = (val: string) => {
+    setQuery(val)
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => doSearch(val), 300)
+  }
+
+  const handleSelect = (r: SearchResult) => {
+    setOpen(false)
+    setQuery('')
+    setResults([])
+    router.push(r.href)
+  }
+
+  if (collapsed) return null
+
+  const iconMap: Record<string, string> = {
+    child: 'child_care',
+    practitioner: 'stethoscope',
+    session: 'menu_book',
+  }
+
+  return (
+    <div ref={wrapperRef} className="px-4 py-3 border-b border-gray-100/60 relative">
+      <div className="relative">
+        <span className="material-symbols-outlined text-[18px] text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">search</span>
+        <input
+          type="text"
+          value={query}
+          onChange={e => handleChange(e.target.value)}
+          onFocus={() => { if (results.length > 0) setOpen(true) }}
+          placeholder="Rechercher..."
+          className="w-full pl-9 pr-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#4A90D9]/20 focus:border-[#4A90D9] transition-all"
+        />
+        {loading && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-[#4A90D9]/30 border-t-[#4A90D9] rounded-full animate-spin" />
+        )}
+      </div>
+
+      {/* Dropdown */}
+      {open && results.length > 0 && (
+        <div className="absolute left-4 right-4 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-50 max-h-72 overflow-y-auto">
+          {results.map((r, i) => (
+            <button
+              key={i}
+              onClick={() => handleSelect(r)}
+              className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors cursor-pointer first:rounded-t-xl last:rounded-b-xl"
+            >
+              <span className="material-symbols-outlined text-[18px] text-gray-400">{iconMap[r.type]}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-800 truncate">{r.label}</p>
+                {r.sublabel && <p className="text-xs text-gray-400 truncate">{r.sublabel}</p>}
+              </div>
+              <span className="material-symbols-outlined text-[14px] text-gray-300">chevron_right</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {open && query.length >= 2 && results.length === 0 && !loading && (
+        <div className="absolute left-4 right-4 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-50 p-4 text-center">
+          <p className="text-sm text-gray-400">Aucun resultat</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
 function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const pathname = usePathname()
   const { profile, signOut } = useAuth()
@@ -127,6 +288,9 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
 
       {/* Child selector */}
       <SidebarChildSelector collapsed={collapsed} />
+
+      {/* Search bar */}
+      <SidebarSearch collapsed={collapsed} />
 
       {/* Navigation */}
       <nav className="flex-1 py-3 overflow-y-auto">

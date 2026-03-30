@@ -152,7 +152,19 @@ export default function EnfantPage() {
                 </div>
               )}
             </div>
-            <div className="flex gap-3 shrink-0">
+            <div className="flex gap-3 shrink-0 no-print">
+              <button
+                onClick={() => {
+                  const printArea = document.getElementById('print-dossier')
+                  if (printArea) printArea.style.display = 'block'
+                  window.print()
+                  if (printArea) printArea.style.display = 'none'
+                }}
+                className="px-5 py-2.5 rounded-xl border border-[#7EC8B0]/30 text-[#7EC8B0] font-semibold text-sm hover:bg-[#7EC8B0]/5 transition-all cursor-pointer flex items-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+                Exporter PDF
+              </button>
               <button
                 onClick={() => startEdit('identity', {
                   first_name: firstChild.first_name || '',
@@ -618,6 +630,140 @@ export default function EnfantPage() {
 
         </motion.div>
       </AnimatePresence>
+
+      {/* ============ PRINT-ONLY DOSSIER ============ */}
+      <div id="print-dossier" className="print-only" style={{ display: 'none' }}>
+        <div style={{ fontFamily: 'sans-serif', padding: '40px', color: '#2D3748' }}>
+          <div style={{ borderBottom: '2px solid #4A90D9', paddingBottom: '20px', marginBottom: '30px' }}>
+            <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: 0 }}>Dossier de {childName}</h1>
+            <p style={{ color: '#718096', marginTop: '8px', fontSize: '14px' }}>
+              Exporte le {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+            </p>
+          </div>
+
+          {/* Informations generales */}
+          <div style={{ marginBottom: '30px' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#4A90D9', marginBottom: '12px' }}>Informations generales</h2>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+              <tbody>
+                <tr>
+                  <td style={{ padding: '8px 12px', fontWeight: 600, width: '180px', borderBottom: '1px solid #E2E8F0' }}>Nom complet</td>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid #E2E8F0' }}>{childName || 'Non renseigne'}</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '8px 12px', fontWeight: 600, borderBottom: '1px solid #E2E8F0' }}>Age</td>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid #E2E8F0' }}>{childAge !== null ? `${childAge} ans` : 'Non renseigne'}</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '8px 12px', fontWeight: 600, borderBottom: '1px solid #E2E8F0' }}>Date de naissance</td>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid #E2E8F0' }}>{childBirthFormatted || 'Non renseigne'}</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '8px 12px', fontWeight: 600, borderBottom: '1px solid #E2E8F0' }}>Diagnostics</td>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid #E2E8F0' }}>{childDiagnoses.length > 0 ? childDiagnoses.join(', ') : 'Aucun'}</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '8px 12px', fontWeight: 600, borderBottom: '1px solid #E2E8F0' }}>Allergies</td>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid #E2E8F0' }}>{childAllergies.length > 0 ? childAllergies.join(', ') : 'Aucune'}</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '8px 12px', fontWeight: 600, borderBottom: '1px solid #E2E8F0' }}>Traitements</td>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid #E2E8F0' }}>{childTreatments.length > 0 ? childTreatments.join(', ') : 'Aucun'}</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '8px 12px', fontWeight: 600, borderBottom: '1px solid #E2E8F0' }}>Groupe sanguin</td>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid #E2E8F0' }}>{firstChild.blood_type || 'Non renseigne'}</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '8px 12px', fontWeight: 600, borderBottom: '1px solid #E2E8F0' }}>Medecin traitant</td>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid #E2E8F0' }}>{firstChild.family_doctor_name || 'Non renseigne'}{firstChild.family_doctor_phone ? ` — ${firstChild.family_doctor_phone}` : ''}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Praticiens */}
+          <div style={{ marginBottom: '30px' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#4A90D9', marginBottom: '12px' }}>Praticiens ({practitioners.length})</h2>
+            {practitioners.length > 0 ? (
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#F7FAFC' }}>
+                    <th style={{ padding: '8px 12px', textAlign: 'left', borderBottom: '2px solid #E2E8F0', fontWeight: 600 }}>Nom</th>
+                    <th style={{ padding: '8px 12px', textAlign: 'left', borderBottom: '2px solid #E2E8F0', fontWeight: 600 }}>Specialite</th>
+                    <th style={{ padding: '8px 12px', textAlign: 'left', borderBottom: '2px solid #E2E8F0', fontWeight: 600 }}>Frequence</th>
+                    <th style={{ padding: '8px 12px', textAlign: 'left', borderBottom: '2px solid #E2E8F0', fontWeight: 600 }}>Statut</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {practitioners.map(p => (
+                    <tr key={p.id}>
+                      <td style={{ padding: '8px 12px', borderBottom: '1px solid #E2E8F0' }}>{p.first_name} {p.last_name}</td>
+                      <td style={{ padding: '8px 12px', borderBottom: '1px solid #E2E8F0' }}>{p.specialty}</td>
+                      <td style={{ padding: '8px 12px', borderBottom: '1px solid #E2E8F0' }}>{p.follow_up_frequency || '—'}</td>
+                      <td style={{ padding: '8px 12px', borderBottom: '1px solid #E2E8F0' }}>{p.status}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p style={{ color: '#718096', fontSize: '14px' }}>Aucun praticien enregistre</p>
+            )}
+          </div>
+
+          {/* Seances recentes */}
+          <div style={{ marginBottom: '30px' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#4A90D9', marginBottom: '12px' }}>Seances recentes ({sessions.length})</h2>
+            {sessions.length > 0 ? (
+              sessions.slice(0, 15).map(s => (
+                <div key={s.id} style={{ padding: '12px', borderBottom: '1px solid #E2E8F0', fontSize: '14px' }}>
+                  <div style={{ fontWeight: 600, marginBottom: '4px' }}>
+                    {new Date(s.session_date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                    {s.child_mood ? ` — Humeur : ${s.child_mood}/5` : ''}
+                  </div>
+                  {s.objectives && <div style={{ color: '#4A90D9', marginBottom: '2px' }}>Objectifs : {s.objectives}</div>}
+                  {s.observations && <div style={{ color: '#718096' }}>Observations : {s.observations}</div>}
+                  {s.progress && <div style={{ color: '#5CB89A' }}>Progres : {s.progress}</div>}
+                </div>
+              ))
+            ) : (
+              <p style={{ color: '#718096', fontSize: '14px' }}>Aucune seance enregistree</p>
+            )}
+          </div>
+
+          {/* Documents */}
+          <div style={{ marginBottom: '30px' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#4A90D9', marginBottom: '12px' }}>Documents ({realDocuments.length})</h2>
+            {realDocuments.length > 0 ? (
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#F7FAFC' }}>
+                    <th style={{ padding: '8px 12px', textAlign: 'left', borderBottom: '2px solid #E2E8F0', fontWeight: 600 }}>Nom du fichier</th>
+                    <th style={{ padding: '8px 12px', textAlign: 'left', borderBottom: '2px solid #E2E8F0', fontWeight: 600 }}>Categorie</th>
+                    <th style={{ padding: '8px 12px', textAlign: 'left', borderBottom: '2px solid #E2E8F0', fontWeight: 600 }}>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {realDocuments.map(doc => (
+                    <tr key={doc.id}>
+                      <td style={{ padding: '8px 12px', borderBottom: '1px solid #E2E8F0' }}>{doc.file_name}</td>
+                      <td style={{ padding: '8px 12px', borderBottom: '1px solid #E2E8F0' }}>{doc.category}</td>
+                      <td style={{ padding: '8px 12px', borderBottom: '1px solid #E2E8F0' }}>{new Date(doc.created_at).toLocaleDateString('fr-FR')}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p style={{ color: '#718096', fontSize: '14px' }}>Aucun document</p>
+            )}
+          </div>
+
+          <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: '16px', marginTop: '30px', fontSize: '12px', color: '#A0AEC0', textAlign: 'center' }}>
+            Le Fil — Vivre Ensemble | Dossier genere automatiquement
+          </div>
+        </div>
+      </div>
+
     </DashboardLayout>
   )
 }
