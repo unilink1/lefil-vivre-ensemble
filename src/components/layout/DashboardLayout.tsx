@@ -169,7 +169,7 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
       <div className={`${collapsed ? 'px-2' : 'px-3'} pb-3 space-y-2`}>
         {/* AI Assistant */}
         <a
-          href="https://chatgpt.com"
+          href="https://chatgpt.com/g/g-6973d5559b04819190b689567f8199e5-lefil-vivre-ensemble-aide"
           target="_blank"
           rel="noopener noreferrer"
           id="chatbot-link"
