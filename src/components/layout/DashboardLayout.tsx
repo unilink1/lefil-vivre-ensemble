@@ -373,6 +373,16 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
           <span className="material-symbols-outlined text-[20px]">handshake</span>
           {!collapsed && "Demande d'intégration"}
         </Link>
+
+        {/* Parrainer */}
+        <Link
+          href="/dashboard/parrainer"
+          title={collapsed ? 'Parrainer un proche' : undefined}
+          className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} px-3 py-3 rounded-xl bg-gradient-to-r from-[#5CB89A]/8 to-[#3B82D9]/8 border border-[#5CB89A]/15 text-[#5CB89A] font-medium text-sm transition-all duration-200 hover:from-[#5CB89A]/15 hover:to-[#3B82D9]/15 hover:shadow-sm cursor-pointer`}
+        >
+          <span className="material-symbols-outlined text-[20px]">favorite</span>
+          {!collapsed && 'Parrainer un proche'}
+        </Link>
       </div>
 
       {/* User profile at bottom */}
