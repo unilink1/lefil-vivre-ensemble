@@ -75,6 +75,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       options: { data: { full_name: fullName } },
     })
     if (error) return { error: error.message }
+    // Supabase returns user with 0 identities when email already exists (no error thrown)
+    if (data.user && data.user.identities?.length === 0) {
+      return { error: 'Un compte existe déjà avec cet email. Connectez-vous.' }
+    }
     if (data.user) {
       await supabase.from('profiles').upsert({
         id: data.user.id,
