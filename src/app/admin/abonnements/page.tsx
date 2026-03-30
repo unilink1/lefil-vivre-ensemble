@@ -53,7 +53,7 @@ export default function AdminAbonnementsPage() {
                   <h2 className="font-[family-name:var(--font-heading)] text-xl font-bold">Revenu mensuel recurrent</h2>
                 </div>
                 <div className="font-[family-name:var(--font-heading)] text-5xl font-extrabold text-primary mb-2">
-                  {totalRevenue} <span className="text-2xl text-on-surface-variant font-semibold">CHF/mois</span>
+                  {totalRevenue} <span className="text-2xl text-on-surface-variant font-semibold">€/mois</span>
                 </div>
                 <p className="text-on-surface-variant">{actifs.length} abonnements actifs</p>
               </div>
@@ -69,13 +69,13 @@ export default function AdminAbonnementsPage() {
                     className={`bg-surface-card rounded-2xl p-8 border ${plan.color}`}>
                     <div className="text-3xl mb-4">{plan.emoji}</div>
                     <h3 className="font-[family-name:var(--font-heading)] font-bold text-lg mb-1">{plan.name}</h3>
-                    <p className="text-sm text-outline mb-6">{plan.price} CHF/mois</p>
+                    <p className="text-sm text-outline mb-6">{plan.price} €/mois</p>
                     <div className="flex items-baseline gap-2 mb-2">
                       <span className="font-[family-name:var(--font-heading)] text-3xl font-extrabold">{plans[plan.key].length}</span>
                       <span className="text-sm text-on-surface-variant">abonnes</span>
                     </div>
                     <div className="flex items-baseline gap-2">
-                      <span className="font-semibold text-primary">{revenue[plan.key]} CHF</span>
+                      <span className="font-semibold text-primary">{revenue[plan.key]} €</span>
                       <span className="text-xs text-outline">/mois</span>
                     </div>
                     {plans[plan.key].length > 0 && (

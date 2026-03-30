@@ -30,10 +30,10 @@ const plans = [
 ]
 
 const services = [
-  { icon: 'support_agent', name: 'Appel de soutien parental', desc: '30 min avec un coach spécialisé', price: '45 CHF', available: true },
-  { icon: 'description', name: 'Aide dossier MDPH', desc: 'Accompagnement administratif complet', price: '120 CHF', available: true },
-  { icon: 'school', name: 'Médiation scolaire', desc: "Préparation de la réunion d'équipe éducative", price: '90 CHF', available: true },
-  { icon: 'psychology', name: 'Bilan de coordination', desc: 'Synthèse pluridisciplinaire avec tous les praticiens', price: '200 CHF', available: false },
+  { icon: 'support_agent', name: 'Appel de soutien parental', desc: '30 min avec un coach spécialisé', price: '45 €', available: true },
+  { icon: 'description', name: 'Aide dossier MDPH', desc: 'Accompagnement administratif complet', price: '120 €', available: true },
+  { icon: 'school', name: 'Médiation scolaire', desc: "Préparation de la réunion d'équipe éducative", price: '90 €', available: true },
+  { icon: 'psychology', name: 'Bilan de coordination', desc: 'Synthèse pluridisciplinaire avec tous les praticiens', price: '200 €', available: false },
 ]
 
 export default function AbonnementPage() {
@@ -103,7 +103,7 @@ function AbonnementContent() {
               <div className="text-right">
                 <p className="font-[family-name:var(--font-heading)] text-4xl font-extrabold text-[#3B82D9]">
                   {plans.find(p => p.id === currentPlan)?.price || 99}
-                  <span className="text-lg font-medium text-gray-400"> CHF/mois</span>
+                  <span className="text-lg font-medium text-gray-400"> €/mois</span>
                 </p>
               </div>
             )}
@@ -147,7 +147,7 @@ function AbonnementContent() {
                 <h3 className="font-[family-name:var(--font-heading)] font-bold text-lg mb-1">{plan.name}</h3>
                 <div className="flex items-baseline gap-0.5 mb-5">
                   <span className="font-[family-name:var(--font-heading)] text-3xl font-extrabold" style={{ color: plan.color }}>{plan.price}</span>
-                  <span className="text-gray-400 text-sm">CHF/mois</span>
+                  <span className="text-gray-400 text-sm">€/mois</span>
                 </div>
                 <ul className="space-y-2.5">
                   {plan.features.map((f, j) => (
@@ -207,9 +207,9 @@ function AbonnementContent() {
           <h3 className="font-[family-name:var(--font-heading)] font-bold text-lg mb-4">Historique de facturation</h3>
           <div className="space-y-3">
             {[
-              { date: '01/03/2026', amount: '99 CHF', status: 'Payé' },
-              { date: '01/02/2026', amount: '99 CHF', status: 'Payé' },
-              { date: '01/01/2026', amount: '99 CHF', status: 'Payé' },
+              { date: '01/03/2026', amount: '99 €', status: 'Payé' },
+              { date: '01/02/2026', amount: '99 €', status: 'Payé' },
+              { date: '01/01/2026', amount: '99 €', status: 'Payé' },
             ].map((bill, i) => (
               <div key={i} className="flex items-center justify-between py-2.5 border-b border-gray-50 last:border-0">
                 <div className="flex items-center gap-3">

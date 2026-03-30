@@ -122,7 +122,7 @@ const faqs = [
   { q: 'Le Fil est-il adapt\u00e9 \u00e0 tous les types de handicap ?', a: 'Oui. Le Fil est con\u00e7u pour accompagner les familles d\u2019enfants avec tout type de trouble ou de handicap : TSA, TDAH, DYS, troubles du d\u00e9veloppement, maladies rares, etc.' },
   { q: 'Mes donn\u00e9es sont-elles s\u00e9curis\u00e9es ?', a: 'Absolument. Nous sommes conformes RGPD et h\u00e9bergeons vos donn\u00e9es de sant\u00e9 chez un h\u00e9bergeur certifi\u00e9 HDS (H\u00e9bergeur de Donn\u00e9es de Sant\u00e9). Toutes les communications sont chiffr\u00e9es.' },
   { q: 'Puis-je inviter plusieurs praticiens ?', a: 'Oui, vous pouvez inviter autant de praticiens que n\u00e9cessaire. Chacun n\u2019aura acc\u00e8s qu\u2019aux documents que vous choisissez de partager.' },
-  { q: 'Le Fil fonctionne-t-il en Suisse ?', a: 'Oui. Le Fil est disponible en France et en Suisse. Les tarifs sont affich\u00e9s en CHF et nous respectons les r\u00e9glementations locales.' },
+  { q: 'Le Fil fonctionne-t-il en Suisse ?', a: 'Oui. Le Fil est disponible en France et en Suisse. Les tarifs sont affich\u00e9s en € et nous respectons les r\u00e9glementations locales.' },
   { q: 'Puis-je changer de forfait \u00e0 tout moment ?', a: 'Bien s\u00fbr. Vous pouvez upgrader ou downgrader votre forfait \u00e0 tout moment depuis les param\u00e8tres de votre compte. Le changement prend effet imm\u00e9diatement.' },
   { q: 'Y a-t-il un engagement ?', a: 'Non. Tous nos forfaits sont sans engagement. Vous pouvez r\u00e9silier \u00e0 tout moment, sans frais ni justification.' },
 ]
@@ -499,7 +499,7 @@ export default function LandingPage() {
                   </div>
                   <div className="mb-6">
                     <span className="font-[family-name:var(--font-heading)] text-4xl font-extrabold text-on-surface">{p.price}</span>
-                    <span className="text-on-surface-variant ml-1">CHF/mois</span>
+                    <span className="text-on-surface-variant ml-1">€/mois</span>
                   </div>
                   <Link
                     href="/inscription"

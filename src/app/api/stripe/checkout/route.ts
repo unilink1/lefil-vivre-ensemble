@@ -8,15 +8,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 const PLATFORM_CONNECTED_ACCOUNT = 'acct_1TGWuvKAsIVv6pmr'
 
 const PRICE_IDS: Record<string, string> = {
-  essentiel: 'price_1TGWjyGfbMwBwKZ6wCBdHuyR',
-  serenite: 'price_1TGWjzGfbMwBwKZ6CKAh6CC7',
-  accompagnement: 'price_1TGWjzGfbMwBwKZ6usRP2ioO',
+  essentiel: 'price_1TGaBRGfbMwBwKZ6OhSSDIpb',
+  serenite: 'price_1TGaBRGfbMwBwKZ6Iutro70W',
+  accompagnement: 'price_1TGaBSGfbMwBwKZ6j41OnELk',
 }
 
 const AMOUNTS: Record<string, number> = {
-  essentiel: 7700,
-  serenite: 9900,
-  accompagnement: 16500,
+  essentiel: 7700, // 77 EUR in cents
+  serenite: 9900,  // 99 EUR
+  accompagnement: 16500, // 165 EUR
 }
 
 export async function POST(request: NextRequest) {

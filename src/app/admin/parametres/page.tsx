@@ -47,9 +47,9 @@ export default function AdminParametresPage() {
             </div>
             <div className="space-y-5">
               {[
-                { label: 'Essentiel (77 CHF/mois)', key: 'stripeEssentielLink' as const, icon: '🌱' },
-                { label: 'Serenite (99 CHF/mois)', key: 'stripeSereniteLink' as const, icon: '🌿' },
-                { label: 'Accompagnement Plus (165 CHF/mois)', key: 'stripeAccompagnementLink' as const, icon: '🌳' },
+                { label: 'Essentiel (77 €/mois)', key: 'stripeEssentielLink' as const, icon: '🌱' },
+                { label: 'Serenite (99 €/mois)', key: 'stripeSereniteLink' as const, icon: '🌿' },
+                { label: 'Accompagnement Plus (165 €/mois)', key: 'stripeAccompagnementLink' as const, icon: '🌳' },
               ].map(field => (
                 <div key={field.key}>
                   <label className="text-sm font-semibold text-on-surface mb-2 flex items-center gap-2">

@@ -77,7 +77,7 @@ export default function AdminDashboardPage() {
                     <span className="material-symbols-outlined text-white text-[22px]">payments</span>
                   </div>
                   <div className="font-[family-name:var(--font-heading)] text-3xl font-extrabold text-primary mb-1">
-                    {totalRevenue} <span className="text-lg font-semibold text-on-surface-variant">CHF</span>
+                    {totalRevenue} <span className="text-lg font-semibold text-on-surface-variant">€</span>
                   </div>
                   <div className="text-sm text-on-surface-variant">Revenu mensuel</div>
                 </motion.div>

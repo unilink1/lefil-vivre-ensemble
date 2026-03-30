@@ -13,10 +13,10 @@ const statusConfig = {
 }
 
 const planConfig: Record<string, { label: string; price: string; color: string }> = {
-  free: { label: 'Gratuit', price: '0 CHF', color: 'bg-surface-low text-on-surface-variant' },
-  essentiel: { label: 'Essentiel', price: '77 CHF', color: 'bg-surface-low text-on-surface-variant' },
-  serenite: { label: 'Serenite', price: '99 CHF', color: 'bg-primary-fixed text-primary' },
-  accompagnement: { label: 'Accompagnement+', price: '165 CHF', color: 'bg-secondary-container text-secondary' },
+  free: { label: 'Gratuit', price: '0 €', color: 'bg-surface-low text-on-surface-variant' },
+  essentiel: { label: 'Essentiel', price: '77 €', color: 'bg-surface-low text-on-surface-variant' },
+  serenite: { label: 'Serenite', price: '99 €', color: 'bg-primary-fixed text-primary' },
+  accompagnement: { label: 'Accompagnement+', price: '165 €', color: 'bg-secondary-container text-secondary' },
 }
 
 type FilterStatus = 'tous' | AdminClient['status']
