@@ -22,7 +22,7 @@ export default function OnboardingPraticiensPage() {
   }
 
   const handleFinish = async () => {
-    if (!user) { router.push('/dashboard'); return }
+    if (!user) { router.push('/dashboard/profil'); return }
     setSaving(true)
     try {
       // Get the child created in previous step
@@ -52,7 +52,7 @@ export default function OnboardingPraticiensPage() {
       // Tables may not exist yet — continue anyway
     }
     setSaving(false)
-    router.push('/dashboard')
+    router.push('/dashboard/profil')
   }
 
   return (
