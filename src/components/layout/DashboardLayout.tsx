@@ -16,7 +16,7 @@ function ChildSelector() {
   if (children.length <= 1) return null
 
   return (
-    <div className="flex items-center gap-2 px-4 py-2.5 border-b border-outline-variant/10 bg-surface/50">
+    <div className="flex items-center gap-2 px-4 sm:px-6 lg:px-8 py-2.5 border-b border-outline-variant/10 bg-surface/50">
       <span className="text-xs text-on-surface-variant font-medium mr-1">Enfant :</span>
       <div className="flex gap-2">
         {children.map(child => {
@@ -61,10 +61,10 @@ export default function DashboardLayout({ children, title, breadcrumb }: {
     : '?'
 
   return (
-    <div className="min-h-dvh bg-surface pb-24">
+    <div className="min-h-dvh bg-surface pb-20 sm:pb-6">
       {/* Top Bar */}
       <header className="sticky top-0 z-40 glass border-b border-white/20">
-        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+        <div className="w-full px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/dashboard/profil">
               <Logo size="sm" />
@@ -94,12 +94,12 @@ export default function DashboardLayout({ children, title, breadcrumb }: {
       </header>
 
       {title && (
-        <div className="max-w-5xl mx-auto px-4 pt-6 pb-2">
+        <div className="w-full px-4 sm:px-6 lg:px-8 pt-6 pb-2">
           <h1 className="font-[family-name:var(--font-heading)] text-2xl font-bold text-on-surface">{title}</h1>
         </div>
       )}
 
-      <main className="max-w-5xl mx-auto px-4 py-4">
+      <main className="w-full px-4 sm:px-6 lg:px-8 py-4">
         {children}
       </main>
 
