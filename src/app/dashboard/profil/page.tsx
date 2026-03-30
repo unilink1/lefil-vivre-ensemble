@@ -7,7 +7,8 @@ import Button from '@/components/ui/Button'
 import ScrollReveal from '@/components/ui/ScrollReveal'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
-import { useChildren, useAppointments, useSessions, usePractitioners, useDocuments } from '@/hooks/useData'
+import { useAppointments, useSessions, usePractitioners, useDocuments } from '@/hooks/useData'
+import { useSelectedChild } from '@/hooks/useSelectedChild'
 
 // Demo fallback data
 const demoQuickStats = [
@@ -66,8 +67,7 @@ const moodEmojis: Record<number, string> = { 1: '😢', 2: '😟', 3: '😐', 4:
 
 export default function DashboardPage() {
   const { profile, loading: authLoading } = useAuth()
-  const { children, loading: childrenLoading } = useChildren()
-  const firstChild = children[0]
+  const { selectedChild: firstChild, loading: childrenLoading } = useSelectedChild()
   const { appointments, loading: appointmentsLoading } = useAppointments(firstChild?.id)
   const { sessions, loading: sessionsLoading } = useSessions(firstChild?.id)
   const { practitioners } = usePractitioners(firstChild?.id)

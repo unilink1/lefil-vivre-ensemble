@@ -8,6 +8,7 @@ import ScrollReveal from '@/components/ui/ScrollReveal'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 import { useChildren, usePractitioners, useDocuments, useSessions } from '@/hooks/useData'
+import { useSelectedChild } from '@/hooks/useSelectedChild'
 import { supabase } from '@/lib/supabase'
 
 const tabs = [
@@ -41,8 +42,8 @@ export default function EnfantPage() {
   const [saving, setSaving] = useState(false)
 
   const { loading: authLoading } = useAuth()
-  const { children, loading: childrenLoading, update: updateChild } = useChildren()
-  const firstChild = children[0]
+  const { selectedChild: firstChild, loading: childrenLoading } = useSelectedChild()
+  const { update: updateChild } = useChildren()
   const { practitioners, loading: practLoading } = usePractitioners(firstChild?.id)
   const { documents: realDocuments, loading: docsLoading } = useDocuments(firstChild?.id)
   const { sessions, loading: sessionsLoading } = useSessions(firstChild?.id)
