@@ -50,7 +50,7 @@ export default function DemandeIntegrationPage() {
             <span className="material-symbols-outlined text-[#E8A87C] text-[32px]">handshake</span>
           </div>
           <h1 className="font-[family-name:var(--font-heading)] text-2xl font-bold mb-2">Demande d&apos;intégration</h1>
-          <p className="text-gray-500">Vous souhaitez rejoindre l&apos;écosystème Le Fil en tant que praticien ou partenaire ? Remplissez ce formulaire.</p>
+          <p className="text-gray-500">Vous souhaitez rejoindre l&apos;écosystème Le Fil en tant que praticien ou partenaire ? Ou demander une intégration de besoin ? Merci de nous en faire part ci-dessous.</p>
         </div>
 
         {sent ? (
