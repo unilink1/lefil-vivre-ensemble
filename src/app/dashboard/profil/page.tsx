@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
@@ -76,7 +76,14 @@ export default function DashboardPage() {
     year: 'numeric',
   })
 
-  const isLoading = authLoading || childrenLoading
+  // Force stop loading after 5 seconds max
+  const [forceReady, setForceReady] = useState(false)
+  useEffect(() => {
+    const timer = setTimeout(() => setForceReady(true), 5000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const isLoading = (authLoading || childrenLoading) && !forceReady
 
   // Derive display name
   const displayName = profile?.full_name?.split(' ')[0] || 'vous'

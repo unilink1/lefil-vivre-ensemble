@@ -34,9 +34,9 @@ export default function ConnexionPage() {
         setBusy(false)
       } else {
         setIsSuccess(true)
-        setMsg('Connexion réussie !')
-        // Small delay to let session propagate
-        setTimeout(() => { window.location.href = '/dashboard/profil' }, 500)
+        setMsg('Connexion réussie ! Redirection...')
+        // Wait for session cookies to propagate before redirect
+        setTimeout(() => { window.location.href = '/dashboard/profil' }, 1500)
       }
     } catch (e: unknown) {
       setMsg('Erreur : ' + (e instanceof Error ? e.message : String(e)))
