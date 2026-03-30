@@ -1,5 +1,6 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -36,10 +37,43 @@ const services = [
 ]
 
 export default function AbonnementPage() {
+  return (
+    <Suspense fallback={<DashboardLayout><div className="flex items-center justify-center min-h-[60vh]"><div className="w-10 h-10 border-4 border-[#3B82D9]/30 border-t-[#3B82D9] rounded-full animate-spin" /></div></DashboardLayout>}>
+      <AbonnementContent />
+    </Suspense>
+  )
+}
+
+function AbonnementContent() {
   const { profile } = useAuth()
   const [selectedPlan, setSelectedPlan] = useState(profile?.subscription_plan || 'serenite')
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null)
+  const [successMsg, setSuccessMsg] = useState('')
+  const searchParams = useSearchParams()
 
   const currentPlan = profile?.subscription_plan || 'free'
+
+  useEffect(() => {
+    if (searchParams.get('success') === 'true') {
+      setSuccessMsg(`Félicitations ! Votre abonnement ${searchParams.get('plan') || ''} est actif avec 30 jours d'essai gratuit.`)
+    }
+  }, [searchParams])
+
+  const handleSubscribe = async (planId: string) => {
+    setCheckoutLoading(planId)
+    try {
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: planId, email: profile?.email, userId: profile?.id }),
+      })
+      const data = await res.json()
+      if (data.url) window.location.href = data.url
+      else setCheckoutLoading(null)
+    } catch {
+      setCheckoutLoading(null)
+    }
+  }
 
   return (
     <DashboardLayout breadcrumb={[{ label: 'Paramètres', href: '/dashboard/parametres' }, { label: 'Abonnement', href: '#' }]}>
@@ -75,6 +109,13 @@ export default function AbonnementPage() {
             )}
           </div>
         </div>
+
+        {successMsg && (
+          <div className="mb-8 bg-green-50 border border-green-200 p-4 flex items-center gap-3">
+            <span className="material-symbols-outlined text-green-600 text-[22px]">celebration</span>
+            <p className="text-sm text-green-700 font-medium">{successMsg}</p>
+          </div>
+        )}
 
         {/* Plans grid */}
         <h2 className="font-[family-name:var(--font-heading)] text-xl font-bold mb-6">
@@ -118,10 +159,12 @@ export default function AbonnementPage() {
                 </ul>
                 {isSelected && !isCurrent && (
                   <button
-                    className="w-full mt-5 py-3 text-white font-semibold cursor-pointer transition-all hover:opacity-90"
+                    onClick={() => handleSubscribe(plan.id)}
+                    disabled={checkoutLoading === plan.id}
+                    className="w-full mt-5 py-3 text-white font-semibold cursor-pointer transition-all hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
                     style={{ backgroundColor: plan.color }}
                   >
-                    Passer à {plan.name}
+                    {checkoutLoading === plan.id ? 'Redirection...' : `Passer à ${plan.name}`}
                   </button>
                 )}
               </div>
