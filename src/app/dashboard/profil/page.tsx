@@ -218,7 +218,16 @@ export default function DashboardPage() {
       bg: 'bg-[#4A90D9]/8 hover:bg-[#4A90D9]/15',
       iconColor: 'text-[#4A90D9]',
     },
+    {
+      icon: 'favorite',
+      label: 'Parrainer un proche',
+      href: '/dashboard/parrainer',
+      bg: 'bg-[#5CB89A]/8 hover:bg-[#5CB89A]/15',
+      iconColor: 'text-[#5CB89A]',
+    },
   ]
+
+  const filloutLink = 'https://forms.fillout.com/t/bXkCBjKg54us'
 
   // Loading state
   if (isLoading) {
@@ -719,6 +728,21 @@ export default function DashboardPage() {
               </Link>
             </div>
           </div>
+        </ScrollReveal>
+
+        {/* ── Fillout Eligibility Banner ── */}
+        <ScrollReveal delay={0.22}>
+          <a href={filloutLink} target="_blank" rel="noopener noreferrer"
+            className="block mb-8 bg-gradient-to-r from-[#5CB89A]/10 via-[#3B82D9]/5 to-[#E09060]/10 border border-[#5CB89A]/20 p-5 sm:p-6 flex items-center gap-4 hover:shadow-md transition-all duration-300 group cursor-pointer">
+            <div className="w-12 h-12 bg-[#5CB89A]/15 flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[#5CB89A] text-[24px] group-hover:scale-110 transition-transform">verified</span>
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-gray-800 text-sm">Vérifiez votre éligibilité</p>
+              <p className="text-xs text-gray-500 mt-0.5">Remplissez le formulaire pour savoir si vous pouvez bénéficier de nos services d&apos;accompagnement.</p>
+            </div>
+            <span className="material-symbols-outlined text-[#3B82D9] text-[20px] shrink-0 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
         </ScrollReveal>
 
         {/* ── Quick Actions ── */}
