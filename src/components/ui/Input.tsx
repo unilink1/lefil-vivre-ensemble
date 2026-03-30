@@ -20,8 +20,8 @@ export default function Input({
   const isPassword = type === 'password'
 
   return (
-    <div className={`flex flex-col gap-1.5 ${className}`}>
-      <label className="text-xs font-medium text-on-surface-variant uppercase tracking-wider">
+    <div className={`flex flex-col gap-2 ${className}`}>
+      <label className="text-sm font-semibold text-on-surface">
         {label} {required && <span className="text-error">*</span>}
       </label>
       <div className={`
@@ -45,7 +45,7 @@ export default function Input({
           onBlur={() => setFocused(false)}
           required={required}
           className={`
-            w-full py-3.5 bg-transparent outline-none text-on-surface placeholder:text-outline/60
+            w-full py-3.5 bg-transparent outline-none text-on-surface placeholder:text-outline/40
             font-[family-name:var(--font-body)] text-[15px]
             ${icon ? 'pl-12 pr-4' : 'px-4'}
             ${isPassword ? 'pr-12' : ''}
