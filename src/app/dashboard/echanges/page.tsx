@@ -5,18 +5,9 @@ import { useAuth } from '@/hooks/useAuth'
 import { useSelectedChild } from '@/hooks/useSelectedChild'
 import { usePractitioners, useMessages } from '@/hooks/useData'
 
-// Demo fallback data
-const demoConversations = [
-  { id: 'demo-1', initials: 'SM', name: 'Mme Sophie Martin', specialty: 'Orthophoniste', lastMsg: 'Bonjour ! Leo a fait de super progrès...', time: '10:42', unread: 2, online: true },
-  { id: 'demo-2', initials: 'JD', name: 'Dr. Jean Dupont', specialty: 'Pediatre', lastMsg: 'Je confirme le rendez-vous de...', time: 'Hier', unread: 0, online: false },
-  { id: 'demo-3', initials: 'CL', name: 'Claire Lefebvre', specialty: 'Psychomotricienne', lastMsg: "N'oubliez pas d'apporter le...", time: 'Lun', unread: 0, online: false },
-]
-
-const demoMessages = [
-  { id: 'demo-m1', from: 'them' as const, text: "Bonjour ! Leo a fait de super progrès aujourd'hui lors de sa séance de prononciation. Il a réussi a articuler les sons complexes sans aide !", time: '10:30' },
-  { id: 'demo-m2', from: 'me' as const, text: "C'est une excellente nouvelle ! Il était très fier de lui en rentrant de l'école hier. Merci pour votre patience.", time: '10:42' },
-  { id: 'demo-m3', from: 'them' as const, text: 'Je vous en prie. Souhaitez-vous que nous maintenions le créneau de jeudi prochain a 14h ?', time: '10:45' },
-]
+// Empty fallback arrays (no more demo data)
+const emptyConversations: { id: string; initials: string; name: string; specialty: string; lastMsg: string; time: string; unread: number; online: boolean }[] = []
+const emptyMessages: { id: string; from: 'me' | 'them'; text: string; time: string }[] = []
 
 function getInitials(firstName?: string, lastName?: string): string {
   return `${(firstName || '')[0] || ''}${(lastName || '')[0] || ''}`.toUpperCase() || '??'
@@ -40,7 +31,7 @@ export default function EchangesPage() {
         unread: 0,
         online: p.status === 'actif',
       }))
-    : demoConversations
+    : emptyConversations
 
   const [activeConvId, setActiveConvId] = useState<string | null>(null)
   const [newMessage, setNewMessage] = useState('')
@@ -69,10 +60,10 @@ export default function EchangesPage() {
         text: m.content,
         time: new Date(m.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
       }))
-    : (!hasPractitioners ? demoMessages : [])
+    : (!hasPractitioners ? emptyMessages : [])
 
   // For demo mode, keep local messages state
-  const [localDemoMessages, setLocalDemoMessages] = useState(demoMessages)
+  const [localDemoMessages, setLocalDemoMessages] = useState(emptyMessages)
   const displayMessages = hasPractitioners ? chatMessages : localDemoMessages
 
   useEffect(() => {
