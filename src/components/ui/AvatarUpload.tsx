@@ -56,8 +56,13 @@ export default function AvatarUpload({ currentUrl, initials, onUpload, size = 'l
 
   return (
     <div className="relative inline-block">
+      {/* eslint-disable @next/next/no-img-element */}
       {displayUrl ? (
-        <img src={displayUrl} alt="Avatar" className={`${sizeClasses} object-cover shadow-lg`} />
+        <img
+          src={displayUrl}
+          alt="Photo de profil"
+          className={`${sizeClasses} rounded-full object-cover shadow-lg`}
+        />
       ) : (
         <div className={`${sizeClasses} bg-gradient-to-br from-[#3B82D9] to-[#5CB89A] flex items-center justify-center text-white font-bold shadow-lg`}>
           {initials}
@@ -67,7 +72,8 @@ export default function AvatarUpload({ currentUrl, initials, onUpload, size = 'l
       <button
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
-        className="absolute -bottom-1 -right-1 w-9 h-9 bg-white shadow-md border border-gray-200 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-all disabled:opacity-50"
+        aria-label={uploading ? 'Chargement de la photo…' : 'Modifier la photo de profil'}
+        className="absolute -bottom-1 -right-1 w-9 h-9 bg-white rounded-full shadow-md border border-gray-200 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-all disabled:opacity-50"
       >
         {uploading ? (
           <div className="w-4 h-4 border-2 border-[#3B82D9]/30 border-t-[#3B82D9] rounded-full animate-spin" />

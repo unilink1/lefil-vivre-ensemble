@@ -9,9 +9,29 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Le Fil — Vivre Ensemble | Accompagnement familles d\'enfants atypiques',
+  title: {
+    default: 'Le Fil — Vivre Ensemble | Accompagnement familles d\'enfants atypiques',
+    template: '%s — Le Fil',
+  },
   description: 'Le Fil accompagne les familles d\'enfants atypiques (TSA, TDAH, DYS, handicap) avec coaching personnalisé, coordination de soins et soutien bienveillant.',
   keywords: ['suivi enfant', 'TDAH', 'TSA', 'DYS', 'coordination soins', 'Le Fil', 'handicap', 'accompagnement'],
+  openGraph: {
+    type: 'website',
+    locale: 'fr_FR',
+    url: 'https://lefil.app',
+    siteName: 'Le Fil',
+    title: 'Le Fil — Accompagnement familles d\'enfants atypiques',
+    description: 'Le Fil accompagne les familles d\'enfants atypiques (TSA, TDAH, DYS, handicap) avec coaching personnalisé, coordination de soins et soutien bienveillant.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Le Fil — Accompagnement familles d\'enfants atypiques',
+    description: 'Le Fil accompagne les familles d\'enfants atypiques (TSA, TDAH, DYS, handicap) avec coaching personnalisé, coordination de soins et soutien bienveillant.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
