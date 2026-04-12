@@ -16,11 +16,11 @@ export default function BottomNav() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden">
-      <div className="bg-white/80 backdrop-blur-xl border-t border-white/50 shadow-[0_-2px_20px_rgba(45,55,72,0.06)] px-2 pb-[env(safe-area-inset-bottom)] flex items-center justify-around">
+      <nav aria-label="Navigation mobile" className="bg-white/80 backdrop-blur-xl border-t border-white/50 shadow-[0_-2px_20px_rgba(45,55,72,0.06)] px-2 pb-[env(safe-area-inset-bottom)] flex items-center justify-around">
         {tabs.map((tab) => {
           const active = pathname?.startsWith(tab.href)
           return (
-            <Link key={tab.href} href={tab.href} className="flex-1">
+            <Link key={tab.href} href={tab.href} className="flex-1" aria-label={tab.label} aria-current={active ? 'page' : undefined}>
               <div className={`flex flex-col items-center gap-0.5 py-2.5 relative transition-all duration-300 ${
                 active ? 'scale-105' : 'scale-100'
               }`}>
@@ -45,7 +45,7 @@ export default function BottomNav() {
             </Link>
           )
         })}
-      </div>
+      </nav>
     </div>
   )
 }

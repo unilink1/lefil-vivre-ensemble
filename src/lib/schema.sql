@@ -95,3 +95,119 @@ CREATE POLICY "Anyone can submit a contact form"
 CREATE POLICY "Only service role can read contact submissions"
   ON public.contact_submissions FOR SELECT
   USING (false); -- Readable only via service_role key / Supabase dashboard
+
+
+-- ============ MEDICATIONS / MÉDICAMENTS ============
+
+CREATE TABLE IF NOT EXISTS public.medications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  child_id UUID REFERENCES public.children(id) ON DELETE CASCADE NOT NULL,
+  parent_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  name TEXT NOT NULL,
+  dosage TEXT,
+  unit TEXT DEFAULT 'mg',
+  frequency TEXT, -- e.g. 'matin', 'midi', 'soir', '2x/jour'
+  times TEXT[], -- array of times e.g. ['08:00', '20:00']
+  start_date DATE,
+  end_date DATE,
+  is_active BOOLEAN DEFAULT true,
+  prescriber TEXT,
+  notes TEXT,
+  side_effects TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.medications ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Parents can manage their children's medications"
+  ON public.medications FOR ALL
+  USING (parent_id = auth.uid());
+
+CREATE INDEX IF NOT EXISTS idx_medications_child_id ON public.medications(child_id);
+CREATE INDEX IF NOT EXISTS idx_medications_parent_id ON public.medications(parent_id);
+CREATE INDEX IF NOT EXISTS idx_medications_active ON public.medications(child_id, is_active);
+
+
+-- ============ MEDICATION LOGS / HISTORIQUE DES PRISES ============
+
+CREATE TABLE IF NOT EXISTS public.medication_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  medication_id UUID REFERENCES public.medications(id) ON DELETE CASCADE NOT NULL,
+  child_id UUID REFERENCES public.children(id) ON DELETE CASCADE NOT NULL,
+  parent_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  taken_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  scheduled_time TEXT,
+  taken BOOLEAN DEFAULT true,
+  skip_reason TEXT,
+  notes TEXT,
+  side_effects_noted TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.medication_logs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Parents can manage their children's medication logs"
+  ON public.medication_logs FOR ALL
+  USING (parent_id = auth.uid());
+
+CREATE INDEX IF NOT EXISTS idx_medication_logs_medication_id ON public.medication_logs(medication_id);
+CREATE INDEX IF NOT EXISTS idx_medication_logs_child_id ON public.medication_logs(child_id);
+CREATE INDEX IF NOT EXISTS idx_medication_logs_taken_at ON public.medication_logs(taken_at DESC);
+
+
+-- ============ HEALTH RECORDS / CARNET DE SANTÉ ============
+
+CREATE TABLE IF NOT EXISTS public.health_records (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  child_id UUID REFERENCES public.children(id) ON DELETE CASCADE NOT NULL,
+  parent_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  record_type TEXT CHECK (record_type IN ('vaccine', 'growth', 'allergy', 'exam', 'note')) NOT NULL,
+  record_date DATE NOT NULL DEFAULT CURRENT_DATE,
+  title TEXT NOT NULL,
+  data JSONB DEFAULT '{}',
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.health_records ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Parents can manage their children's health records"
+  ON public.health_records FOR ALL
+  USING (parent_id = auth.uid());
+
+CREATE INDEX IF NOT EXISTS idx_health_records_child_id ON public.health_records(child_id);
+CREATE INDEX IF NOT EXISTS idx_health_records_type ON public.health_records(child_id, record_type);
+CREATE INDEX IF NOT EXISTS idx_health_records_date ON public.health_records(child_id, record_date DESC);
+
+
+-- ============ THERAPEUTIC GOALS / OBJECTIFS THÉRAPEUTIQUES ============
+
+CREATE TABLE IF NOT EXISTS public.therapeutic_goals (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  child_id UUID REFERENCES public.children(id) ON DELETE CASCADE NOT NULL,
+  parent_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  practitioner_id UUID REFERENCES public.practitioners(id) ON DELETE SET NULL,
+  title TEXT NOT NULL,
+  description TEXT,
+  category TEXT DEFAULT 'general', -- e.g. 'motricite', 'langage', 'comportement', 'autonomie'
+  progress INTEGER DEFAULT 0 CHECK (progress >= 0 AND progress <= 100),
+  status TEXT CHECK (status IN ('en_cours', 'atteint', 'abandonne', 'en_pause')) DEFAULT 'en_cours',
+  start_date DATE DEFAULT CURRENT_DATE,
+  target_date DATE,
+  achieved_date DATE,
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.therapeutic_goals ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Parents can manage their children's therapeutic goals"
+  ON public.therapeutic_goals FOR ALL
+  USING (parent_id = auth.uid());
+
+CREATE INDEX IF NOT EXISTS idx_therapeutic_goals_child_id ON public.therapeutic_goals(child_id);
+CREATE INDEX IF NOT EXISTS idx_therapeutic_goals_status ON public.therapeutic_goals(child_id, status);
+CREATE INDEX IF NOT EXISTS idx_therapeutic_goals_practitioner ON public.therapeutic_goals(practitioner_id);

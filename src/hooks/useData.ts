@@ -444,3 +444,290 @@ export function useDailyLog(childId?: string, date?: string) {
 
   return { log, loading, upsert, remove, refresh: fetch }
 }
+
+// ============ MEDICATIONS / MÉDICAMENTS ============
+export type Medication = {
+  id: string
+  child_id: string
+  parent_id: string
+  name: string
+  dosage: string | null
+  unit: string
+  frequency: string | null
+  times: string[] | null
+  start_date: string | null
+  end_date: string | null
+  is_active: boolean
+  prescriber: string | null
+  notes: string | null
+  side_effects: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type MedicationLog = {
+  id: string
+  medication_id: string
+  child_id: string
+  parent_id: string
+  taken_at: string
+  scheduled_time: string | null
+  taken: boolean
+  skip_reason: string | null
+  notes: string | null
+  side_effects_noted: string | null
+  created_at: string
+}
+
+export function useMedications(childId?: string) {
+  const { user } = useAuth()
+  const [medications, setMedications] = useState<Medication[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const fetch = useCallback(async () => {
+    if (!childId) return
+    setLoading(true)
+    const { data } = await supabase
+      .from('medications')
+      .select('*')
+      .eq('child_id', childId)
+      .order('created_at', { ascending: false })
+    setMedications(data || [])
+    setLoading(false)
+  }, [childId])
+
+  useEffect(() => { fetch() }, [fetch])
+
+  const create = async (med: Partial<Medication>) => {
+    if (!user || !childId) return { error: 'Not authenticated' }
+    const { data, error } = await supabase
+      .from('medications')
+      .insert({ ...med, child_id: childId, parent_id: user.id })
+      .select()
+      .single()
+    if (!error) await fetch()
+    return { data, error }
+  }
+
+  const update = async (id: string, updates: Partial<Medication>) => {
+    const { data, error } = await supabase
+      .from('medications')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single()
+    if (!error) await fetch()
+    return { data, error }
+  }
+
+  const remove = async (id: string) => {
+    const { error } = await supabase.from('medications').delete().eq('id', id)
+    if (!error) await fetch()
+    return { error }
+  }
+
+  return { medications, loading, create, update, remove, refresh: fetch }
+}
+
+export function useMedicationLogs(childId?: string, medicationId?: string) {
+  const { user } = useAuth()
+  const [logs, setLogs] = useState<MedicationLog[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const fetch = useCallback(async () => {
+    if (!childId) return
+    setLoading(true)
+    let query = supabase
+      .from('medication_logs')
+      .select('*')
+      .eq('child_id', childId)
+      .order('taken_at', { ascending: false })
+      .limit(100)
+    if (medicationId) query = query.eq('medication_id', medicationId)
+    const { data } = await query
+    setLogs(data || [])
+    setLoading(false)
+  }, [childId, medicationId])
+
+  useEffect(() => { fetch() }, [fetch])
+
+  const logTaken = async (medicationId: string, scheduledTime?: string, notes?: string) => {
+    if (!user || !childId) return { error: 'Not authenticated' }
+    const { data, error } = await supabase
+      .from('medication_logs')
+      .insert({
+        medication_id: medicationId,
+        child_id: childId,
+        parent_id: user.id,
+        taken: true,
+        scheduled_time: scheduledTime || null,
+        notes: notes || null,
+      })
+      .select()
+      .single()
+    if (!error) await fetch()
+    return { data, error }
+  }
+
+  const logSkipped = async (medicationId: string, reason?: string) => {
+    if (!user || !childId) return { error: 'Not authenticated' }
+    const { data, error } = await supabase
+      .from('medication_logs')
+      .insert({
+        medication_id: medicationId,
+        child_id: childId,
+        parent_id: user.id,
+        taken: false,
+        skip_reason: reason || null,
+      })
+      .select()
+      .single()
+    if (!error) await fetch()
+    return { data, error }
+  }
+
+  return { logs, loading, logTaken, logSkipped, refresh: fetch }
+}
+
+// ============ HEALTH RECORDS / CARNET DE SANTÉ ============
+export type HealthRecord = {
+  id: string
+  child_id: string
+  parent_id: string
+  record_type: 'vaccine' | 'growth' | 'allergy' | 'exam' | 'note'
+  record_date: string
+  title: string
+  data: Record<string, unknown>
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export function useHealthRecords(childId?: string, type?: HealthRecord['record_type']) {
+  const { user } = useAuth()
+  const [records, setRecords] = useState<HealthRecord[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const fetch = useCallback(async () => {
+    if (!childId) return
+    setLoading(true)
+    let query = supabase
+      .from('health_records')
+      .select('*')
+      .eq('child_id', childId)
+      .order('record_date', { ascending: false })
+    if (type) query = query.eq('record_type', type)
+    const { data } = await query
+    setRecords(data || [])
+    setLoading(false)
+  }, [childId, type])
+
+  useEffect(() => { fetch() }, [fetch])
+
+  const create = async (record: Partial<HealthRecord>) => {
+    if (!user || !childId) return { error: 'Not authenticated' }
+    const { data, error } = await supabase
+      .from('health_records')
+      .insert({ ...record, child_id: childId, parent_id: user.id })
+      .select()
+      .single()
+    if (!error) await fetch()
+    return { data, error }
+  }
+
+  const update = async (id: string, updates: Partial<HealthRecord>) => {
+    const { data, error } = await supabase
+      .from('health_records')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single()
+    if (!error) await fetch()
+    return { data, error }
+  }
+
+  const remove = async (id: string) => {
+    const { error } = await supabase.from('health_records').delete().eq('id', id)
+    if (!error) await fetch()
+    return { error }
+  }
+
+  return { records, loading, create, update, remove, refresh: fetch }
+}
+
+// ============ THERAPEUTIC GOALS / OBJECTIFS THÉRAPEUTIQUES ============
+export type TherapeuticGoal = {
+  id: string
+  child_id: string
+  parent_id: string
+  practitioner_id: string | null
+  title: string
+  description: string | null
+  category: string
+  progress: number
+  status: 'en_cours' | 'atteint' | 'abandonne' | 'en_pause'
+  start_date: string
+  target_date: string | null
+  achieved_date: string | null
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export function useTherapeuticGoals(childId?: string) {
+  const { user } = useAuth()
+  const [goals, setGoals] = useState<TherapeuticGoal[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const fetch = useCallback(async () => {
+    if (!childId) return
+    setLoading(true)
+    const { data } = await supabase
+      .from('therapeutic_goals')
+      .select('*, practitioners(first_name, last_name, specialty)')
+      .eq('child_id', childId)
+      .order('created_at', { ascending: false })
+    setGoals(data || [])
+    setLoading(false)
+  }, [childId])
+
+  useEffect(() => { fetch() }, [fetch])
+
+  const create = async (goal: Partial<TherapeuticGoal>) => {
+    if (!user || !childId) return { error: 'Not authenticated' }
+    const { data, error } = await supabase
+      .from('therapeutic_goals')
+      .insert({ ...goal, child_id: childId, parent_id: user.id })
+      .select()
+      .single()
+    if (!error) await fetch()
+    return { data, error }
+  }
+
+  const update = async (id: string, updates: Partial<TherapeuticGoal>) => {
+    const { data, error } = await supabase
+      .from('therapeutic_goals')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single()
+    if (!error) await fetch()
+    return { data, error }
+  }
+
+  const updateProgress = async (id: string, progress: number) => {
+    return update(id, {
+      progress,
+      status: progress >= 100 ? 'atteint' : 'en_cours',
+      achieved_date: progress >= 100 ? new Date().toISOString().split('T')[0] : undefined,
+    })
+  }
+
+  const remove = async (id: string) => {
+    const { error } = await supabase.from('therapeutic_goals').delete().eq('id', id)
+    if (!error) await fetch()
+    return { error }
+  }
+
+  return { goals, loading, create, update, updateProgress, remove, refresh: fetch }
+}

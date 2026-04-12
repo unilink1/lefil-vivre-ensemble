@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 import { useAppointments, useSessions, usePractitioners, useDocuments } from '@/hooks/useData'
 import { useSelectedChild } from '@/hooks/useSelectedChild'
+import NotificationPermission from '@/components/ui/NotificationPermission'
 
 function calculateAge(birthDate: string): number {
   const birth = new Date(birthDate)
@@ -332,6 +333,9 @@ export default function DashboardPage() {
       `}</style>
 
       <div className="max-w-6xl mx-auto animate-fadeInUp">
+
+        {/* Notifications permission prompt */}
+        <NotificationPermission />
 
         {/* Upcoming appointment alert (within 24h) */}
         {(() => {

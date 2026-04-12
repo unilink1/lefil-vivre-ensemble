@@ -154,12 +154,17 @@ export default function EnfantPage() {
             </div>
             <div className="flex gap-3 shrink-0 no-print">
               <button
-                onClick={() => {
-                  const printArea = document.getElementById('print-dossier')
-                  if (printArea) printArea.style.display = 'block'
-                  window.print()
-                  if (printArea) printArea.style.display = 'none'
+                onClick={async () => {
+                  if (!firstChild) return
+                  try {
+                    const url = `/api/export-pdf?childId=${firstChild.id}`
+                    window.open(url, '_blank')
+                  } catch {
+                    // fallback to print
+                    window.print()
+                  }
                 }}
+                aria-label="Exporter le dossier en PDF"
                 className="px-5 py-2.5 rounded-xl border border-[#7EC8B0]/30 text-[#7EC8B0] font-semibold text-sm hover:bg-[#7EC8B0]/5 transition-all cursor-pointer flex items-center gap-2"
               >
                 <span className="material-symbols-outlined text-[18px]">picture_as_pdf</span>

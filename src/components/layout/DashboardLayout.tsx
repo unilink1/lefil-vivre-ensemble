@@ -14,6 +14,9 @@ const navItems = [
   { icon: 'calendar_month', label: 'Agenda', href: '/dashboard/agenda' },
   { icon: 'forum', label: 'Echanges', href: '/dashboard/echanges' },
   { icon: 'menu_book', label: 'Journal', href: '/dashboard/journal' },
+  { icon: 'medication', label: 'Médicaments', href: '/dashboard/medicaments' },
+  { icon: 'health_and_safety', label: 'Carnet de santé', href: '/dashboard/carnet-sante' },
+  { icon: 'flag', label: 'Objectifs', href: '/dashboard/objectifs' },
   { icon: 'school', label: 'École', href: '/dashboard/ecole' },
   { icon: 'settings', label: 'Paramètres', href: '/dashboard/parametres' },
 ]
@@ -296,7 +299,7 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
       <SidebarSearch collapsed={collapsed} />
 
       {/* Navigation */}
-      <nav className="flex-1 py-3 overflow-y-auto">
+      <nav className="flex-1 py-3 overflow-y-auto" aria-label="Navigation principale">
         <ul className="space-y-0.5 px-2">
           {navItems.map(item => {
             const active = pathname?.startsWith(item.href)
@@ -449,6 +452,14 @@ export default function DashboardLayout({ children, title, breadcrumb }: {
 
   return (
     <>
+      {/* Skip to content - WCAG AA */}
+      <a
+        href="#main-dashboard-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:bg-white focus:text-[#4A90D9] focus:rounded-xl focus:shadow-lg focus:font-semibold focus:text-sm"
+      >
+        Aller au contenu principal
+      </a>
+
       <div className="min-h-dvh bg-surface flex">
         {/* Desktop sidebar */}
         <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
@@ -484,7 +495,7 @@ export default function DashboardLayout({ children, title, breadcrumb }: {
             </div>
           )}
 
-          <main className="w-full px-4 sm:px-6 lg:px-8 py-4 animate-fade-in-page">
+          <main id="main-dashboard-content" className="w-full px-4 sm:px-6 lg:px-8 py-4 animate-fade-in-page">
             {children}
           </main>
         </div>
