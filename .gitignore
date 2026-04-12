@@ -7,3 +7,4 @@ sql/
 .supabase/
 supabase/.temp/
 base_schema.sql
+.vercel
