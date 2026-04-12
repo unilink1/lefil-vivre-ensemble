@@ -719,7 +719,7 @@ export function useTherapeuticGoals(childId?: string) {
     return update(id, {
       progress,
       status: progress >= 100 ? 'atteint' : 'en_cours',
-      achieved_date: progress >= 100 ? new Date().toISOString().split('T')[0] : undefined,
+      achieved_date: progress >= 100 ? new Date().toISOString().split('T')[0] : null,
     })
   }
 

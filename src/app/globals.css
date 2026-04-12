@@ -1,23 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  /* Palette Le Fil Site V2 */
-  --color-primary: #3B82D9;
-  --color-primary-light: #6BA8E8;
-  --color-primary-dark: #2960B3;
-  --color-primary-container: #6BA8E8;
+  /* Palette Le Fil — #4A90D9 #7EC8B0 #E8A87C */
+  --color-primary: #4A90D9;
+  --color-primary-light: #7BB3E8;
+  --color-primary-dark: #3570B8;
+  --color-primary-container: #7BB3E8;
   --color-primary-fixed: #E0EDFB;
   --color-primary-fixed-dim: #A3CCF0;
-  --color-secondary: #5CB89A;
-  --color-secondary-light: #8AD4BF;
+  --color-secondary: #7EC8B0;
+  --color-secondary-light: #A3D9C8;
   --color-secondary-container: #C0ECE0;
   --color-secondary-fixed: #E0F5EE;
-  --color-secondary-fixed-dim: #8AD4BF;
-  --color-tertiary: #E09060;
-  --color-tertiary-light: #EBB08A;
+  --color-secondary-fixed-dim: #A3D9C8;
+  --color-tertiary: #E8A87C;
+  --color-tertiary-light: #F0C4A3;
   --color-tertiary-container: #FFE8D6;
   --color-tertiary-fixed: #FFE8D6;
-  --color-tertiary-fixed-dim: #EBB08A;
+  --color-tertiary-fixed-dim: #F0C4A3;
   --color-gold: #F5C842;
   --color-gold-container: #FFF8E1;
   --color-surface: #FAFAF8;

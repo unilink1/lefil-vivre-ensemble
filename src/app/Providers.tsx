@@ -2,6 +2,8 @@
 import { AuthProvider } from '@/hooks/useAuth'
 import { SelectedChildProvider } from '@/hooks/useSelectedChild'
 import { useInactivityLogout } from '@/hooks/useInactivityLogout'
+import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration'
+import RGPDConsent from '@/components/ui/RGPDConsent'
 import { ReactNode } from 'react'
 
 function InactivityGuard({ children }: { children: ReactNode }) {
@@ -15,6 +17,8 @@ export default function Providers({ children }: { children: ReactNode }) {
       <SelectedChildProvider>
         <InactivityGuard>
           {children}
+          <ServiceWorkerRegistration />
+          <RGPDConsent />
         </InactivityGuard>
       </SelectedChildProvider>
     </AuthProvider>

@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'lefil-v3';
+const CACHE_VERSION = 'lefil-v4';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 const OFFLINE_PAGE = '/offline';
@@ -13,7 +13,9 @@ const PRECACHE_URLS = [
   '/dashboard/journal',
   '/dashboard/medicaments',
   '/dashboard/carnet-sante',
+  '/dashboard/documents',
   '/dashboard/objectifs',
+  '/dashboard/echanges',
 ];
 
 // ── Install: precache critical assets ──

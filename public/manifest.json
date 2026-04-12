@@ -5,7 +5,7 @@
   "start_url": "/dashboard/profil",
   "display": "standalone",
   "background_color": "#FAFAF8",
-  "theme_color": "#3B82D9",
+  "theme_color": "#4A90D9",
   "orientation": "portrait-primary",
   "categories": ["health", "medical"],
   "icons": [

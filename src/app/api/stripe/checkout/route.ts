@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder')
 
 // Split: 90% entreprise Le Fil (main account), 10% plateforme (connected account)
 // With Stripe Connect: payment goes to main account, we transfer 10% to connected

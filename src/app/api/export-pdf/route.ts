@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://tlqvxurmrpiuczlinyve.supabase.co'
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRscXZ4dXJtcnBpdWN6bGlueXZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0ODIyMDUsImV4cCI6MjA5MDA1ODIwNX0.TA83e0Etn2kLp9XE5PbiZ1dfwB4-NdxXZKFtjlUoZnU'
 
 // HTML-to-PDF using browser's print API via a data-URI approach
 // Returns an HTML page with print-optimized styles that auto-triggers the print dialog
@@ -64,6 +64,14 @@ export async function POST(req: NextRequest) {
       .select('*, practitioners(first_name, last_name)')
       .eq('child_id', childId)
       .neq('status', 'abandonne')
+
+    // Fetch recent daily logs
+    const { data: dailyLogs } = await supabase
+      .from('daily_logs')
+      .select('*')
+      .eq('child_id', childId)
+      .order('log_date', { ascending: false })
+      .limit(14)
 
     const birthDate = child.birth_date
       ? new Date(child.birth_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -474,6 +482,40 @@ export async function POST(req: NextRequest) {
             <td style="color:#718096">${(s.practitioners as Record<string, string>)?.first_name || ''} ${(s.practitioners as Record<string, string>)?.last_name || ''}</td>
             <td style="color:#2D3748; max-width:300px">${s.observations ? String(s.observations).slice(0, 120) + (String(s.observations).length > 120 ? '...' : '') : '—'}</td>
           </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>` : ''}
+
+    ${dailyLogs && dailyLogs.length > 0 ? `
+    <!-- Daily Logs -->
+    <div class="section">
+      <div class="section-title">
+        <span class="section-icon" style="background:#E8A87C">📝</span>
+        Journal quotidien (${dailyLogs.length} derniers jours)
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Humeur</th>
+            <th>Sommeil</th>
+            <th>Appetit</th>
+            <th>Energie</th>
+            <th>Traitement</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${dailyLogs.map((l: Record<string, unknown>) => {
+            const moodMap: Record<number, string> = { 1: 'Dur', 2: 'Difficile', 3: 'Neutre', 4: 'Bien', 5: 'Super' }
+            return `
+          <tr>
+            <td style="white-space:nowrap">${new Date(String(l.log_date)).toLocaleDateString('fr-FR')}</td>
+            <td>${moodMap[Number(l.mood)] || '—'}</td>
+            <td>${l.sleep_quality || '—'}</td>
+            <td>${l.appetite || '—'}</td>
+            <td>${l.energy_level ? `${l.energy_level}/5` : '—'}</td>
+            <td>${l.treatment_taken ? '<span class="badge badge-green">Oui</span>' : '<span class="badge badge-orange">Non</span>'}</td>
+          </tr>`}).join('')}
         </tbody>
       </table>
     </div>` : ''}

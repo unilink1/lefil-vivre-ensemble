@@ -16,6 +16,7 @@ const navItems = [
   { icon: 'menu_book', label: 'Journal', href: '/dashboard/journal' },
   { icon: 'medication', label: 'Médicaments', href: '/dashboard/medicaments' },
   { icon: 'health_and_safety', label: 'Carnet de santé', href: '/dashboard/carnet-sante' },
+  { icon: 'folder', label: 'Documents', href: '/dashboard/documents' },
   { icon: 'flag', label: 'Objectifs', href: '/dashboard/objectifs' },
   { icon: 'school', label: 'École', href: '/dashboard/ecole' },
   { icon: 'settings', label: 'Paramètres', href: '/dashboard/parametres' },
