@@ -32,10 +32,15 @@
   --color-error: #E57373;
   --color-error-container: #FFDAD6;
   --color-success: #66BB6A;
+  --color-success-container: #C8F0CB;
   --color-warning: #FFB74D;
+  --color-warning-container: #FFF3E0;
+  --color-tertiary-dark: #C07840;
+  --color-primary-dark: #3570B8;
+  --color-secondary-dark: #5AA890;
 
   --font-heading: 'Plus Jakarta Sans', sans-serif;
-  --font-body: 'DM Sans', -apple-system, sans-serif;
+  --font-body: 'Plus Jakarta Sans', 'DM Sans', -apple-system, sans-serif;
 
   --radius-sm: 10px;
   --radius-md: 16px;
@@ -71,7 +76,23 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+p {
+  line-height: 1.7;
+}
+
+/* Height utility used in forms */
+.h-13 {
+  height: 3.25rem; /* 52px — grand input accessible */
+}
+
+/* Comfortable touch target */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .material-symbols-outlined {
@@ -445,6 +466,90 @@ h1, h2, h3, h4, h5, h6 {
 
 .animate-fade-in-page {
   animation: fade-in-page 0.4s ease-out both;
+}
+
+/* ==========================================================================
+   Accessibility & Form Enhancements
+   ========================================================================== */
+
+/* Focus ring amélioré pour boutons et liens */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #4A90D9;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   Dashboard Specific
+   ========================================================================== */
+
+/* Scrollbar fin pour sidebar */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-outline-variant) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant);
+  border-radius: 2px;
+}
+
+/* Progress bar smooth animation */
+.progress-bar {
+  transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Table row hover */
+.table-row-hover:hover {
+  background: var(--color-surface-low);
+  transition: background 0.2s ease;
+}
+
+/* ==========================================================================
+   Typography Refinements
+   ========================================================================== */
+
+/* Numéros et données statiques */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Label section uppercase */
+.label-section {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-outline);
 }
 
 /* Print styles */
