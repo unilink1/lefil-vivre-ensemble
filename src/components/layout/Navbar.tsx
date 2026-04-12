@@ -74,10 +74,16 @@ export default function Navbar() {
         animate={menuOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
         className={`fixed top-[72px] left-0 right-0 z-40 bg-surface-card border-b border-outline-variant shadow-lg p-6 flex flex-col ${menuOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
       >
-        {['Accompagnements', 'Comment ça marche', 'Tarifs', 'Témoignages', 'Contact'].map(label => (
-          <Link key={label} href={`#${label.toLowerCase().replace(/[^a-z]/g, '-')}`} onClick={() => setMenuOpen(false)}
+        {[
+              { label: 'Accompagnements', href: '#accompagnements' },
+              { label: 'Comment ça marche', href: '#comment-ca-marche' },
+              { label: 'Tarifs', href: '#tarifs' },
+              { label: 'Témoignages', href: '#temoignages' },
+              { label: 'Contact', href: '#contact' },
+            ].map(link => (
+          <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)}
             className="py-3 min-h-[44px] flex items-center text-on-surface font-medium border-b border-outline-variant/20 last:border-0 hover:text-primary transition-colors">
-            {label}
+            {link.label}
           </Link>
         ))}
         <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-outline-variant/20">

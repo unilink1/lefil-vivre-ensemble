@@ -395,7 +395,7 @@ export default function LandingPage() {
       {/* ═══════════════════════════════════════════
           3. FEATURES
           ═══════════════════════════════════════════ */}
-      <section id="fonctionnalites" className="py-20 sm:py-28 px-5 sm:px-8">
+      <section id="accompagnements" className="py-20 sm:py-28 px-5 sm:px-8">
         <div className="max-w-[1200px] mx-auto">
           <Reveal className="text-center mb-16">
             <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">Fonctionnalit\u00e9s</p>
@@ -530,7 +530,7 @@ export default function LandingPage() {
       {/* ═══════════════════════════════════════════
           6. TESTIMONIALS
           ═══════════════════════════════════════════ */}
-      <section className="py-20 sm:py-28 px-5 sm:px-8 bg-surface-warm/50">
+      <section id="temoignages" className="py-20 sm:py-28 px-5 sm:px-8 bg-surface-warm/50">
         <div className="max-w-[1200px] mx-auto">
           <Reveal className="text-center mb-16">
             <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">T\u00e9moignages</p>
