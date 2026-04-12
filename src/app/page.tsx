@@ -395,7 +395,8 @@ export default function LandingPage() {
       {/* ═══════════════════════════════════════════
           3. FEATURES
           ═══════════════════════════════════════════ */}
-      <section id="accompagnements" className="py-20 sm:py-28 px-5 sm:px-8">
+      <span id="accompagnements" />
+      <section id="fonctionnalites" className="py-20 sm:py-28 px-5 sm:px-8">
         <div className="max-w-[1200px] mx-auto">
           <Reveal className="text-center mb-16">
             <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">Fonctionnalit\u00e9s</p>
@@ -759,7 +760,7 @@ export default function LandingPage() {
               <h4 className="font-[family-name:var(--font-heading)] font-bold text-white text-sm mb-4">L\u00e9gal</h4>
               <ul className="space-y-2.5 text-sm">
                 <li><a href="#" className="hover:text-white transition-colors">Mentions l\u00e9gales</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Politique de confidentialit\u00e9</a></li>
+                <li><Link href="/politique-confidentialite" className="hover:text-white transition-colors">Politique de confidentialit\u00e9</Link></li>
                 <li><a href="#" className="hover:text-white transition-colors">CGV</a></li>
               </ul>
             </div>
