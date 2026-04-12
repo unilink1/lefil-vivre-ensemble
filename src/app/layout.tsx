@@ -2,6 +2,12 @@ import type { Metadata } from 'next'
 import Providers from './Providers'
 import './globals.css'
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+};
+
 export const metadata: Metadata = {
   title: 'Le Fil — Vivre Ensemble | Accompagnement familles d\'enfants atypiques',
   description: 'Le Fil accompagne les familles d\'enfants atypiques (TSA, TDAH, DYS, handicap) avec coaching personnalisé, coordination de soins et soutien bienveillant.',

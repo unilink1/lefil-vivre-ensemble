@@ -446,7 +446,7 @@ export default function MedicamentsPage() {
 
       <div id="main-content" className="space-y-5">
         {/* Header stats */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm text-center">
             <p className="text-2xl font-bold text-[#4A90D9]">{activeMeds.length}</p>
             <p className="text-xs text-gray-500 mt-1">Médicaments actifs</p>

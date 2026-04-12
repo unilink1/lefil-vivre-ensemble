@@ -289,9 +289,9 @@ export default function AdminCrmPage() {
                     <th className="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Date</th>
                     <th className="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Type</th>
                     <th className="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Client</th>
-                    <th className="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Enfant</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider hidden sm:table-cell">Enfant</th>
                     <th className="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Titre</th>
-                    <th className="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider hidden lg:table-cell">Détails</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider hidden sm:table-cell">Détails</th>
                     <th className="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Statut</th>
                   </tr>
                 </thead>
@@ -310,9 +310,9 @@ export default function AdminCrmPage() {
                           </span>
                         </td>
                         <td className="py-3 px-4 font-medium text-gray-800 max-w-[150px] truncate">{e.client || '—'}</td>
-                        <td className="py-3 px-4 text-gray-600 max-w-[120px] truncate">{e.enfant || '—'}</td>
+                        <td className="py-3 px-4 text-gray-600 max-w-[120px] truncate hidden sm:table-cell">{e.enfant || '—'}</td>
                         <td className="py-3 px-4 text-gray-700 max-w-[180px] truncate">{e.titre}</td>
-                        <td className="py-3 px-4 text-gray-400 max-w-[200px] truncate hidden lg:table-cell">{e.details}</td>
+                        <td className="py-3 px-4 text-gray-400 max-w-[200px] truncate hidden sm:table-cell">{e.details}</td>
                         <td className="py-3 px-4 text-gray-500 text-xs">{e.statut}</td>
                       </tr>
                     )
