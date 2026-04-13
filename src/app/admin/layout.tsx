@@ -3,7 +3,6 @@ import { useState, useEffect, ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import Logo from '@/components/ui/Logo'
 
-const ADMIN_CODE = 'Riennestvue1&'
 const STORAGE_KEY = 'lefil_admin_auth'
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -11,6 +10,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [code, setCode] = useState('')
   const [error, setError] = useState('')
   const [checking, setChecking] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const stored = sessionStorage.getItem(STORAGE_KEY)
@@ -18,15 +18,28 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     setChecking(false)
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (code === ADMIN_CODE) {
-      sessionStorage.setItem(STORAGE_KEY, 'true')
-      setAuthorized(true)
-      setError('')
-    } else {
-      setError('Code incorrect. Veuillez réessayer.')
-      setCode('')
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        sessionStorage.setItem(STORAGE_KEY, 'true')
+        setAuthorized(true)
+      } else {
+        setError(data.error || 'Code incorrect. Veuillez réessayer.')
+        setCode('')
+      }
+    } catch {
+      setError('Erreur de connexion.')
+    } finally {
+      setLoading(false)
     }
   }
 
