@@ -3,7 +3,7 @@ import { useState, useEffect, ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import Logo from '@/components/ui/Logo'
 
-const ADMIN_CODE = 'Unseulmot1&'
+const ADMIN_CODE = 'Riennestvue1&'
 const STORAGE_KEY = 'lefil_admin_auth'
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
